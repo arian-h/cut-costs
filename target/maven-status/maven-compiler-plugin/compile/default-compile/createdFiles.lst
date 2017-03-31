@@ -1,2 +1,5 @@
-com/boot/cut_costs/App.class
 com/boot/cut_costs/controller/UserRestAPI.class
+com/boot/cut_costs/App.class
+com/boot/cut_costs/repository/UserRepository.class
+com/boot/cut_costs/config/PersistenceConfiguration.class
+com/boot/cut_costs/model/User.class

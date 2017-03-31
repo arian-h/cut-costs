@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserRestAPI {
 	@RequestMapping("/")
 	public String home() {
-		return "hello";
+		return "hellosss";
 	}
 }
