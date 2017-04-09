@@ -11,6 +11,18 @@ public class User {
 	@Id
 	@GeneratedValue
 	private BigInteger id;
+	
+	private Integer age;
+	
+	private String name;
+	
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
 	public BigInteger getId() {
 		return id;
@@ -18,5 +30,13 @@ public class User {
 
 	public void setId(BigInteger id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
