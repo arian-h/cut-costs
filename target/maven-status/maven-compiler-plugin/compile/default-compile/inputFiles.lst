@@ -1,5 +1,13 @@
-/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/model/User.java
-/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/repository/UserRepository.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/TokenAuthenticationService.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/JWTAuthenticationFilter.java
 /home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/App.java
-/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/controller/UserRestAPI.java
-/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/PersistenceConfiguration.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/CustomUserDetails.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/WebSecurityConfig.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/model/Greeting.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/CustomUserDetailsService.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/controller/GreetingController.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/JWTLoginFilter.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/datasource/PersistenceConfiguration.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/controller/UserAcccountController.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/repository/AccountRepository.java
+/home/arian/workspace/cut-costs/src/main/java/com/boot/cut_costs/config/security/CustomRole.java
