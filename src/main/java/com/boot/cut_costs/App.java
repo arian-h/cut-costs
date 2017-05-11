@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.boot.cut_costs.config.security.CustomUserDetails;
-import com.boot.cut_costs.repository.AccountRepository;
+import com.boot.cut_costs.security.model.AccountRepository;
+import com.boot.cut_costs.security.model.CustomUserDetails;
 
 /**
  * Application entry point
