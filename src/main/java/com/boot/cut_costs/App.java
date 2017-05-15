@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.boot.cut_costs.security.model.AccountRepository;
-import com.boot.cut_costs.security.model.CustomUserDetails;
+import com.boot.cut_costs.security.model.UserRepository;
+import com.boot.cut_costs.security.model.UserDetails;
 
 /**
  * Application entry point
@@ -22,11 +22,11 @@ public class App {
 	private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Bean
-	CommandLineRunner init(AccountRepository accountRepository) {
+	CommandLineRunner init(UserRepository accountRepository) {
 		return (arg) -> {
 			accountRepository.deleteAll();
 			accountRepository
-					.save(new CustomUserDetails("admin", passwordEncoder.encode("password"), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("USER_ROLE")));
+					.save(new UserDetails("admin", passwordEncoder.encode("password"), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("USER_ROLE")));
 		};
 	}
 }

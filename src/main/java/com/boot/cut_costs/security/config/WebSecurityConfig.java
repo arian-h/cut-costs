@@ -12,10 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.boot.cut_costs.security.auth.jwt.JWTAuthenticationFilter;
-import com.boot.cut_costs.security.auth.jwt.JWTLoginFilter;
 import com.boot.cut_costs.security.auth.jwt.JWTLogoutHandler;
-import com.boot.cut_costs.security.auth.jwt.JWTSignupFilter;
-import com.boot.cut_costs.security.model.AccountRepository;
+import com.boot.cut_costs.security.model.UserRepository;
 import com.boot.cut_costs.security.service.CustomUserDetailsService;
 
 
@@ -24,7 +22,7 @@ import com.boot.cut_costs.security.service.CustomUserDetailsService;
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired 
-    private AccountRepository accountRepository;
+    private UserRepository accountRepository;
 	@Autowired
 	private JWTLogoutHandler logoutHandler;
 	@Autowired
@@ -45,15 +43,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.logout().logoutUrl("/logout").logoutSuccessHandler(logoutHandler).logoutSuccessUrl("/login").invalidateHttpSession(true)
 			.and()
-			// filter the api/signup requests
-			.addFilterBefore(
-				new JWTSignupFilter("/signup", authenticationManager(), userDetailsServiceBean()),
-				UsernamePasswordAuthenticationFilter.class)
-			// filter the api/login requests
-			.addFilterBefore(
-				new JWTLoginFilter("/login", authenticationManager()),
-				UsernamePasswordAuthenticationFilter.class)
-			// filter all other requests to authenticate the JWT in the headers
 			.addFilterBefore(
 				new JWTAuthenticationFilter(userDetailsServiceBean()),
 				UsernamePasswordAuthenticationFilter.class);

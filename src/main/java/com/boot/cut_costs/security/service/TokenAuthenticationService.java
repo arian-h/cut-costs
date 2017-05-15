@@ -21,29 +21,31 @@ public class TokenAuthenticationService {
 	static final String HEADER_STRING = "Authorization";
 
 	public static void addAuthentication(HttpServletResponse res, String username) {
+	
 		String JWT = Jwts
 				.builder()
 				.setSubject(username)
 				.setExpiration(
 						new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 				.signWith(SignatureAlgorithm.HS512, SECRET).compact();
+	
 		res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
+
 	}
 
-	public static Authentication getAuthentication(HttpServletRequest request,
-			UserDetailsService customUserDetailsService) {
+	public static Authentication getAuthentication(HttpServletRequest request, UserDetailsService customUserDetailsService) {
+		
 		String token = request.getHeader(HEADER_STRING);
+		
 		if (token != null) {
 			// parse the token.
 			String userName = Jwts.parser().setSigningKey(SECRET)
 					.parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
 					.getSubject();
-			UserDetails user = customUserDetailsService
-					.loadUserByUsername(userName);
-			return user != null ? new UsernamePasswordAuthenticationToken(
-					user.getUsername(), user.getPassword(),
-					user.getAuthorities()) : null;
+			UserDetails user = customUserDetailsService.loadUserByUsername(userName);
+			return user != null ? new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword(),user.getAuthorities()) : null;
 		}
-		return null;
+		
+		return null;	
 	}
 }

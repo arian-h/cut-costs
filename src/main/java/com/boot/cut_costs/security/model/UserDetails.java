@@ -10,11 +10,10 @@ import javax.persistence.*;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
-@Table(name="ACCOUNT_USER")
-public class CustomUserDetails implements UserDetails {
+@Table(name="USER")
+public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,18 +33,18 @@ public class CustomUserDetails implements UserDetails {
 	@JoinTable(name = "USER_ROLE", 
 				joinColumns = @JoinColumn(name = "USER_ID"), 
 				inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-	private Set<CustomRole> roles;
+	private Set<Role> roles;
 
-	public CustomUserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities) {
+	public UserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities) {
 		this.setUsername(username);
 		this.setPassword(password);
-		this.roles = new HashSet<CustomRole>();
+		this.roles = new HashSet<Role>();
 		for (GrantedAuthority authority: authorities) {
-			roles.add(new CustomRole(authority.getAuthority()));
+			roles.add(new Role(authority.getAuthority()));
 		}
 	}
 
-	public CustomUserDetails() { // jpa only
+	public UserDetails() { // jpa only
 	}
 	
 	@Override
@@ -66,18 +65,18 @@ public class CustomUserDetails implements UserDetails {
 		this.username = username;
 	}
 
-	public Set<CustomRole> getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<CustomRole> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 	
 	@Override
 	public Collection<GrantedAuthority> getAuthorities() {
 		ArrayList<String> authoritiesList = new ArrayList<String>();
-		for (CustomRole role: getRoles()) {
+		for (Role role: getRoles()) {
 			authoritiesList.add(role.getRole());
 		}			
 		return AuthorityUtils.commaSeparatedStringToAuthorityList(String.join(",", authoritiesList));

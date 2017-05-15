@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name="ACCOUNT_ROLE")
-public class CustomRole {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +36,9 @@ public class CustomRole {
         this.role = role;
     }
     
-    public CustomRole() {} //for jpa
+    public Role() {} //for jpa
     
-    public CustomRole(String role) {
+    public Role(String role) {
     	this.role = role;
     }
 }

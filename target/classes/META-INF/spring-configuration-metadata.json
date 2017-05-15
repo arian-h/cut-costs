@@ -4,7 +4,7 @@
     {
       "sourceType": "com.boot.cut_costs.config.datasource.PersistenceConfiguration",
       "name": "spring.datasource",
-      "sourceMethod": "dataSource()",
+      "sourceMethod": "public javax.sql.DataSource dataSource() ",
       "type": "javax.sql.DataSource"
     }
   ],
