@@ -8,15 +8,15 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="ACCOUNT_ROLE")
+@Table(name="Role")
 public class Role {
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ROLE_ID")
+    @Column(name="Id")
     private long id;
 
-    @Column(name="ROLE")
+    @Column(name="Role")
     private String role;
 
     public long getId() {
@@ -41,4 +41,5 @@ public class Role {
     public Role(String role) {
     	this.role = role;
     }
+
 }

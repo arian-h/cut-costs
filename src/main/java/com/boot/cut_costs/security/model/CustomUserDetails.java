@@ -5,37 +5,55 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.boot.cut_costs.model.CCUser;
 
 @Entity
-@Table(name="USER")
-public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
+@Table(name="UserDetails")
+public class CustomUserDetails implements UserDetails {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@NotBlank
-	@Column(name = "USERNAME", unique=true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="Id")
+    private long id;
+
+	@Column(name = "Username", unique=true)
 	private String username;
 	
-	@NotBlank
-	@Column(name = "PASSWORD")
+	@NotNull
+	@JoinColumn(name="User")
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	private CCUser user;
+
+	@Column(name = "Password")
 	private String password;
 
-	@Column(name = "LOCKED")
-	private boolean locked;
-
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name = "USER_ROLE", 
-				joinColumns = @JoinColumn(name = "USER_ID"), 
-				inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+	@JoinTable(name = "User_Role", 
+				joinColumns = @JoinColumn(name = "UserId"), 
+				inverseJoinColumns = @JoinColumn(name = "RoleId"))
 	private Set<Role> roles;
 
-	public UserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities) {
+	public CustomUserDetails(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<GrantedAuthority> authorities) {
 		this.setUsername(username);
 		this.setPassword(password);
 		this.roles = new HashSet<Role>();
@@ -44,7 +62,25 @@ public class UserDetails implements org.springframework.security.core.userdetail
 		}
 	}
 
-	public UserDetails() { // jpa only
+	public CustomUserDetails() { // jpa only
+	}
+	
+	
+	public CCUser getUser() {
+		return user;
+	}
+
+	public void setUser(CCUser user) {
+		this.user = user;
+	}
+
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 	
 	@Override
@@ -89,7 +125,7 @@ public class UserDetails implements org.springframework.security.core.userdetail
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return !isLocked();
+		return true;
 	}
 
 	@Override
@@ -100,14 +136,6 @@ public class UserDetails implements org.springframework.security.core.userdetail
 	@Override
 	public boolean isEnabled() {
 		return true;
-	}
-	
-	public boolean isLocked() {
-		return locked;
-	}
-
-	public void setLocked(boolean locked) {
-		this.locked = locked;
 	}
 
 }

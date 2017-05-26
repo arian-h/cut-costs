@@ -11,21 +11,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.boot.cut_costs.security.model.UserRepository;
-import com.boot.cut_costs.security.model.UserDetails;
+import com.boot.cut_costs.repository.UserDetailsRepository;
+import com.boot.cut_costs.security.exception.DuplicateUsernameException;
+import com.boot.cut_costs.security.model.CustomUserDetails;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Autowired
-	private UserRepository accountRepository;
+	private UserDetailsRepository userDetailsRepository;
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
 	private static Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-		UserDetails account = accountRepository.findByUsername(userName);
+	public CustomUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		CustomUserDetails account = userDetailsRepository.findByUsername(userName);
 		if (account != null) {
 			return account;
 		} else {
@@ -34,24 +37,15 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	@Transactional
-	public void save(UserDetails user) {
-		String userName = user.getUsername();
+	public void saveIfNotExists(CustomUserDetails user) {
+		String username = user.getUsername();
 		String password = user.getPassword();
-		UserDetails userDetails = new UserDetails(userName, passwordEncoder.encode(password), true, true, true,true, AuthorityUtils.commaSeparatedStringToAuthorityList("USER_ROLE"));
-		accountRepository.save(userDetails);
-		logger.debug("New user with username " + userName + " was created");
+		if (userDetailsRepository.existsByUsername(username)) {
+			logger.debug("Duplicate username " + username);
+        	throw new DuplicateUsernameException();
+		}
+		CustomUserDetails userDetails = new CustomUserDetails(username, passwordEncoder.encode(password), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
+		userDetailsRepository.save(userDetails);
+		logger.debug("New user with username " + username + " was created");
 	}
-	
-	public boolean exists(String userName) {
-		return accountRepository.exists(userName);
-	}
-	
-	@Transactional
-	public void update(UserDetails user, String newPassword) {
-		String userName = user.getUsername();
-		UserDetails userDetails = new UserDetails(userName, passwordEncoder.encode(newPassword), true, true, true,true, AuthorityUtils.commaSeparatedStringToAuthorityList("USER_ROLE"));
-		accountRepository.save(userDetails);
-		logger.debug("Credentials for user with username " + userName + " was updated");
-	}
-	
 }
