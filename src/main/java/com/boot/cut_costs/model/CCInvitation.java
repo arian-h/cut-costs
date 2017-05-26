@@ -26,12 +26,12 @@ public class CCInvitation implements Serializable {
     private long id;
 	
 	@NotNull
-	@JoinColumn(name="inviter", referencedColumnName="id")
+	@JoinColumn(name="inviter_id", referencedColumnName="id")
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private CCUser inviter;
 	
 	@NotNull
-	@JoinColumn(name="invitee", referencedColumnName="id")
+	@JoinColumn(name="invitee_id", referencedColumnName="id")
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private CCUser invitee;
 	

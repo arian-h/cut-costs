@@ -34,13 +34,13 @@ public class CCGroup implements Serializable {
 
 	@NotNull
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="admin", referencedColumnName="id")
+	@JoinColumn(name="admin_id", referencedColumnName="id")
 	private CCUser admin;
 
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name = "CCGroup_CCUser", 
 		joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"), 
-		inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+		inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
 	private Set<CCUser> members;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)

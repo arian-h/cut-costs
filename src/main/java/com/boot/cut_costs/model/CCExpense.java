@@ -32,7 +32,7 @@ public class CCExpense implements Serializable {
 
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@NotNull
-	@JoinColumn(name="owner", referencedColumnName="id")
+	@JoinColumn(name="owner_id", referencedColumnName="id")
 	private CCUser owner;
 
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
@@ -41,7 +41,7 @@ public class CCExpense implements Serializable {
 	private CCGroup group;
 
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name = "CCExpense_CCSharer", joinColumns = @JoinColumn(name = "sharer", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "expense", referencedColumnName = "id"))
+	@JoinTable(name = "CCExpense_CCSharer", joinColumns = @JoinColumn(name = "expense_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "sharer_id", referencedColumnName = "id"))
 	private Set<CCUser> sharers;
 	
 	@Size(max=100)
