@@ -21,7 +21,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UrlPathHelper;
 
-import com.boot.cut_costs.security.service.AuthenticationService;
+import com.boot.cut_costs.service.AuthenticationService;
 
 @Component
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {

@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.boot.cut_costs.repository.UserDetailsRepository;
 import com.boot.cut_costs.security.auth.jwt.JWTAuthenticationFilter;
-import com.boot.cut_costs.security.service.CustomUserDetailsService;
+import com.boot.cut_costs.service.CustomUserDetailsService;
 
 
 @EnableWebSecurity
