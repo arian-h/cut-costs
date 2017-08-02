@@ -13,12 +13,12 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import com.boot.cut_costs.DTO.GroupDto;
 import com.boot.cut_costs.exception.BadRequestException;
+import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
-import com.boot.cut_costs.util.ImageUtils;
+import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
 public class GroupService {
@@ -29,44 +29,59 @@ public class GroupService {
 	@Autowired 
 	private UserService userService;
 	
+	@Autowired
+	private ExpenseService expenseService;
+	
 	private static Logger logger = LoggerFactory.getLogger(GroupService.class);
-
-	private static enum GroupAcessLevel {
-		MEMBER, ADMIN;
-	}
 	
 	@Transactional
-	public void create(GroupDto groupDto, String username) throws IOException {
-		User user = userService.getUserByUsername(username);
+	public void create(String groupName, String description, String image, String username) throws IOException {
+		User user = userService.loadByUsername(username);
 		Group group = new Group();
-		convertGroupDtoToGroup(groupDto, group, user);
+		group.setAdmin(user);
+		group.setName(groupName);
+		group.setDescription(description);
+		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		if (imageId != null) {
+			group.setImageId(imageId);			
+		}
 		groupRepository.save(group);
-		logger.debug("Group with name " + group.getName() + " was created");
+		logger.debug("Group with name " + group.getName() + " and id " + group.getId() + " was created");
 	}
 	
 	@Transactional
 	public void delete(long groupId, String username) {
-		validateAccessToGroup(groupId, username, GroupAcessLevel.ADMIN);
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateAdminAccessToGroup(group, user);
 		groupRepository.delete(groupId);
 		logger.debug("Group with id " + groupId + " was deleted");
 	}
 
 	@Transactional
-	public void update(long groupId, GroupDto groupDto, String username) throws IOException {
-		validateAccessToGroup(groupId, username, GroupAcessLevel.ADMIN);		
-		Group group = loadGroupById(groupId);
-		validateAccessToGroup(groupId, username, GroupAcessLevel.ADMIN);
-		convertGroupDtoToGroup(groupDto, group, null);
+	public void update(long groupId, String groupName, String description, String image, String username) throws IOException {
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateAdminAccessToGroup(group, user);
+		group.setName(groupName);
+		group.setDescription(description);
+		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		if (imageId != null) {
+			group.setImageId(imageId);
+		}
+		groupRepository.save(group);
 		logger.debug("Group with id " + groupId + " was updated");
 	}
 	
 	public Group get(long groupId, String username) {
-		validateAccessToGroup(groupId, username, GroupAcessLevel.MEMBER);
-		return loadGroupById(groupId);
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateMemberAccessToGroup(group, user);
+		return group;
 	}
 	
 	public Set<Group> list(String username) {
-		User user = userService.getUserByUsername(username);
+		User user = userService.loadByUsername(username);
 		Set<Group> result = new HashSet<Group>();
 		result.addAll(user.getMemberGroups());
 		result.addAll(user.getOwnedGroups());
@@ -74,26 +89,29 @@ public class GroupService {
 	}
 	
 	public Set<User> listMembers(long groupId, String username) {
-		validateAccessToGroup(groupId, username, GroupAcessLevel.MEMBER);
-		Group group = loadGroupById(groupId);
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateMemberAccessToGroup(group, user);
 		Set<User> result = new HashSet<User>();
 		result.addAll(group.getMembers());
 		result.add(group.getAdmin());
 		return result;
 	}
 	
-	public void deleteMember(long groupId, long userId, String username) {
-		validateAccessToGroup(groupId, username, GroupAcessLevel.ADMIN);
-		Group group = loadGroupById(groupId);
-		User user = userService.load(userId);
-		validateAccessToGroup(groupId, user.getName(), GroupAcessLevel.MEMBER);
-		if (group.getAdmin().getId() == user.getId()) {
+	public void removeMember(long groupId, long userId, String username) {
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateAdminAccessToGroup(group, user);
+		User target = userService.loadById(userId);
+		validateMemberAccessToGroup(group, target);
+		if (group.isAdmin(target)) {
 			throw new BadRequestException("Group admin cannot delete himself/herself from the group");
 		}
-		group.getMembers().remove(user);
+		group.removeMember(user);
+		groupRepository.save(group);
 	}
 	
-	public Group loadGroupById(long groupId) {
+	public Group loadById(long groupId) {
 		Group group = groupRepository.findOne(groupId);
 		if (group == null) {
 			throw new ResourceNotFoundException("Group with id " + groupId + " was not found");
@@ -101,40 +119,63 @@ public class GroupService {
 		return group;
 	}
 	
-	/*
-	 * Check if user has the required access to a group
-	 */
-	private void validateAccessToGroup(long groupId, String username, GroupAcessLevel access) {
-		User user = userService.getUserByUsername(username);
-		Group group = loadGroupById(groupId);
-		Set<User> members = group.getMembers();
-		if (access == GroupAcessLevel.ADMIN) {
-			if (group.getAdmin().getId() != user.getId()) {
-				throw new AccessDeniedException("User with id " + user.getId() + " was denied to access group with id " + group.getId() + " as an admin"); 
+	@Transactional
+	public void addExpense(String title, long amount, String description, Set<Long> sharersIds, String image, String username, long groupId) throws IOException {
+		Group group = this.loadById(groupId);
+		User owner = userService.loadByUsername(username);
+		validateMemberAccessToGroup(group, owner);
+		Set<User> sharers = new HashSet<User>();
+		if (sharersIds != null) {
+			for (long sharerId: sharersIds) {
+				User sharer = userService.loadById(sharerId);
+				validateMemberAccessToGroup(group, sharer);
+				sharers.add(sharer);
 			}			
-		} else {
-			if (group.getAdmin().getId() != user.getId() && (members == null || !members.contains(user))) {
-				throw new AccessDeniedException("User with id " + user.getId() + " was denied to access group with id " + group.getId()); 
-			}			
+		}
+		Expense expense = new Expense();
+		expense.setAmount(amount);
+		expense.setDescription(description);
+		expense.setGroup(group);
+		expense.setOwner(owner);
+		expense.setTitle(title);
+		expense.setShareres(sharers);
+		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		if (imageId != null) {
+			expense.setImageId(imageId);			
+		}
+		group.addExpense(expense);
+		groupRepository.save(group);
+		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
+	}
+
+	public Set<Expense> listExpenses(long groupId, String username) {
+		Group group = this.loadById(groupId);
+		User owner = userService.loadByUsername(username);
+		validateMemberAccessToGroup(group, owner);
+		return group.getExpenses();
+	}
+	
+	public void validateAdminAccessToGroup(Group group, User user) {
+		if (!group.isAdmin(user)) {
+			throw new AccessDeniedException("User with id " + user.getId() + " does not have admin access to group with id " + group.getId()); 
 		}
 	}
 	
-	private void convertGroupDtoToGroup(GroupDto groupDTO, Group group, User admin) throws IOException {
-		String description = groupDTO.getDescription();
-		String name = groupDTO.getName();
-		String image = groupDTO.getImage();
-		if (description != null) {
-			group.setDescription(description);
+	public void validateMemberAccessToGroup(Group group, User user) {
+		if (!this.isMemberOrAdmin(group, user)) {
+			throw new AccessDeniedException("User with id " + user.getId() + " does not have access to group with id " + group.getId()); 
 		}
-		if (name != null) {
-			group.setName(name);
-		}
-		if (image != null) {
-			String imageId = ImageUtils.decodeBase64AndSaveImage(image);
-			group.setImageId(imageId);
-		}
-		if (admin != null) {
-			group.setAdmin(admin);			
+	}
+	
+	public boolean isMemberOrAdmin(Group group, User user) {
+		return group.isMember(user) || group.isAdmin(user);
+	}
+
+	public void addMember(long groupId, long userId) {
+		Group group = this.loadById(groupId);
+		User user = userService.loadById(userId);
+		if ( this.isMemberOrAdmin(group, user)) {
+			throw new BadRequestException("User with id " + userId + " is already a member of group with id " + groupId);
 		}
 	}
 

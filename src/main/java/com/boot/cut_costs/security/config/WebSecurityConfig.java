@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.boot.cut_costs.AppConfig;
 import com.boot.cut_costs.repository.UserDetailsRepository;
 import com.boot.cut_costs.security.auth.jwt.JWTAuthenticationFilter;
 import com.boot.cut_costs.service.CustomUserDetailsService;
@@ -21,6 +24,7 @@ import com.boot.cut_costs.service.CustomUserDetailsService;
 
 @EnableWebSecurity
 @Configuration
+@Import(AppConfig.class)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired 
@@ -35,12 +39,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
+        	.csrf().disable()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-	        .sessionManagement()
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-	        .authorizeRequests()
-	            .anyRequest().authenticated()
-	        .and().csrf().disable();
+			.authorizeRequests()
+	            .anyRequest().authenticated().and()
+			.sessionManagement()
+	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	/*
@@ -50,9 +54,13 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web)
             throws Exception {
-        web.ignoring().antMatchers("/login/**", "/signup/**");
+        web.ignoring()
+        	.antMatchers(HttpMethod.POST, "/login")
+        	.antMatchers(HttpMethod.POST, "/signup")
+    		// TODO: This is used for initializing h2 console. Remove this when going to prod
+        	.antMatchers("/console/**");
     }
-    
+	
 	/*
 	 * set user details services and password encoder
 	 */
@@ -61,10 +69,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(userDetailsServiceBean()).passwordEncoder(passwordEncoder());
 	}
     
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
     
     /* Stopping spring from adding filter by default */
     @Bean

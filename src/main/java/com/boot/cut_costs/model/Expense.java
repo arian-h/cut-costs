@@ -1,7 +1,6 @@
 package com.boot.cut_costs.model;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -34,17 +33,17 @@ public class Expense implements Serializable {
     @Column(name="id")
     private long id;
 
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.REFRESH)
 	@NotNull
 	@JoinColumn(name="owner_id", referencedColumnName="id")
 	private User owner;
 
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToOne(cascade = CascadeType.REFRESH)
 	@NotNull
 	@JoinColumn(name="group_id", referencedColumnName="id")
 	private Group group;
 
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "Expense_Sharer", joinColumns = @JoinColumn(name = "expense_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "sharer_id", referencedColumnName = "id"))
 	private Set<User> sharers;
 	
@@ -126,7 +125,11 @@ public class Expense implements Serializable {
 		this.sharers.add(user);
 	}
 
-	public void addShareres(List<User> users) { 
+	public void addShareres(Set<User> users) { 
 		this.sharers.addAll(users);
+	}
+	
+	public void setShareres(Set<User> users) {
+		this.sharers = users;
 	}
 }

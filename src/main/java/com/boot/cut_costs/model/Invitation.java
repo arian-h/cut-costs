@@ -2,10 +2,8 @@ package com.boot.cut_costs.model;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,29 +22,28 @@ public class Invitation implements Serializable {
 
 	@Id
 	@JsonIgnore
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
-    private long id;
-	
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private long id;
+
 	@NotNull
-	@JoinColumn(name="inviter_id", referencedColumnName="id")
-	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
+	@JoinColumn(name = "inviter_id", referencedColumnName = "id")
+	@ManyToOne
 	private User inviter;
-	
+
 	@NotNull
 	@JoinColumn(name="invitee_id", referencedColumnName="id")
-	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
+	@ManyToOne
 	private User invitee;
 	
-	//@Size(max=30)
 	@Column(name="description")
 	private String description;
 	
 	@NotNull
-	@JoinColumn(name="group_id", referencedColumnName = "id")
-	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
+	@JoinColumn(name = "group_id", referencedColumnName = "id")
+	@ManyToOne
 	private Group group;
-	
+
 	public Invitation() {}
 	
 	public String getDescription() {

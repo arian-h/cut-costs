@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,7 +21,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="\"Group\"") // Group is a reserved word, use \" as a work-around
@@ -31,23 +29,22 @@ public class Group implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
 
 	@NotNull
-	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinColumn(name="admin_id", referencedColumnName="id")
+	@ManyToOne
+	@JoinColumn(name = "admin_id", referencedColumnName = "id")
 	private User admin;
 
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToMany
 	@JoinTable(name = "Group_User", 
 		joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"), 
 		inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
 	private Set<User> members;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL)
 	private Set<Expense> expenses;
 	
 	@Column(name="description")
@@ -77,6 +74,10 @@ public class Group implements Serializable {
 	public User getAdmin() {
 		return admin;
 	}
+	
+	public boolean isAdmin(User user) {
+		return admin.equals(user);
+	}
 
 	public void setAdmin(User admin) {
 		this.admin = admin;
@@ -94,8 +95,16 @@ public class Group implements Serializable {
 		return members;
 	}
 	
+	public boolean isMember(User user) {
+		return members.contains(user);
+	}
+	
 	public void addMember(User member) {
 		this.members.add(member);
+	}
+	
+	public void removeMember(User user) {
+		this.members.remove(user);
 	}
 
 	public Set<Expense> getExpenses() {
@@ -104,6 +113,10 @@ public class Group implements Serializable {
 	
 	public void addExpense(Expense expense) {
 		this.expenses.add(expense);
+	}
+	
+	public void removeExpense(Expense expense) {
+		this.expenses.remove(expense);
 	}
 
 	public String getDescription() {
@@ -120,6 +133,21 @@ public class Group implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other == this) {
+			return true;
+		}
+		if (!(other instanceof Group)) {
+			return false;
+		}
+		Group otherGroup = (Group)other;
+		return otherGroup.getId() == getId();
 	}
 
 }

@@ -25,9 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
-	@Autowired
-	private UserService userService;
-	
 	private static Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
 	@Override
@@ -36,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if (account != null) {
 			return account;
 		} else {
-			throw new UsernameNotFoundException("Could not find the user '" + userName + "'");
+			throw new UsernameNotFoundException("Could not find user with user name: " + userName );
 		}
 	}
 
@@ -46,7 +43,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 			logger.debug("Duplicate username " + username);
         	throw new DuplicateUsernameException("Username " + username + " is already taken");
 		}
-		
 		CustomUserDetails userDetails = new CustomUserDetails(username, passwordEncoder.encode(password), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
 		User user = new User();
 		user.setName(name);

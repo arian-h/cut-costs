@@ -41,14 +41,14 @@ public class CustomUserDetails implements UserDetails {
 	
 	@NotNull
 	@JoinColumn(name="user_id", referencedColumnName="id")
-	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private User user;
 
 	@NotBlank
 	@Column(name = "password")
 	private String password;
 
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.PERSIST, fetch= FetchType.EAGER)
 	@JoinTable(name = "UserDetails_Role", 
 				joinColumns = @JoinColumn(name = "user_details_id", referencedColumnName="id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName="id"))

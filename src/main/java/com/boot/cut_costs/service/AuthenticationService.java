@@ -24,20 +24,22 @@ public class AuthenticationService {
 	static final String HEADER_STRING = "Authorization";
 	
 	public static void addAuthentication(HttpServletResponse res, String username) {
-		String JWT = Jwts
+		res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + generateJWToken(username));
+	}
+
+	public static String generateJWToken(String username) {
+		return Jwts
 				.builder()
 				.setSubject(username)
 				.setExpiration(
 						new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 				.signWith(SignatureAlgorithm.HS512, SECRET).compact();
-	
-		res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + JWT);
 	}
 
 	public static Authentication getAuthentication(HttpServletRequest request, UserDetailsService customUserDetailsService) throws AuthenticationException {
 		String token = request.getHeader(HEADER_STRING);
 		if (token != null) {
-			// parse the token.
+			// parse the token
 			String userName = Jwts.parser().setSigningKey(SECRET)
 					.parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
 					.getSubject();

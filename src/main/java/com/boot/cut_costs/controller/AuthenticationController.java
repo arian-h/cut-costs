@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.DTO.UserDetailsDto;
+import com.boot.cut_costs.dto.UserDetailsDto;
 import com.boot.cut_costs.service.AuthenticationService;
 import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.validator.UserDetailsDtoValidator;
@@ -34,13 +34,12 @@ public class AuthenticationController {
 	private CustomUserDetailsService userDetailsServices;
 
 	@Autowired
-	private UserDetailsDtoValidator userDetailsDTOValidator;
+	private UserDetailsDtoValidator createUserDetailsDtoValidator;
 	
 	private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public void login(@RequestBody UserDetailsDto userDetailsDTO, HttpServletResponse response) throws IOException {
-		//TODO Add validation for UserDetailsDTO, login should not validate name
 		logger.debug("Authenticating login attemp from user " + userDetailsDTO.getUsername());
 		authenticateUserAndSetSession(userDetailsDTO.getUsername(), userDetailsDTO.getPassword(), response);
 	}
@@ -51,7 +50,7 @@ public class AuthenticationController {
 		String password = userDetailsDTO.getPassword();
 		String name = userDetailsDTO.getName();
 		logger.debug("User signup attempt with username: " + username);
-		userDetailsDTOValidator.validate(userDetailsDTO, result);
+		createUserDetailsDtoValidator.validate(userDetailsDTO, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getAllErrors().get(0).getCode());
 		}
@@ -62,7 +61,7 @@ public class AuthenticationController {
 
 	private void authenticateUserAndSetSession(String username, String password, HttpServletResponse response) throws BadCredentialsException {
         logger.debug("Authentication user " + username);
-        Authentication authenticatedUser = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username,password));
+        Authentication authenticatedUser = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		if (authenticatedUser != null) {
 	        AuthenticationService.addAuthentication(response, authenticatedUser.getName());
 	        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);

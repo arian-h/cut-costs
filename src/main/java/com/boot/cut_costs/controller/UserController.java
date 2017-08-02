@@ -1,12 +1,11 @@
 package com.boot.cut_costs.controller;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 
 import javax.validation.ValidationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,47 +14,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.DTO.UserDto;
-import com.boot.cut_costs.model.CustomUserDetails;
-import com.boot.cut_costs.model.User;
+import com.boot.cut_costs.dto.user.ExtendedGetUserDto;
+import com.boot.cut_costs.dto.user.GetUserDto;
+import com.boot.cut_costs.dto.user.PostUserDto;
+import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.service.UserService;
-import com.boot.cut_costs.validator.SingupUserDtoValidator;
+import com.boot.cut_costs.validator.UserDtoValidator;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private CustomUserDetailsService userDetailsService;
+
+	@Autowired
+	private UserDtoValidator updateUserDtoValidator;
 	
 	@Autowired
-	private SingupUserDtoValidator userDTOValidator;
+	private UserDtoConverter userDtoConverter;
 	
-	private Logger logger = LoggerFactory.getLogger(UserController.class);
-
-	@RequestMapping(path="/{userId}",method=RequestMethod.GET)
-	public User getUserById(@PathVariable long userId) {
-		return userService.load(userId);
-	}
-	
-	@RequestMapping(path="",method=RequestMethod.GET)
-	public User getCurrentUser(Principal principal) {
-		CustomUserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-		return userService.load(userDetails.getUser().getId());
+	@RequestMapping(path = "/{userId}", method = RequestMethod.GET)
+	public GetUserDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
+		return userDtoConverter.convertToDto(userService.loadById(userId));
 	}
 
-	@RequestMapping(path="",method=RequestMethod.PUT)
-	public void update(@RequestBody UserDto userDto, Principal principal, BindingResult result) throws IOException {
-		userDTOValidator.validate(userDto, result);
-		logger.debug("User information update attempt with name: " + principal.getName());
+	@RequestMapping(path = "", method = RequestMethod.GET)
+	public ExtendedGetUserDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
+		return userDtoConverter.convertToExtendedDto(userService.loadByUsername(principal.getName()));
+	}
+
+	@RequestMapping(path = "", method = RequestMethod.PUT)
+	public void update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
+		updateUserDtoValidator.validate(userDto, result);
 		if (result.hasErrors()) {
-			throw new ValidationException();
+			throw new ValidationException(result.getFieldError().getCode());
 		}
-		CustomUserDetails userDetails = userDetailsService.loadUserByUsername(principal.getName());
-		userService.update(userDetails, userDto);
+		userService.update(userDto, principal.getName());
 	}
 }

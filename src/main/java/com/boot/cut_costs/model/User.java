@@ -26,9 +26,6 @@ public class User implements Serializable {
     @Column(name="id")
 	private long id;
 
-	/*
-	 * Nickname
-	 */
 	@Column(name = "name")
 	private String name;
 
@@ -40,22 +37,22 @@ public class User implements Serializable {
 	@Column(name="description")
 	private String description;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="admin")
+	@OneToMany(mappedBy="admin")
 	private Set<Group> ownedGroups;
 	
-	@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToMany(mappedBy="members")
 	private Set<Group> memberGroups;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, mappedBy = "owner")
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="owner")
 	private Set<Expense> ownedExpenses;
 
-	@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private Set<Expense> receivedExpenses;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="inviter")
+	@OneToMany(cascade=CascadeType.ALL)
 	private Set<Invitation> ownedInvitations;
 
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="invitee")
+	@OneToMany(cascade=CascadeType.ALL)
 	private Set<Invitation> receivedInvitations;
 
 	public User() {}
@@ -162,6 +159,21 @@ public class User implements Serializable {
 
 	public void setReceivedExpenses(Set<Expense> receivedExpenses) {
 		this.receivedExpenses = receivedExpenses;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (other == null) {
+			return false;
+		}
+		if (other == this) {
+			return true;
+		}
+		if (!(other instanceof User)) {
+			return false;
+		}
+		User otherUser = (User)other;
+		return otherUser.getId() == getId();
 	}
 
 }
