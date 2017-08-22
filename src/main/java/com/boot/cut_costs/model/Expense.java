@@ -1,12 +1,11 @@
 package com.boot.cut_costs.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,20 +31,6 @@ public class Expense implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
-
-	@ManyToOne(cascade = CascadeType.REFRESH)
-	@NotNull
-	@JoinColumn(name="owner_id", referencedColumnName="id")
-	private User owner;
-
-	@ManyToOne(cascade = CascadeType.REFRESH)
-	@NotNull
-	@JoinColumn(name="group_id", referencedColumnName="id")
-	private Group group;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "Expense_Sharer", joinColumns = @JoinColumn(name = "expense_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "sharer_id", referencedColumnName = "id"))
-	private Set<User> sharers;
 	
 	@Size(max=100)
 	private String description;
@@ -58,6 +43,20 @@ public class Expense implements Serializable {
 	
 	@Size(min=15, max=15)
 	private String imageId;
+
+	@ManyToOne(cascade = CascadeType.REFRESH)
+	@NotNull
+	@JoinColumn(name="OWNER_ID", referencedColumnName="id")
+	private User owner;
+
+	@ManyToOne(cascade = CascadeType.REFRESH)
+	@NotNull
+	@JoinColumn(referencedColumnName="id")
+	private Group group;
+
+	@ManyToMany
+	@JoinTable(name = "EXPENSE_SHARER", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
+	private List<User> sharers;
 	
 	public Expense() {}
 	
@@ -117,7 +116,7 @@ public class Expense implements Serializable {
 		this.group = group;
 	}
 
-	public Set<User> getSharers() {
+	public List<User> getSharers() {
 		return sharers;
 	}
 
@@ -125,11 +124,11 @@ public class Expense implements Serializable {
 		this.sharers.add(user);
 	}
 
-	public void addShareres(Set<User> users) { 
+	public void addShareres(List<User> users) { 
 		this.sharers.addAll(users);
 	}
 	
-	public void setShareres(Set<User> users) {
+	public void setShareres(List<User> users) {
 		this.sharers = users;
 	}
 }

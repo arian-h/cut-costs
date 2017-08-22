@@ -17,6 +17,7 @@ import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.UserDetailsRepository;
 
 @Service
+@Transactional
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Autowired
@@ -27,6 +28,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	private static Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
+	/*
+	 *  it's a naming convention, it returns CustomUserDetails instance
+	 */
 	@Override
 	public CustomUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		CustomUserDetails account = userDetailsRepository.findByUsername(userName);
@@ -37,7 +41,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 	}
 
-	@Transactional
 	public void saveIfNotExists(String username, String password, String name) {
 		if (userDetailsRepository.existsByUsername(username)) {
 			logger.debug("Duplicate username " + username);
@@ -48,5 +51,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 		user.setName(name);
 		userDetails.setUser(user);
 		userDetailsRepository.save(userDetails);
+	}
+	
+	public void delete(CustomUserDetails userDetails) {
+		userDetailsRepository.delete(userDetails);
 	}
 }

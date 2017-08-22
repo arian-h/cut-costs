@@ -31,7 +31,7 @@ public class AuthenticationController {
 	protected AuthenticationManager authenticationManager;
 	
 	@Autowired
-	private CustomUserDetailsService userDetailsServices;
+	private CustomUserDetailsService userDetailsService;
 
 	@Autowired
 	private UserDetailsDtoValidator createUserDetailsDtoValidator;
@@ -54,7 +54,7 @@ public class AuthenticationController {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getAllErrors().get(0).getCode());
 		}
-		userDetailsServices.saveIfNotExists(username, password, name);
+		userDetailsService.saveIfNotExists(username, password, name);
 		authenticateUserAndSetSession(username, password, response);
 		logger.debug("New UserDetails with username " + username + " was created");
 	}

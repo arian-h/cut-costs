@@ -40,7 +40,7 @@ public class Invitation implements Serializable {
 	private String description;
 	
 	@NotNull
-	@JoinColumn(name = "group_id", referencedColumnName = "id")
+	@JoinColumn(referencedColumnName = "id")
 	@ManyToOne
 	private Group group;
 

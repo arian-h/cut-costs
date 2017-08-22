@@ -4,55 +4,48 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Random;
+import java.util.Base64;
 
 import javax.imageio.ImageIO;
-import javax.xml.bind.DatatypeConverter;
+
+import org.apache.commons.lang3.RandomStringUtils;
 
 import com.boot.cut_costs.exception.BadRequestException;
 
 public class CommonUtils {
-
-	//TODO: fix the file path
-	private final static String imagePath = File.separator + "home"
-			+ File.separator + "arian" + File.separator + "cut_costs_media"
-			+ File.separator + "image" + File.separator + "profile";
 	
-    private final static Random random = new SecureRandom();
+	public final static File IMAGE_FOLDER = new File("/");
+	public final static String IMAGE_FORMAT_NAME = "png";
 
-	public static String decodeBase64AndSaveImage(String data) throws IOException, BadRequestException {
+    public static String decodeBase64AndSaveImage(String data) throws IOException, BadRequestException {
 		try {
 			if (data == null) {
 				return null;
 			}
 			String base64Image = data.split(",")[1];
-			byte[] imageBytes = DatatypeConverter.parseBase64Binary(base64Image);
+			byte[] imageBytes = Base64.getDecoder().decode(base64Image);
 			BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-			String imageId = generateRandomKey(15);
-			File imageFile = new File(imagePath + File.separator + imageId);
-			ImageIO.write(img, "png", imageFile);
+			String imageId = RandomStringUtils.randomAlphanumeric(15);
+			ImageIO.write(img, IMAGE_FORMAT_NAME, getImageFile(imageId));
 			return imageId;
-		} catch (Exception e) {
-			throw new BadRequestException("Bad image data passed");
+		} catch (IllegalArgumentException e) {
+			throw new BadRequestException("Bad image data");
 		}
 	}
 	
-	private static String generateRandomKey(int length) {
-        return String.format("%"+length+"s", new BigInteger(length*5/*base 32,2^5*/, random)
-            .toString(32)).replace('\u0020', '0');
-    }
-	
 	/**
-	 * Convert string to long
-	 * @return
+	 * Convert id in String format to long format
+	 * @return the id in long format
 	 */
 	public static long convertId(String id) {
 		try {
 			return Long.parseLong(id);
 		} catch (NumberFormatException e) {
-			throw new BadRequestException("Bad id(" + id + ") passed");
+			throw new BadRequestException("Bad id passed: " + id);
 		}
+	}
+	
+	public static File getImageFile(String imageId) {
+		return new File(IMAGE_FOLDER, imageId + "." + IMAGE_FORMAT_NAME);
 	}
 }

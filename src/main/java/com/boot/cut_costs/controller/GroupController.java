@@ -1,10 +1,9 @@
 package com.boot.cut_costs.controller;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.ValidationException;
 
@@ -61,7 +60,9 @@ public class GroupController {
 	@Autowired
 	private ExpenseDtoConverter expenseDtoConverter;
 	
-	//TODO: return the id for the group created
+	/*
+	 * Create a group
+	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public void create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
 		createGroupDtoValidator.validate(groupDto, result);
@@ -71,6 +72,9 @@ public class GroupController {
 		groupService.create(groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
 	}
 
+	/*
+	 * Update a group with specific id
+	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
 	public void update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
@@ -80,62 +84,73 @@ public class GroupController {
 		groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
 	}
 
-	/**
-	 * get information about a specific group
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	/*
+	 * Get information of a specific group
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.GET)
 	public ExtendedGetGroupDto get(@PathVariable long groupId, Principal principal) {
 		Group group = groupService.get(groupId, principal.getName());
 		return groupDtoConverter.convertToExtendedDto(group);
 	}
-	
+
+	/*
+	 * Delete a group
+	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable long groupId, Principal principal) {
 		groupService.delete(groupId, principal.getName());
 	}
 
-	/**
-	 * get list of all groups user is member of
-	 * @throws InvocationTargetException 
-	 * @throws IllegalAccessException 
+	/*
+	 * Get a list of all groups a user is a member of
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public Set<GetGroupDto> getAllGroups(Principal principal) {
-		Set<Group> groups = groupService.list(principal.getName());
-		Set<GetGroupDto> result = new HashSet<GetGroupDto>();
+	public List<GetGroupDto> getAllGroups(Principal principal) {
+		List<Group> groups = groupService.list(principal.getName());
+		List<GetGroupDto> result = new ArrayList<GetGroupDto>();
 		for (Group group: groups) {
 			result.add(groupDtoConverter.convertToDto(group));
 		}
 		return result;
 	}
 	
+	/*
+	 * Get all members of a group
+	 */
 	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
-	public Set<GetUserDto> getAllMembers(@PathVariable long groupId, Principal principal) {
-		Set<User> members = groupService.listMembers(groupId, principal.getName());
-		Set<GetUserDto> result = new HashSet<GetUserDto>();
+	public List<GetUserDto> getAllMembers(@PathVariable long groupId, Principal principal) {
+		List<User> members = groupService.listMembers(groupId, principal.getName());
+		List<GetUserDto> result = new ArrayList<GetUserDto>();
 		for (User member: members) {
 			result.add(userDtoConverter.convertToDto(member));
 		}
 		return result;
 	}
 
+	/*
+	 * Delete a specific member of a group. Deleting admin is not possible
+	 */
 	@RequestMapping(path = "/{groupId}/user/{userId}", method = RequestMethod.DELETE)
 	public void deleteMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
 		groupService.removeMember(groupId, userId, principal.getName());
 	}
 	
+	/*
+	 * Get all expenses posted to a group
+	 */
 	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.GET)
-	public Set<GetExpenseDto> getAllExpenses(@PathVariable long groupId, Principal principal) {
-		Set<Expense> expenses = groupService.listExpenses(groupId, principal.getName());
-		Set<GetExpenseDto> result = new HashSet<GetExpenseDto>();
+	public List<GetExpenseDto> getAllExpenses(@PathVariable long groupId, Principal principal) {
+		List<Expense> expenses = groupService.listExpenses(groupId, principal.getName());
+		List<GetExpenseDto> result = new ArrayList<GetExpenseDto>();
 		for (Expense expense: expenses) {
 			result.add(expenseDtoConverter.convertToDto(expense));
 		}
 		return result;
 	}
-	
+
+	/*
+	 * Add an expense to a group
+	 */
 	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.POST)
 	public void addExpense(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		expenseDtoValidator.validate(expenseDto, result);

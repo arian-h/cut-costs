@@ -54,22 +54,22 @@ public class UserDtoConverter {
 				target.setImageId(source.getImageId());
 				target.setOwnedExpenses(source.getOwnedExpenses().stream()
 						.map(expense -> expenseDtoConverter.convertToDto(expense))
-						.collect(Collectors.toSet()));
+						.collect(Collectors.toList()));
 				target.setReceivedExpenses(source.getReceivedExpenses().stream()
 						.map(expense -> expenseDtoConverter.convertToDto(expense))
-						.collect(Collectors.toSet()));
+						.collect(Collectors.toList()));
 				target.setReceivedInvitations(source
 						.getReceivedInvitations()
 						.stream()
 						.map(invitation -> invitationDtoConverter
 								.convertToDto(invitation))
-						.collect(Collectors.toSet()));
+						.collect(Collectors.toList()));
 				target.setOwnedGroups(source.getOwnedGroups().stream()
 						.map(group -> groupDtoConverter.convertToDto(group))
-						.collect(Collectors.toSet()));
+						.collect(Collectors.toList()));
 				target.setMemberGroups(source.getMemberGroups().stream()
 						.map(group -> groupDtoConverter.convertToDto(group))
-						.collect(Collectors.toSet()));
+						.collect(Collectors.toList()));
 				return target;
 			};
 			modelMapper.createTypeMap(User.class, ExtendedGetUserDto.class).setConverter(converter);			

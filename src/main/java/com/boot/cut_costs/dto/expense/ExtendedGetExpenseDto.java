@@ -1,6 +1,6 @@
 package com.boot.cut_costs.dto.expense;
 
-import java.util.Set;
+import java.util.List;
 
 import com.boot.cut_costs.dto.group.GetGroupDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
@@ -11,7 +11,7 @@ public class ExtendedGetExpenseDto extends GetExpenseDto {
 
 	private GetGroupDto groupDto;
 	
-	private Set<GetUserDto> sharers;
+	private List<GetUserDto> sharers;
 	
 	private String imageId;
 	
@@ -33,11 +33,11 @@ public class ExtendedGetExpenseDto extends GetExpenseDto {
 		this.groupDto = group;
 	}
 
-	public Set<GetUserDto> getSharers() {
+	public List<GetUserDto> getSharers() {
 		return sharers;
 	}
 
-	public void setSharers(Set<GetUserDto> sharers) {
+	public void setSharers(List<GetUserDto> sharers) {
 		this.sharers = sharers;
 	}
 	

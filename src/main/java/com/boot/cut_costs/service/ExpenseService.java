@@ -1,8 +1,8 @@
 package com.boot.cut_costs.service;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +38,9 @@ public class ExpenseService {
 		return expense;
 	}
 
-	public Set<Expense> list(String username) {
+	public List<Expense> list(String username) {
 		User user = userService.loadByUsername(username);
-		Set<Expense> expenses = new HashSet<Expense>();
+		List<Expense> expenses = new ArrayList<Expense>();
 		expenses.addAll(user.getReceivedExpenses());
 		expenses.addAll(user.getOwnedExpenses());
 		return expenses;
@@ -59,13 +59,13 @@ public class ExpenseService {
 	}
 
 	//only owner of an expense can update it
-	public void update(long expenseId, String title, long amount, String description, Set<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
+	public void update(long expenseId, String title, long amount, String description, List<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
 		Expense expense = loadById(expenseId);
 		User owner = userService.loadByUsername(username);
 		if (!expense.getOwner().equals(owner)) {
 			throw new BadRequestException("User " + owner.getId() + " doesn't have edit access to expense with id " + expense.getId());
 		}
-		Set<User> sharers = new HashSet<User>();
+		List<User> sharers = new ArrayList<User>();
 		for (long sharerId: sharersIds) {
 			User sharer = userService.loadById(sharerId);
 			groupService.validateMemberAccessToGroup(expense.getGroup(), sharer);

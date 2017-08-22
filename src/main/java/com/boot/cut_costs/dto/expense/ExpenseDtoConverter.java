@@ -51,7 +51,7 @@ public class ExpenseDtoConverter {
         		target.setGroup(groupDtoConverter.convertToDto(source.getGroup()));
     			target.setSharers(source.getSharers().stream()
     					.map(user -> userDtoConverter.convertToDto(user))
-    					.collect(Collectors.toSet()));
+    					.collect(Collectors.toList()));
         		return target;
         	};
         	modelMapper.createTypeMap(Expense.class, ExtendedGetExpenseDto.class).setConverter(converter);

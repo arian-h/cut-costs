@@ -1,12 +1,12 @@
 package com.boot.cut_costs.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,30 +32,37 @@ public class User implements Serializable {
 	@Size(min=15, max=15)
 	@Column(name="image_id")
 	private String imageId;
-	
+
 	@Size(max=100)
 	@Column(name="description")
 	private String description;
-	
-	@OneToMany(mappedBy="admin")
-	private Set<Group> ownedGroups;
-	
-	@ManyToMany(mappedBy="members")
-	private Set<Group> memberGroups;
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER, mappedBy="owner")
-	private Set<Expense> ownedExpenses;
 
-	@ManyToMany(cascade = CascadeType.REFRESH, fetch=FetchType.EAGER)
-	private Set<Expense> receivedExpenses;
-	
-	@OneToMany(cascade=CascadeType.ALL)
-	private Set<Invitation> ownedInvitations;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="admin")
+	private List<Group> ownedGroups;
+
+	@ManyToMany(cascade = CascadeType.REFRESH, mappedBy="members")
+	private List<Group> memberGroups;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="owner")
+	private List<Expense> ownedExpenses;
+
+	@ManyToMany(cascade = CascadeType.REFRESH)
+	private List<Expense> receivedExpenses;
 
 	@OneToMany(cascade=CascadeType.ALL)
-	private Set<Invitation> receivedInvitations;
+	private List<Invitation> ownedInvitations;
 
-	public User() {}
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<Invitation> receivedInvitations;
+
+	public User() {
+		this.ownedGroups = new ArrayList<Group>();
+		this.memberGroups = new ArrayList<Group>();
+		this.ownedInvitations = new ArrayList<Invitation>();
+		this.receivedInvitations = new ArrayList<Invitation>();
+		this.ownedExpenses = new ArrayList<Expense>();
+		this.receivedExpenses = new ArrayList<Expense>();
+	}
 
 	public String getName() {
 		return name;
@@ -65,11 +72,11 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public Set<Invitation> getOwnedInvitations() {
+	public List<Invitation> getOwnedInvitations() {
 		return ownedInvitations;
 	}
 
-	public void setOwnedInvitations(Set<Invitation> ownedInvitations) {
+	public void setOwnedInvitations(List<Invitation> ownedInvitations) {
 		this.ownedInvitations = ownedInvitations;
 	}
 	
@@ -77,11 +84,11 @@ public class User implements Serializable {
 		this.ownedInvitations.add(inv);
 	}
 
-	public Set<Invitation> getReceivedInvitations() {
+	public List<Invitation> getReceivedInvitations() {
 		return receivedInvitations;
 	}
 
-	public void setReceivedInvitations(Set<Invitation> receivedInvitations) {
+	public void setReceivedInvitations(List<Invitation> receivedInvitations) {
 		this.receivedInvitations = receivedInvitations;
 	}
 	
@@ -89,7 +96,7 @@ public class User implements Serializable {
 		this.receivedInvitations.add(invitation);
 	}
 	
-	public Set<Expense> getOwnedExpenses() {
+	public List<Expense> getOwnedExpenses() {
 		return ownedExpenses;
 	}
 
@@ -97,7 +104,7 @@ public class User implements Serializable {
 		this.ownedExpenses.add(expense);
 	}
 	
-	public Set<Group> getOwnedGroups() {
+	public List<Group> getOwnedGroups() {
 		return ownedGroups;
 	}
 
@@ -105,7 +112,7 @@ public class User implements Serializable {
 		this.ownedGroups.add(group);
 	}
 
-	public Set<Group> getMemberGroups() {
+	public List<Group> getMemberGroups() {
 		return memberGroups;
 	}
 
@@ -113,7 +120,7 @@ public class User implements Serializable {
 		this.memberGroups.add(group);
 	}
 	
-	public Set<Expense> getReceivedExpenses() {
+	public List<Expense> getReceivedExpenses() {
 		return receivedExpenses;
 	}
 
@@ -145,19 +152,19 @@ public class User implements Serializable {
 		this.description = description;
 	}
 
-	public void setOwnedGroups(Set<Group> ownedGroups) {
+	public void setOwnedGroups(List<Group> ownedGroups) {
 		this.ownedGroups = ownedGroups;
 	}
 
-	public void setMemberGroups(Set<Group> memberGroups) {
+	public void setMemberGroups(List<Group> memberGroups) {
 		this.memberGroups = memberGroups;
 	}
 
-	public void setOwnedExpenses(Set<Expense> ownedExpenses) {
+	public void setOwnedExpenses(List<Expense> ownedExpenses) {
 		this.ownedExpenses = ownedExpenses;
 	}
 
-	public void setReceivedExpenses(Set<Expense> receivedExpenses) {
+	public void setReceivedExpenses(List<Expense> receivedExpenses) {
 		this.receivedExpenses = receivedExpenses;
 	}
 	

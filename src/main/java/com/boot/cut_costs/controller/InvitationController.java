@@ -2,7 +2,7 @@ package com.boot.cut_costs.controller;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +35,12 @@ public class InvitationController {
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public Set<GetInvitationDto> list(Principal principal, BindingResult result) throws IOException {
+	public List<GetInvitationDto> list(Principal principal, BindingResult result) throws IOException {
 		return invitationService
 				.list(principal.getName())
 				.stream()
 				.map(invitation -> invitationDtoConverter.convertToDto(invitation))
-						.collect(Collectors.toSet());
+						.collect(Collectors.toList());
 	}
 	
 	@RequestMapping(path = "/{invitationId}/accept", method = RequestMethod.GET)

@@ -1,6 +1,6 @@
 package com.boot.cut_costs.service;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -32,7 +32,7 @@ public class InvitationService {
 		return invitation;
 	}
 	
-	public Set<Invitation> list(String username) {
+	public List<Invitation> list(String username) {
 		User user = userService.loadByUsername(username);
 		return user.getReceivedInvitations();
 	}

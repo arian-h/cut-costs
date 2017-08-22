@@ -1,62 +1,61 @@
 package com.boot.cut_costs.dto.user;
 
-import java.util.Set;
+import java.util.List;
 
 import com.boot.cut_costs.dto.expense.GetExpenseDto;
 import com.boot.cut_costs.dto.group.GetGroupDto;
 import com.boot.cut_costs.dto.invitation.GetInvitationDto;
 
-//TODO : 
 public class ExtendedGetUserDto extends GetUserDto {
 	
 	private static final long serialVersionUID = 1L;
 
-	private Set<GetInvitationDto> receivedInvitations;
-	private Set<GetExpenseDto> receivedExpenses;
-	private Set<GetExpenseDto> ownedExpenses;
-	private Set<GetGroupDto> ownedGroups;
-	private Set<GetGroupDto> memberGroups;
+	private List<GetInvitationDto> receivedInvitations;
+	private List<GetExpenseDto> receivedExpenses;
+	private List<GetExpenseDto> ownedExpenses;
+	private List<GetGroupDto> ownedGroups;
+	private List<GetGroupDto> memberGroups;
 	
 	public ExtendedGetUserDto() {
 	}
 
-	public Set<GetInvitationDto> getReceivedInvitations() {
+	public List<GetInvitationDto> getReceivedInvitations() {
 		return receivedInvitations;
 	}
 	
-	public void setReceivedInvitations(Set<GetInvitationDto> receivedInvitations) {
+	public void setReceivedInvitations(List<GetInvitationDto> receivedInvitations) {
 		this.receivedInvitations = receivedInvitations;
 	}
 	
-	public Set<GetExpenseDto> getReceivedExpenses() {
+	public List<GetExpenseDto> getReceivedExpenses() {
 		return receivedExpenses;
 	}
 	
-	public void setReceivedExpenses(Set<GetExpenseDto> receivedExpenses) {
+	public void setReceivedExpenses(List<GetExpenseDto> receivedExpenses) {
 		this.receivedExpenses = receivedExpenses;
 	}
 	
-	public Set<GetExpenseDto> getOwnedExpenses() {
+	public List<GetExpenseDto> getOwnedExpenses() {
 		return ownedExpenses;
 	}
 	
-	public void setOwnedExpenses(Set<GetExpenseDto> ownedExpenses) {
+	public void setOwnedExpenses(List<GetExpenseDto> ownedExpenses) {
 		this.ownedExpenses = ownedExpenses;
 	}
 	
-	public Set<GetGroupDto> getOwnedGroups() {
+	public List<GetGroupDto> getOwnedGroups() {
 		return ownedGroups;
 	}
 	
-	public void setOwnedGroups(Set<GetGroupDto> ownedGroups) {
+	public void setOwnedGroups(List<GetGroupDto> ownedGroups) {
 		this.ownedGroups = ownedGroups;
 	}
 	
-	public Set<GetGroupDto> getMemberGroups() {
+	public List<GetGroupDto> getMemberGroups() {
 		return memberGroups;
 	}
 
-	public void setMemberGroups(Set<GetGroupDto> memberGroups) {
+	public void setMemberGroups(List<GetGroupDto> memberGroups) {
 		this.memberGroups = memberGroups;
 	}
 

@@ -1,8 +1,8 @@
 package com.boot.cut_costs.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -35,17 +35,17 @@ public class Group implements Serializable {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "admin_id", referencedColumnName = "id")
+	@JoinColumn(name = "ADMIN_ID", referencedColumnName = "id")
 	private User admin;
 
 	@ManyToMany
-	@JoinTable(name = "Group_User", 
-		joinColumns = @JoinColumn(name = "group_id", referencedColumnName = "id"), 
-		inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
-	private Set<User> members;
+	@JoinTable(name = "GROUP_USER", 
+		joinColumns = @JoinColumn(referencedColumnName = "id"), 
+		inverseJoinColumns = @JoinColumn(name = "MEMBER_ID", referencedColumnName = "id"))
+	private List<User> members;
 
 	@OneToMany(cascade=CascadeType.ALL)
-	private Set<Expense> expenses;
+	private List<Expense> expenses;
 	
 	@Column(name="description")
 	private String description;
@@ -59,8 +59,8 @@ public class Group implements Serializable {
 	private String imageId;
 	
 	public Group() {
-		this.expenses = new HashSet<Expense>();
-		this.members = new HashSet<User>();
+		this.expenses = new ArrayList<Expense>();
+		this.members = new ArrayList<User>();
 	}
 	
 	public long getId() {
@@ -91,7 +91,7 @@ public class Group implements Serializable {
 		return imageId;
 	}
 	
-	public Set<User> getMembers() {
+	public List<User> getMembers() {
 		return members;
 	}
 	
@@ -107,7 +107,7 @@ public class Group implements Serializable {
 		this.members.remove(user);
 	}
 
-	public Set<Expense> getExpenses() {
+	public List<Expense> getExpenses() {
 		return expenses;
 	}
 	

@@ -1,6 +1,6 @@
 package com.boot.cut_costs.dto.group;
 
-import java.util.Set;
+import java.util.List;
 
 import com.boot.cut_costs.dto.expense.GetExpenseDto;
 import com.boot.cut_costs.dto.user.AbstractUserDto;
@@ -12,10 +12,10 @@ public class ExtendedGetGroupDto extends GetGroupDto {
 
 	private GetUserDto admin;
 	
-	private Set<GetUserDto> members;
+	private List<GetUserDto> members;
 
 
-	private Set<GetExpenseDto> expenses;
+	private List<GetExpenseDto> expenses;
 	
 	public ExtendedGetGroupDto() {
 	}
@@ -28,19 +28,19 @@ public class ExtendedGetGroupDto extends GetGroupDto {
 		this.admin = admin;
 	}
 
-	public Set<GetUserDto> getMembers() {
+	public List<GetUserDto> getMembers() {
 		return members;
 	}
 
-	public void setMembers(Set<GetUserDto> members) {
+	public void setMembers(List<GetUserDto> members) {
 		this.members = members;
 	}
 	
-	public Set<GetExpenseDto> getExpenses() {
+	public List<GetExpenseDto> getExpenses() {
 		return expenses;
 	}
 
-	public void setExpenses(Set<GetExpenseDto> expenses) {
+	public void setExpenses(List<GetExpenseDto> expenses) {
 		this.expenses = expenses;
 	}
 

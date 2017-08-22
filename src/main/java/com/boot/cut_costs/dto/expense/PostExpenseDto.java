@@ -1,6 +1,6 @@
 package com.boot.cut_costs.dto.expense;
 
-import java.util.Set;
+import java.util.List;
 
 public class PostExpenseDto extends AbstractExpenseDto {
 
@@ -12,7 +12,7 @@ public class PostExpenseDto extends AbstractExpenseDto {
 
 	private String description;
 
-	private Set<Long> sharers;
+	private List<Long> sharers;
 
 	public void setImage(String image) {
 		this.image = image;
@@ -30,11 +30,11 @@ public class PostExpenseDto extends AbstractExpenseDto {
 		this.description = description;
 	}
 
-	public Set<Long> getSharers() {
+	public List<Long> getSharers() {
 		return sharers;
 	}
 
-	public void setSharers(Set<Long> sharers) {
+	public void setSharers(List<Long> sharers) {
 		this.sharers = sharers;
 	}
 }

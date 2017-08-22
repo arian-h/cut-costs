@@ -2,8 +2,8 @@ package com.boot.cut_costs.controller;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.validation.ValidationException;
 
@@ -44,9 +44,9 @@ public class ExpenseController {
 	}
 	
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public Set<GetExpenseDto> list(Principal principal) {
-		Set<Expense> expenses = expenseService.list(principal.getName());
-		Set<GetExpenseDto> result = new HashSet<GetExpenseDto>();
+	public List<GetExpenseDto> list(Principal principal) {
+		List<Expense> expenses = expenseService.list(principal.getName());
+		List<GetExpenseDto> result = new ArrayList<GetExpenseDto>();
 		for (Expense expense: expenses) {
 			result.add(expenseDtoConverter.convertToDto(expense));
 		}

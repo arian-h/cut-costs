@@ -1,8 +1,8 @@
 package com.boot.cut_costs.service;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -21,6 +21,7 @@ import com.boot.cut_costs.repository.GroupRepository;
 import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
+@Transactional
 public class GroupService {
 	
 	@Autowired
@@ -34,7 +35,6 @@ public class GroupService {
 	
 	private static Logger logger = LoggerFactory.getLogger(GroupService.class);
 	
-	@Transactional
 	public void create(String groupName, String description, String image, String username) throws IOException {
 		User user = userService.loadByUsername(username);
 		Group group = new Group();
@@ -43,8 +43,9 @@ public class GroupService {
 		group.setDescription(description);
 		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
 		if (imageId != null) {
-			group.setImageId(imageId);			
+			group.setImageId(imageId);
 		}
+		user.addOwnedGroup(group);
 		groupRepository.save(group);
 		logger.debug("Group with name " + group.getName() + " and id " + group.getId() + " was created");
 	}
@@ -80,19 +81,19 @@ public class GroupService {
 		return group;
 	}
 	
-	public Set<Group> list(String username) {
+	public List<Group> list(String username) {
 		User user = userService.loadByUsername(username);
-		Set<Group> result = new HashSet<Group>();
+		List<Group> result = new ArrayList<Group>();
 		result.addAll(user.getMemberGroups());
 		result.addAll(user.getOwnedGroups());
 		return result;
 	}
 	
-	public Set<User> listMembers(long groupId, String username) {
+	public List<User> listMembers(long groupId, String username) {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
 		validateMemberAccessToGroup(group, user);
-		Set<User> result = new HashSet<User>();
+		List<User> result = new ArrayList<User>();
 		result.addAll(group.getMembers());
 		result.add(group.getAdmin());
 		return result;
@@ -120,11 +121,11 @@ public class GroupService {
 	}
 	
 	@Transactional
-	public void addExpense(String title, long amount, String description, Set<Long> sharersIds, String image, String username, long groupId) throws IOException {
+	public void addExpense(String title, long amount, String description, List<Long> sharersIds, String image, String username, long groupId) throws IOException {
 		Group group = this.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		validateMemberAccessToGroup(group, owner);
-		Set<User> sharers = new HashSet<User>();
+		List<User> sharers = new ArrayList<User>();
 		if (sharersIds != null) {
 			for (long sharerId: sharersIds) {
 				User sharer = userService.loadById(sharerId);
@@ -148,7 +149,7 @@ public class GroupService {
 		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
 	}
 
-	public Set<Expense> listExpenses(long groupId, String username) {
+	public List<Expense> listExpenses(long groupId, String username) {
 		Group group = this.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		validateMemberAccessToGroup(group, owner);

@@ -18,7 +18,6 @@ import com.boot.cut_costs.dto.user.ExtendedGetUserDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.PostUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
-import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.UserDtoValidator;
 
@@ -30,14 +29,11 @@ public class UserController {
 	private UserService userService;
 
 	@Autowired
-	private CustomUserDetailsService userDetailsService;
+	private UserDtoValidator updateUserDtoValidator;
 
 	@Autowired
-	private UserDtoValidator updateUserDtoValidator;
-	
-	@Autowired
 	private UserDtoConverter userDtoConverter;
-	
+
 	@RequestMapping(path = "/{userId}", method = RequestMethod.GET)
 	public GetUserDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
 		return userDtoConverter.convertToDto(userService.loadById(userId));
@@ -54,6 +50,6 @@ public class UserController {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		userService.update(userDto, principal.getName());
+		userService.update(userDto.getName(), userDto.getDescription(), userDto.getImage(), principal.getName());
 	}
 }
