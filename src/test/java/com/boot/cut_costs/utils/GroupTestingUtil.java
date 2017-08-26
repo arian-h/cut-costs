@@ -27,6 +27,7 @@ public class GroupTestingUtil {
 		group.setName(groupName);
 		group.setDescription(description);
 		group.setImageId(imageId);
+		admin.addOwnedGroup(group);
 		groupRepository.save(group);
 		return group;
 	}

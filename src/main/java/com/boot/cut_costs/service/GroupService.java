@@ -18,6 +18,7 @@ import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
+import com.boot.cut_costs.repository.UserRepository;
 import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
@@ -29,6 +30,9 @@ public class GroupService {
 	
 	@Autowired 
 	private UserService userService;
+	
+	@Autowired 
+	private UserRepository userRepo;
 	
 	@Autowired
 	private ExpenseService expenseService;
@@ -49,17 +53,16 @@ public class GroupService {
 		groupRepository.save(group);
 		logger.debug("Group with name " + group.getName() + " and id " + group.getId() + " was created");
 	}
-	
-	@Transactional
+
 	public void delete(long groupId, String username) {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
 		validateAdminAccessToGroup(group, user);
+		user.removeOwnedGroup(group);
 		groupRepository.delete(groupId);
 		logger.debug("Group with id " + groupId + " was deleted");
 	}
 
-	@Transactional
 	public void update(long groupId, String groupName, String description, String image, String username) throws IOException {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
@@ -88,7 +91,7 @@ public class GroupService {
 		result.addAll(user.getOwnedGroups());
 		return result;
 	}
-	
+
 	public List<User> listMembers(long groupId, String username) {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
@@ -120,7 +123,6 @@ public class GroupService {
 		return group;
 	}
 	
-	@Transactional
 	public void addExpense(String title, long amount, String description, List<Long> sharersIds, String image, String username, long groupId) throws IOException {
 		Group group = this.loadById(groupId);
 		User owner = userService.loadByUsername(username);

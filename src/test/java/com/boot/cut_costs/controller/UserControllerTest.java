@@ -32,11 +32,11 @@ public class UserControllerTest extends BaseControllerTest {
 	private final static String UPDATED_DUMMY_DESCRIPTION = DUMMY_DESCRIPTION + ".updated";
 	private final static String DUMMY_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAADklEQVQIW2NgQAXGZHAAGioAza6+Hk0AAAAASUVORK5CYII=";
 
-	private final static String IMAGE_ID_FIELD_NAME = "imageId";
+	private final static String NAME_FIELD_NAME = "name";
 	private final static String DESCRIPTION_FIELD_NAME = "description";
-	private final static String NAME_FIELD_NAME = "name";	
 	private final static String IMAGE_FIELD_NAME = "image";
-	
+	private final static String IMAGE_ID_FIELD_NAME = "imageId";
+
 	private final static String USER_ENDPOINT_URL = "/user/";
 	
 	@Autowired
@@ -46,7 +46,7 @@ public class UserControllerTest extends BaseControllerTest {
 	private UserRepository userRepository;
 	
 	@Test
-	public void testGet() throws Exception {
+	public void testGetUser() throws Exception {
 		Principal mockPrincipal = Mockito.mock(Principal.class);
         Mockito.when(mockPrincipal.getName()).thenReturn(DUMMY_USERNAME);
 		
@@ -96,7 +96,7 @@ public class UserControllerTest extends BaseControllerTest {
     }
     
 	@Test
-    public void testUpdate() throws Exception {
+    public void testUpdateUser() throws Exception {
     	Principal mockPrincipal = Mockito.mock(Principal.class);
         Mockito.when(mockPrincipal.getName()).thenReturn(DUMMY_USERNAME);
 

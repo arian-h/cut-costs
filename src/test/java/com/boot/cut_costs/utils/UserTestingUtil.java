@@ -1,6 +1,7 @@
 package com.boot.cut_costs.utils;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -9,8 +10,10 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.stereotype.Component;
 
 import com.boot.cut_costs.model.CustomUserDetails;
+import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.UserDetailsRepository;
+import com.boot.cut_costs.repository.UserRepository;
 
 @Component
 @Transactional
@@ -20,6 +23,9 @@ public class UserTestingUtil {
 
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	public UserTestingUtil() {
 	}
@@ -36,5 +42,10 @@ public class UserTestingUtil {
 		userDetails.setUser(user);
 		userDetailsRepository.save(userDetails);
 		return user;
+	}
+
+	public List<Group> getOwnedGroups(long id) {
+		List<Group> result = userRepository.findById(id).getOwnedGroups();
+		return result;
 	}
 }

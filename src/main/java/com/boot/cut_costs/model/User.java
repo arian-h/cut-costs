@@ -111,6 +111,10 @@ public class User implements Serializable {
 	public void addOwnedGroup(Group group){
 		this.ownedGroups.add(group);
 	}
+	
+	public void removeOwnedGroup(Group group) {
+		this.ownedGroups.remove(group);
+	}
 
 	public List<Group> getMemberGroups() {
 		return memberGroups;
@@ -118,6 +122,10 @@ public class User implements Serializable {
 
 	public void addMemberGroup(Group group) {
 		this.memberGroups.add(group);
+	}
+	
+	public void removeMemberGroup(Group group) {
+		this.memberGroups.remove(group);
 	}
 	
 	public List<Expense> getReceivedExpenses() {
