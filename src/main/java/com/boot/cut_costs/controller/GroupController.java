@@ -28,7 +28,6 @@ import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.GroupService;
-import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.ExpenseDtoValidator;
 import com.boot.cut_costs.validator.GroupDtoValidator;
 
@@ -38,12 +37,6 @@ public class GroupController {
 
 	@Autowired
 	private GroupService groupService;
-
-	@Autowired
-	private UserService userService;
-	
-	@Autowired
-	private GroupDtoValidator createGroupDtoValidator;
 
 	@Autowired
 	private GroupDtoValidator groupDtoValidator;
@@ -65,7 +58,7 @@ public class GroupController {
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public void create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
-		createGroupDtoValidator.validate(groupDto, result);
+		groupDtoValidator.validate(groupDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
