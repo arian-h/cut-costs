@@ -46,7 +46,9 @@ public class ExpenseService {
 		return expenses;
 	}
 
-	//only owner or admin of the group can delete an expense
+	/*
+	 * Owner of the expense or admin of the group can delete an expense
+	 */
 	public void delete(long expenseId, String username) {
 		User user = userService.loadByUsername(username);
 		Expense expense = expenseRepository.findById(expenseId);
@@ -58,12 +60,14 @@ public class ExpenseService {
 		logger.debug("Expense with id " + expenseId + "was deleted");
 	}
 
-	//only owner of an expense can update it
+	/*
+	 * Owner of the expense and admin of the group can change it
+	 */
 	public void update(long expenseId, String title, long amount, String description, List<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
 		Expense expense = loadById(expenseId);
-		User owner = userService.loadByUsername(username);
-		if (!expense.getOwner().equals(owner)) {
-			throw new BadRequestException("User " + owner.getId() + " doesn't have edit access to expense with id " + expense.getId());
+		User user = userService.loadByUsername(username);
+		if (expense.getOwner().getId() != user.getId() && expense.getGroup().getAdmin().getId() != user.getId()) {
+			throw new BadRequestException("User " + user.getId() + " doesn't have edit access to expense with id " + expense.getId());
 		}
 		List<User> sharers = new ArrayList<User>();
 		for (long sharerId: sharersIds) {
@@ -90,6 +94,5 @@ public class ExpenseService {
 		}
 		return expense;
 	}
-	
-	
+
 }
