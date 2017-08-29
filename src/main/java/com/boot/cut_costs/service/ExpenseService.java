@@ -15,6 +15,7 @@ import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.ExpenseRepository;
+import com.boot.cut_costs.repository.GroupRepository;
 import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
@@ -28,6 +29,9 @@ public class ExpenseService {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private GroupRepository groupRepository;
 
 	private static Logger logger = LoggerFactory.getLogger(ExpenseService.class);
 
@@ -86,7 +90,42 @@ public class ExpenseService {
 		expenseRepository.save(expense);
 		logger.debug("Expense with title " + title + " was updated by user " + username);
 	}
-	
+
+	public void addExpense(String title, long amount, String description, List<Long> sharersIds, String image, String username, long groupId) throws IOException {
+		Group group = groupService.loadById(groupId);
+		User owner = userService.loadByUsername(username);
+		groupService.validateMemberAccessToGroup(group, owner);
+		List<User> sharers = new ArrayList<User>();
+		if (sharersIds != null) {
+			for (long sharerId: sharersIds) {
+				User sharer = userService.loadById(sharerId);
+				groupService.validateMemberAccessToGroup(group, sharer);
+				sharers.add(sharer);
+			}			
+		}
+		Expense expense = new Expense();
+		expense.setAmount(amount);
+		expense.setDescription(description);
+		expense.setGroup(group);
+		expense.setOwner(owner);
+		expense.setTitle(title);
+		expense.setShareres(sharers);
+		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		if (imageId != null) {
+			expense.setImageId(imageId);			
+		}
+		group.addExpense(expense);
+		groupRepository.save(group);
+		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
+	}
+
+	public List<Expense> listExpenses(long groupId, String username) {
+		Group group = groupService.loadById(groupId);
+		User owner = userService.loadByUsername(username);
+		groupService.validateMemberAccessToGroup(group, owner);
+		return group.getExpenses();
+	}
+
 	public Expense loadById(long expenseId) {
 		Expense expense = expenseRepository.findOne(expenseId);
 		if (expense == null) {

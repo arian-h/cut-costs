@@ -67,4 +67,30 @@ public class ExpenseController {
 		expenseService.update(expenseId, expenseDto.getTitle(), expenseDto.getAmount(), expenseDto.getDescription(), expenseDto.getSharers(), expenseDto.getImage(), principal.getName());
 	}
 
+	/*
+	 * Get all expenses posted to a group
+	 */
+	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.GET)
+	public List<GetExpenseDto> getAllExpenses(@PathVariable long groupId, Principal principal) {
+		List<Expense> expenses = expenseService.listExpenses(groupId, principal.getName());
+		List<GetExpenseDto> result = new ArrayList<GetExpenseDto>();
+		for (Expense expense: expenses) {
+			result.add(expenseDtoConverter.convertToDto(expense));
+		}
+		return result;
+	}
+
+	/*
+	 * Add an expense to a group
+	 */
+	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.POST)
+	public void addExpense(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+		expenseDtoValidator.validate(expenseDto, result);
+		if (result.hasErrors()) {
+			throw new ValidationException(result.getFieldError().getCode());
+		}
+		expenseService.addExpense(expenseDto.getTitle(), expenseDto.getAmount(),
+				expenseDto.getDescription(), expenseDto.getSharers(),
+				expenseDto.getImage(), principal.getName(), groupId);
+	}
 }

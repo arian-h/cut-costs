@@ -15,20 +15,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.expense.ExpenseDtoConverter;
-import com.boot.cut_costs.dto.expense.GetExpenseDto;
-import com.boot.cut_costs.dto.expense.PostExpenseDto;
 import com.boot.cut_costs.dto.group.ExtendedGetGroupDto;
 import com.boot.cut_costs.dto.group.GetGroupDto;
 import com.boot.cut_costs.dto.group.GroupDtoConverter;
 import com.boot.cut_costs.dto.group.PostGroupDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
-import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.GroupService;
-import com.boot.cut_costs.validator.ExpenseDtoValidator;
 import com.boot.cut_costs.validator.GroupDtoValidator;
 
 @RestController
@@ -46,12 +41,6 @@ public class GroupController {
 	
 	@Autowired
 	private UserDtoConverter userDtoConverter;
-	
-	@Autowired
-	private ExpenseDtoValidator expenseDtoValidator;
-	
-	@Autowired
-	private ExpenseDtoConverter expenseDtoConverter;
 
 	/*
 	 * Create a group
@@ -128,30 +117,4 @@ public class GroupController {
 		groupService.removeMember(groupId, userId, principal.getName());
 	}
 	
-	/*
-	 * Get all expenses posted to a group
-	 */
-	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.GET)
-	public List<GetExpenseDto> getAllExpenses(@PathVariable long groupId, Principal principal) {
-		List<Expense> expenses = groupService.listExpenses(groupId, principal.getName());
-		List<GetExpenseDto> result = new ArrayList<GetExpenseDto>();
-		for (Expense expense: expenses) {
-			result.add(expenseDtoConverter.convertToDto(expense));
-		}
-		return result;
-	}
-
-	/*
-	 * Add an expense to a group
-	 */
-	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.POST)
-	public void addExpense(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
-		expenseDtoValidator.validate(expenseDto, result);
-		if (result.hasErrors()) {
-			throw new ValidationException(result.getFieldError().getCode());
-		}
-		groupService.addExpense(expenseDto.getTitle(), expenseDto.getAmount(),
-				expenseDto.getDescription(), expenseDto.getSharers(),
-				expenseDto.getImage(), principal.getName(), groupId);
-	}
 }

@@ -14,7 +14,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.exception.BadRequestException;
-import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
@@ -122,41 +121,6 @@ public class GroupService {
 			throw new ResourceNotFoundException("Group with id " + groupId + " was not found");
 		}
 		return group;
-	}
-	
-	public void addExpense(String title, long amount, String description, List<Long> sharersIds, String image, String username, long groupId) throws IOException {
-		Group group = this.loadById(groupId);
-		User owner = userService.loadByUsername(username);
-		validateMemberAccessToGroup(group, owner);
-		List<User> sharers = new ArrayList<User>();
-		if (sharersIds != null) {
-			for (long sharerId: sharersIds) {
-				User sharer = userService.loadById(sharerId);
-				validateMemberAccessToGroup(group, sharer);
-				sharers.add(sharer);
-			}			
-		}
-		Expense expense = new Expense();
-		expense.setAmount(amount);
-		expense.setDescription(description);
-		expense.setGroup(group);
-		expense.setOwner(owner);
-		expense.setTitle(title);
-		expense.setShareres(sharers);
-		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
-		if (imageId != null) {
-			expense.setImageId(imageId);			
-		}
-		group.addExpense(expense);
-		groupRepository.save(group);
-		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
-	}
-
-	public List<Expense> listExpenses(long groupId, String username) {
-		Group group = this.loadById(groupId);
-		User owner = userService.loadByUsername(username);
-		validateMemberAccessToGroup(group, owner);
-		return group.getExpenses();
 	}
 	
 	public void validateAdminAccessToGroup(Group group, User user) {
