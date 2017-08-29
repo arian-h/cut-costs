@@ -28,12 +28,6 @@ public class InvitationController {
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
 
-	@RequestMapping(path = "/{invitationId}", method = RequestMethod.GET)
-	public GetInvitationDto get(@PathVariable long invitationId, Principal principal, BindingResult result) throws IOException {
-		return invitationDtoConverter
-				.convertToDto(invitationService.get(invitationId, principal.getName()));
-	}
-
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public List<GetInvitationDto> list(Principal principal, BindingResult result) throws IOException {
 		return invitationService
