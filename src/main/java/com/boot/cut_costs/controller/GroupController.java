@@ -59,7 +59,7 @@ public class GroupController {
 	
 	@Autowired
 	private ExpenseDtoConverter expenseDtoConverter;
-	
+
 	/*
 	 * Create a group
 	 */
@@ -113,7 +113,7 @@ public class GroupController {
 		}
 		return result;
 	}
-	
+
 	/*
 	 * Get all members of a group
 	 */

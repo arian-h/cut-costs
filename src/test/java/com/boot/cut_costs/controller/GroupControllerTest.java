@@ -165,7 +165,6 @@ public class GroupControllerTest extends BaseControllerTest {
 
 		User admin = userTestingUtil.createUser(DUMMY_USERNAME, DUMMY_USER_NAME, null, null);
 		Group group = groupTestingUtil.createGroup(DUMMY_GROUP_NAME, DUMMY_GROUP_DESCRIPTION, DUMMY_IMAGE_ID, admin);
-
 		User member = userTestingUtil.createUser("test1@test.test", "testUser1" , null, null);
 		group.addMember(member);
 		
@@ -185,6 +184,8 @@ public class GroupControllerTest extends BaseControllerTest {
 		Assert.assertEquals("wrong number of users exist", 2, Lists.newArrayList(userRepository.findAll()).size());
 		Assert.assertTrue("admin shouldn't get deleted when deleting a group", userRepository.findById(admin.getId()) != null);
 		Assert.assertTrue("group members shouldn't get deleted when deleting a group", userRepository.findById(member.getId()) != null);
+		Assert.assertEquals("group should get deleted from user's list of member groups", 0, member.getMemberGroups().size());
+		Assert.assertEquals("group should get deleted from user's list of owned groups", 0, admin.getMemberGroups().size());
 	}
 
 	@Test
@@ -208,5 +209,81 @@ public class GroupControllerTest extends BaseControllerTest {
 		JSONArray content = new JSONArray(response.getContentAsString());
 		Assert.assertEquals("wrong response status", 200, status);
 		Assert.assertEquals("wrong number of groups", 2, content.length());
+		JSONObject responseGroup1 = (JSONObject)content.get(0);
+		Assert.assertEquals("wrong name is returned for first group", DUMMY_GROUP_NAME + "1", (String)responseGroup1.get("name"));
+		Assert.assertEquals("wrong description is returned for first group", DUMMY_GROUP_DESCRIPTION + "1", (String)responseGroup1.get("description"));
+		JSONObject responseGroup2 = (JSONObject)content.get(1);
+		Assert.assertEquals("wrong name is returned for second group", DUMMY_GROUP_NAME + "2", (String)responseGroup2.get("name"));
+		Assert.assertEquals("wrong description is returned for second group", DUMMY_GROUP_DESCRIPTION + "2", (String)responseGroup2.get("description"));
 	}
+
+	@Test
+	public void testDeleteGroupMember() throws Exception {
+    	Principal mockPrincipal = Mockito.mock(Principal.class);
+        Mockito.when(mockPrincipal.getName()).thenReturn(DUMMY_USERNAME);
+
+		User admin = userTestingUtil.createUser(DUMMY_USERNAME, DUMMY_USER_NAME, null, null);
+		Group group = groupTestingUtil.createGroup(DUMMY_GROUP_NAME, DUMMY_GROUP_DESCRIPTION, null, admin);
+		User member = userTestingUtil.createUser(DUMMY_USERNAME + "1", DUMMY_USER_NAME + "1", null, null);
+		group.addMember(member);
+		groupRepository.save(group);
+
+		String testEndpointUrl = GROUP_ENDPOINT_URL + group.getId() + "/user/" + member.getId();
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete(testEndpointUrl)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.principal(mockPrincipal);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+		int status = response.getStatus();
+
+		Assert.assertEquals("wrong response status", 200, status);
+		Assert.assertTrue("admin shouldn't get deleted when deleting a group", userRepository.findById(admin.getId()) != null);
+		Assert.assertTrue("group shouldn't get deleted when deleting a member", groupRepository.findById(group.getId()) != null);
+		Assert.assertTrue("member shouldn't get deleted", userRepository.findById(member.getId()) != null);
+		List<User> groupMembers = group.getMembers();
+		for (int index = 0; index < groupMembers.size(); index++) {
+			Assert.assertNotEquals("group shouldn't reference the deleted member", member.getId(), groupMembers.get(index).getId());
+		}
+		List<Group> memberGroups = member.getMemberGroups();
+		for (int index = 0; index < memberGroups.size(); index++) {
+			Assert.assertNotEquals("user shouldn't reference the group it was deleted from", group.getId(), memberGroups.get(index).getId());
+		}	
+	}
+	
+	@Test
+	public void testGetAllMembers() throws Exception {
+    	Principal mockPrincipal = Mockito.mock(Principal.class);
+        Mockito.when(mockPrincipal.getName()).thenReturn(DUMMY_USERNAME);
+
+		User admin = userTestingUtil.createUser(DUMMY_USERNAME, DUMMY_USER_NAME, null, null);
+		Group group = groupTestingUtil.createGroup(DUMMY_GROUP_NAME, DUMMY_GROUP_DESCRIPTION, null, admin);
+		User member1 = userTestingUtil.createUser(DUMMY_USERNAME + "1", DUMMY_USER_NAME + "1", null, null);
+		User member2 = userTestingUtil.createUser(DUMMY_USERNAME + "2", DUMMY_USER_NAME + "2", null, null);
+		group.addMember(member1);
+		group.addMember(member2);
+		groupRepository.save(group);
+
+		String testEndpointUrl = GROUP_ENDPOINT_URL + group.getId() + "/user/";
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get(testEndpointUrl)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.principal(mockPrincipal);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+		int status = response.getStatus();
+
+		Assert.assertEquals("wrong response status", 200, status);
+		JSONArray content = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong number of members", 3, content.length()); // one user is the admin
+		JSONObject responseMember1 = (JSONObject)content.get(0);
+		Assert.assertEquals("wrong name is returned for the first member", DUMMY_USER_NAME + "1", (String)responseMember1.get("name"));
+		JSONObject responseMember2 = (JSONObject)content.get(1);
+		Assert.assertEquals("wrong name is returned for the second member", DUMMY_USER_NAME + "2", (String)responseMember2.get("name"));
+		JSONObject responseMember3 = (JSONObject)content.get(2);
+		Assert.assertEquals("wrong name is returned for the third member", DUMMY_USER_NAME, (String)responseMember3.get("name"));
+	}
+
 }

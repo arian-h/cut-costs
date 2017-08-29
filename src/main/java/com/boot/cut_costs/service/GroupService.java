@@ -32,7 +32,7 @@ public class GroupService {
 	private UserService userService;
 	
 	@Autowired 
-	private UserRepository userRepo;
+	private UserRepository userRepository;
 	
 	@Autowired
 	private ExpenseService expenseService;
@@ -111,7 +111,8 @@ public class GroupService {
 		if (group.isAdmin(target)) {
 			throw new BadRequestException("Group admin cannot delete himself/herself from the group");
 		}
-		group.removeMember(user);
+		group.removeMember(target);
+		user.removeMemberGroup(group);
 		groupRepository.save(group);
 	}
 	
@@ -177,9 +178,10 @@ public class GroupService {
 	public void addMember(long groupId, long userId) {
 		Group group = this.loadById(groupId);
 		User user = userService.loadById(userId);
-		if ( this.isMemberOrAdmin(group, user)) {
+		if (this.isMemberOrAdmin(group, user)) {
 			throw new BadRequestException("User with id " + userId + " is already a member of group with id " + groupId);
 		}
+		groupRepository.save(group);
 	}
 
 }
