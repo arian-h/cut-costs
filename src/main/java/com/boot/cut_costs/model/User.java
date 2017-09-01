@@ -43,11 +43,8 @@ public class User implements Serializable {
 	@ManyToMany(cascade = CascadeType.REFRESH, mappedBy="members")
 	private List<Group> memberGroups;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="owner")
-	private List<Expense> ownedExpenses;
-
 	@ManyToMany(cascade = CascadeType.REFRESH)
-	private List<Expense> receivedExpenses;
+	private List<Expense> expenses;
 
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Invitation> ownedInvitations;
@@ -60,8 +57,7 @@ public class User implements Serializable {
 		this.memberGroups = new ArrayList<Group>();
 		this.ownedInvitations = new ArrayList<Invitation>();
 		this.receivedInvitations = new ArrayList<Invitation>();
-		this.ownedExpenses = new ArrayList<Expense>();
-		this.receivedExpenses = new ArrayList<Expense>();
+		this.expenses = new ArrayList<Expense>();
 	}
 
 	public String getName() {
@@ -96,12 +92,16 @@ public class User implements Serializable {
 		this.receivedInvitations.add(invitation);
 	}
 	
-	public List<Expense> getOwnedExpenses() {
-		return ownedExpenses;
+	public List<Expense> getExpenses() {
+		return expenses;
 	}
 
-	public void addOwnedExpense(Expense expense){
-		this.ownedExpenses.add(expense);
+	public void removeExpense(Expense expense) {
+		this.expenses.remove(expense);
+	}
+
+	public void addExpense(Expense expense){
+		this.expenses.add(expense);
 	}
 	
 	public List<Group> getOwnedGroups() {
@@ -126,14 +126,6 @@ public class User implements Serializable {
 	
 	public void removeMemberGroup(Group group) {
 		this.memberGroups.remove(group);
-	}
-	
-	public List<Expense> getReceivedExpenses() {
-		return receivedExpenses;
-	}
-
-	public void addReceivedExpense(Expense expense) {
-		this.receivedExpenses.add(expense);
 	}
 	
 	public long getId() {
@@ -166,14 +158,6 @@ public class User implements Serializable {
 
 	public void setMemberGroups(List<Group> memberGroups) {
 		this.memberGroups = memberGroups;
-	}
-
-	public void setOwnedExpenses(List<Expense> ownedExpenses) {
-		this.ownedExpenses = ownedExpenses;
-	}
-
-	public void setReceivedExpenses(List<Expense> receivedExpenses) {
-		this.receivedExpenses = receivedExpenses;
 	}
 	
 	@Override

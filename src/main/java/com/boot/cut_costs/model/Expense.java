@@ -1,6 +1,7 @@
 package com.boot.cut_costs.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -57,8 +58,10 @@ public class Expense implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "EXPENSE_SHARER", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
 	private List<User> sharers;
-	
-	public Expense() {}
+
+	public Expense() {
+		this.sharers = new ArrayList<User>();
+	}
 	
 	public long getId() {
 		return id;

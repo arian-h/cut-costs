@@ -91,6 +91,6 @@ public class ExpenseController {
 		}
 		expenseService.addExpense(expenseDto.getTitle(), expenseDto.getAmount(),
 				expenseDto.getDescription(), expenseDto.getSharers(),
-				expenseDto.getImage(), principal.getName(), groupId);
+				expenseDto.getImage(), groupId, principal.getName());
 	}
 }

@@ -27,9 +27,9 @@ public class ExpenseDtoValidator implements Validator {
 		if (!CustomValidationUtils.validateImage(expenseDTO.getImage(), 2)){
 			errors.rejectValue("image", "image does not meet expectations");
 		}
-		if (!CustomValidationUtils.validateSharers(expenseDTO.getSharers())) {
-			errors.rejectValue("sharers", "sharers do not meet expectations");
-		}
+//		if (!CustomValidationUtils.validateSharers(expenseDTO.getSharers())) {
+//			errors.rejectValue("sharers", "sharers do not meet expectations");
+//		}
 	}
 	
 }
