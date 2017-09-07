@@ -14,10 +14,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.exception.BadRequestException;
+import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
-import com.boot.cut_costs.repository.UserRepository;
 import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
@@ -29,9 +29,6 @@ public class GroupService {
 	
 	@Autowired 
 	private UserService userService;
-	
-	@Autowired 
-	private UserRepository userRepository;
 	
 	@Autowired
 	private ExpenseService expenseService;
@@ -55,9 +52,20 @@ public class GroupService {
 
 	public void delete(long groupId, String username) {
 		Group group = this.loadById(groupId);
-		User user = userService.loadByUsername(username);
-		validateAdminAccessToGroup(group, user);
-		user.removeOwnedGroup(group);
+		User owner = userService.loadByUsername(username);
+		validateAdminAccessToGroup(group, owner);
+		owner.removeOwnedGroup(group);
+		for (User user: group.getMembers()) {
+			user.removeMemberGroup(group);
+		}
+		List<Long> expenseIds = new ArrayList<Long>();
+		//TODO fix here
+		for (Expense e: group.getExpenses()) {
+			expenseIds.add(e.getId());
+		}
+		for (Long expenseId: expenseIds) {
+			expenseService.delete(expenseId, username);
+		}
 		groupRepository.delete(groupId);
 		logger.debug("Group with id " + groupId + " was deleted");
 	}
@@ -85,10 +93,7 @@ public class GroupService {
 	
 	public List<Group> list(String username) {
 		User user = userService.loadByUsername(username);
-		List<Group> result = new ArrayList<Group>();
-		result.addAll(user.getMemberGroups());
-		result.addAll(user.getOwnedGroups());
-		return result;
+		return user.getAllGroups();
 	}
 
 	public List<User> listMembers(long groupId, String username) {
@@ -96,8 +101,8 @@ public class GroupService {
 		User user = userService.loadByUsername(username);
 		validateMemberAccessToGroup(group, user);
 		List<User> result = new ArrayList<User>();
-		result.addAll(group.getMembers());
 		result.add(group.getAdmin());
+		result.addAll(group.getMembers());
 		return result;
 	}
 	
@@ -112,6 +117,16 @@ public class GroupService {
 		}
 		group.removeMember(target);
 		user.removeMemberGroup(group);
+		groupRepository.save(group);
+	}
+
+	public void addMember(long groupId, long userId) {
+		Group group = this.loadById(groupId);
+		User user = userService.loadById(userId);
+		if (this.isMemberOrAdmin(group, user)) {
+			throw new BadRequestException("User with id " + userId + " is already a member of group with id " + groupId);
+		}
+		group.addMember(user);
 		groupRepository.save(group);
 	}
 	
@@ -138,14 +153,4 @@ public class GroupService {
 	public boolean isMemberOrAdmin(Group group, User user) {
 		return group.isMember(user) || group.isAdmin(user);
 	}
-
-	public void addMember(long groupId, long userId) {
-		Group group = this.loadById(groupId);
-		User user = userService.loadById(userId);
-		if (this.isMemberOrAdmin(group, user)) {
-			throw new BadRequestException("User with id " + userId + " is already a member of group with id " + groupId);
-		}
-		groupRepository.save(group);
-	}
-
 }

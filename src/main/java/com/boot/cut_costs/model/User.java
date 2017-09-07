@@ -44,7 +44,22 @@ public class User implements Serializable {
 	private List<Group> memberGroups;
 
 	@ManyToMany(cascade = CascadeType.REFRESH)
-	private List<Expense> expenses;
+	private List<Expense> receivedExpenses;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="owner")
+	private List<Expense> ownedExpenses;
+
+	public List<Expense> getOwnedExpenses() {
+		return ownedExpenses;
+	}
+
+	public void addOwnedExpense(Expense expense) {
+		this.ownedExpenses.add(expense);
+	}
+
+	public void removeOwnedExpense(Expense expense) {
+		this.ownedExpenses.remove(expense);
+	}
 
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Invitation> ownedInvitations;
@@ -57,7 +72,8 @@ public class User implements Serializable {
 		this.memberGroups = new ArrayList<Group>();
 		this.ownedInvitations = new ArrayList<Invitation>();
 		this.receivedInvitations = new ArrayList<Invitation>();
-		this.expenses = new ArrayList<Expense>();
+		this.receivedExpenses = new ArrayList<Expense>();
+		this.ownedExpenses = new ArrayList<Expense>();
 	}
 
 	public String getName() {
@@ -76,6 +92,10 @@ public class User implements Serializable {
 		this.ownedInvitations = ownedInvitations;
 	}
 	
+	public void removeOwnedInvitation(Invitation invitation) {
+		this.ownedInvitations.remove(invitation);
+	}
+	
 	public void addOwnedInvitation(Invitation inv) {
 		this.ownedInvitations.add(inv);
 	}
@@ -88,20 +108,31 @@ public class User implements Serializable {
 		this.receivedInvitations = receivedInvitations;
 	}
 	
+	public void removeReceivedInvitation(Invitation invitation) {
+		this.receivedInvitations.remove(invitation);
+	}
+	
 	public void addReceivedInvitation(Invitation invitation) {
 		this.receivedInvitations.add(invitation);
 	}
 	
-	public List<Expense> getExpenses() {
+	public List<Expense> getReceivedExpenses() {
+		return receivedExpenses;
+	}
+
+	public void removeReceivedExpense(Expense expense) {
+		this.receivedExpenses.remove(expense);
+	}
+
+	public void addReceivedExpense(Expense expense){
+		this.receivedExpenses.add(expense);
+	}
+	
+	public List<Expense> getAllExpenses() {
+		List<Expense> expenses = new ArrayList<Expense>();
+		expenses.addAll(this.getReceivedExpenses());
+		expenses.addAll(this.getOwnedExpenses());
 		return expenses;
-	}
-
-	public void removeExpense(Expense expense) {
-		this.expenses.remove(expense);
-	}
-
-	public void addExpense(Expense expense){
-		this.expenses.add(expense);
 	}
 	
 	public List<Group> getOwnedGroups() {
@@ -120,6 +151,13 @@ public class User implements Serializable {
 		return memberGroups;
 	}
 
+	public List<Group> getAllGroups() {
+		List<Group> groups = new ArrayList<Group>();
+		groups.addAll(this.getOwnedGroups());
+		groups.addAll(this.getMemberGroups());
+		return groups;
+	}
+	
 	public void addMemberGroup(Group group) {
 		this.memberGroups.add(group);
 	}

@@ -46,32 +46,33 @@ public class ExpenseService {
 		return expense;
 	}
 
+	/*
+	 * Return all expenses for a user
+	 */
 	public List<Expense> list(String username) {
 		User user = userService.loadByUsername(username);
-		return user.getExpenses();
+		return user.getAllExpenses();
 	}
 
 	/*
 	 * Owner of the expense or admin of the group can delete an expense
 	 */
 	public void delete(long expenseId, String username) {
-		User user = userService.loadByUsername(username);
+		User owner = userService.loadByUsername(username);
 		Expense expense = expenseRepository.findById(expenseId);
 		Group group = expense.getGroup();
-		if (!expense.getOwner().equals(user) && !group.isAdmin(user)) {
+		if (!expense.getOwner().equals(owner) && !group.isAdmin(owner)) {
 			throw new BadRequestException("User is not allowed to delete the expense as it is not admin of the group or owner of the expense");
 		}
-//		User admin = expense.getOwner();
-//		admin.removeExpense(expense);
-//		userRepository.save(admin);
+		User admin = expense.getOwner();
+		admin.removeOwnedExpense(expense);
 		for (User sharer: expense.getSharers()) {
-			sharer.removeExpense(expense);
-//			userRepository.save(sharer);
+			sharer.removeReceivedExpense(expense);
 		}
-//		group.removeExpense(expense);
-//		groupRepository.save(group);
 		group.removeExpense(expense);
-		user.removeExpense(expense);
+		groupRepository.save(group);
+		group.removeExpense(expense);
+		owner.removeOwnedExpense(expense);
 		expenseRepository.delete(expense);
 		logger.debug("Expense with id " + expenseId + "was deleted");
 	}
@@ -90,11 +91,10 @@ public class ExpenseService {
 			for (long sharerId: sharersIds) {
 				User sharer = userService.loadById(sharerId);
 				groupService.validateMemberAccessToGroup(expense.getGroup(), sharer);
-				if (!sharer.getExpenses().contains(expense)) {
-					sharer.addExpense(expense);					
+				if (!sharer.getReceivedExpenses().contains(expense)) {
+					sharer.addReceivedExpense(expense);					
 				}
 				sharers.add(sharer);
-				//userRepository.save(sharer);
 			}
 		}
 		expense.setAmount(amount);
@@ -109,7 +109,7 @@ public class ExpenseService {
 		logger.debug("Expense with title " + title + " was updated by user " + username);
 	}
 
-	public void addExpense(String title, long amount, String description, List<Long> sharersIds, String image, long groupId, String username) throws IOException {
+	public void create(String title, long amount, String description, List<Long> sharersIds, String image, long groupId, String username) throws IOException {
 		Group group = groupService.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		groupService.validateMemberAccessToGroup(group, owner);
@@ -121,8 +121,7 @@ public class ExpenseService {
 					User sharer = userService.loadById(sharerId);
 					groupService.validateMemberAccessToGroup(group, sharer);
 					sharers.add(sharer);
-					sharer.addExpense(expense);
-//					userRepository.save(sharer);
+					sharer.addReceivedExpense(expense);
 				}
 			}
 		}
@@ -137,8 +136,7 @@ public class ExpenseService {
 			expense.setImageId(imageId);			
 		}
 		group.addExpense(expense);
-		owner.addExpense(expense);
-//		groupRepository.save(group);
+		owner.addOwnedExpense(expense);
 		expenseRepository.save(expense);
 		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
 	}

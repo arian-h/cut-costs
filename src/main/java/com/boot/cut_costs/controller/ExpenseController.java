@@ -36,13 +36,19 @@ public class ExpenseController {
 	
 	@Autowired
 	private ExpenseDtoValidator expenseDtoValidator;
-	
+
+	/*
+	 * Get information for an expense
+	 */
 	@RequestMapping(path = "/{expenseId}", method = RequestMethod.GET)
 	public ExtendedGetExpenseDto get(@PathVariable long expenseId, Principal principal) {
 		Expense expense = expenseService.get(expenseId, principal.getName());
 		return expenseDtoConverter.convertToExtendedDto(expense);
 	}
-	
+
+	/*
+	 * List all user expenses
+	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public List<GetExpenseDto> list(Principal principal) {
 		List<Expense> expenses = expenseService.list(principal.getName());
@@ -53,11 +59,17 @@ public class ExpenseController {
 		return result;
 	}
 	
+	/*
+	 * Delete an expense. Only owner of the expense or admin of the group can delete an expense
+	 */
 	@RequestMapping(path = "/{expenseId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable long expenseId, Principal principal) {
 		expenseService.delete(expenseId, principal.getName());
 	}
 
+	/*
+	 * Update an existing expense
+	 */
 	@RequestMapping(path = "/{expenseId}", method = RequestMethod.PUT)
 	public void update(@RequestBody PostExpenseDto expenseDto , @PathVariable long expenseId, Principal principal, BindingResult result) throws BadRequestException, IOException {
 		expenseDtoValidator.validate(expenseDto, result);
@@ -71,7 +83,7 @@ public class ExpenseController {
 	 * Get all expenses posted to a group
 	 */
 	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.GET)
-	public List<GetExpenseDto> getAllExpenses(@PathVariable long groupId, Principal principal) {
+	public List<GetExpenseDto> listExpenses(@PathVariable long groupId, Principal principal) {
 		List<Expense> expenses = expenseService.listExpenses(groupId, principal.getName());
 		List<GetExpenseDto> result = new ArrayList<GetExpenseDto>();
 		for (Expense expense: expenses) {
@@ -81,15 +93,15 @@ public class ExpenseController {
 	}
 
 	/*
-	 * Add an expense to a group
+	 * Create expense (i.e. create and add an expense to a group)
 	 */
 	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.POST)
-	public void addExpense(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public void create(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		expenseDtoValidator.validate(expenseDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		expenseService.addExpense(expenseDto.getTitle(), expenseDto.getAmount(),
+		expenseService.create(expenseDto.getTitle(), expenseDto.getAmount(),
 				expenseDto.getDescription(), expenseDto.getSharers(),
 				expenseDto.getImage(), groupId, principal.getName());
 	}

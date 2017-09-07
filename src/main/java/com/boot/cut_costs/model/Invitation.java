@@ -36,24 +36,13 @@ public class Invitation implements Serializable {
 	@ManyToOne
 	private User invitee;
 	
-	@Column(name="description")
-	private String description;
-	
 	@NotNull
 	@JoinColumn(referencedColumnName = "id")
 	@ManyToOne
 	private Group group;
 
 	public Invitation() {}
-	
-	public String getDescription() {
-		return description;
-	}
-	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
+
 	public User getInviter() {
 		return inviter;
 	}

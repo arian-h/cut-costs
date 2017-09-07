@@ -28,8 +28,16 @@ public class InvitationController {
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
 
+	@RequestMapping(path = "", method = RequestMethod.POST)
+	public void create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
+		invitationService.create(invitationDto.getGroupId(), invitationDto.getInviteeId(), principal.getName());
+	}
+
+	/*
+	 * List all invitations a user received
+	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<GetInvitationDto> list(Principal principal, BindingResult result) throws IOException {
+	public List<GetInvitationDto> list(Principal principal) throws IOException {
 		return invitationService
 				.list(principal.getName())
 				.stream()
@@ -38,17 +46,12 @@ public class InvitationController {
 	}
 	
 	@RequestMapping(path = "/{invitationId}/accept", method = RequestMethod.GET)
-	public void accept(@PathVariable long invitationId, Principal principal, BindingResult result) throws IOException {
+	public void accept(@PathVariable long invitationId, Principal principal) throws IOException {
 		invitationService.accept(invitationId, principal.getName());
 	}
 
 	@RequestMapping(path = "/{invitationId}/reject", method = RequestMethod.GET)
-	public void reject(@PathVariable long invitationId, Principal principal, BindingResult result) throws IOException {
+	public void reject(@PathVariable long invitationId, Principal principal) throws IOException {
 		invitationService.reject(invitationId, principal.getName());
-	}
-	
-	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
-		invitationService.create(invitationDto.getGroup(), invitationDto.getInvitee(), principal.getName(), invitationDto.getDescription());
 	}
 }

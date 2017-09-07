@@ -27,7 +27,6 @@ public class InvitationDtoConverter {
         		GetInvitationDto target = new GetInvitationDto();
         		Invitation source = context.getSource();
         		target.setId(source.getId());
-        		target.setDescription(source.getDescription());
     			target.setGroup(groupDtoConverter.convertToDto(source.getGroup()));
     			target.setInviter(userDtoConverter.convertToDto(source.getInviter())); 
         		return target;

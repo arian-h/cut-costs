@@ -8,19 +8,19 @@ public class PostInvitationDto extends AbstractInvitationDto {
 
 	private long groupId;
 
-	public long getInvitee() {
+	public long getInviteeId() {
 		return inviteeId;
 	}
 
-	public void setInvitee(long inviteeId) {
+	public void setInviteeId(long inviteeId) {
 		this.inviteeId = inviteeId;
 	}
 
-	public long getGroup() {
+	public long getGroupId() {
 		return groupId;
 	}
 
-	public void setGroup(long groupId) {
+	public void setGroupId(long groupId) {
 		this.groupId = groupId;
 	}
 

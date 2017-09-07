@@ -52,12 +52,12 @@ public class UserDtoConverter {
 				target.setId(source.getId());
 				target.setName(source.getName());
 				target.setImageId(source.getImageId());
-				target.setOwnedExpenses(source.getExpenses().stream()
+				target.setOwnedExpenses(source.getOwnedExpenses().stream()
 						.map(expense -> expenseDtoConverter.convertToDto(expense))
 						.collect(Collectors.toList()));
-//				target.setReceivedExpenses(source.getReceivedExpenses().stream()
-//						.map(expense -> expenseDtoConverter.convertToDto(expense))
-//						.collect(Collectors.toList()));
+				target.setReceivedExpenses(source.getReceivedExpenses().stream()
+						.map(expense -> expenseDtoConverter.convertToDto(expense))
+						.collect(Collectors.toList()));
 				target.setReceivedInvitations(source
 						.getReceivedInvitations()
 						.stream()

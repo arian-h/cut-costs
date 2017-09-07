@@ -87,7 +87,7 @@ public class GroupController {
 	 * Get a list of all groups a user is a member of
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<GetGroupDto> getAllGroups(Principal principal) {
+	public List<GetGroupDto> list(Principal principal) {
 		List<Group> groups = groupService.list(principal.getName());
 		List<GetGroupDto> result = new ArrayList<GetGroupDto>();
 		for (Group group: groups) {
@@ -100,7 +100,7 @@ public class GroupController {
 	 * Get all members of a group
 	 */
 	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
-	public List<GetUserDto> getAllMembers(@PathVariable long groupId, Principal principal) {
+	public List<GetUserDto> listMembers(@PathVariable long groupId, Principal principal) {
 		List<User> members = groupService.listMembers(groupId, principal.getName());
 		List<GetUserDto> result = new ArrayList<GetUserDto>();
 		for (User member: members) {
@@ -113,7 +113,7 @@ public class GroupController {
 	 * Delete a specific member of a group. Deleting admin is not possible
 	 */
 	@RequestMapping(path = "/{groupId}/user/{userId}", method = RequestMethod.DELETE)
-	public void deleteMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
+	public void removeMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
 		groupService.removeMember(groupId, userId, principal.getName());
 	}
 	

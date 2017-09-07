@@ -34,6 +34,9 @@ public class UserController {
 	@Autowired
 	private UserDtoConverter userDtoConverter;
 
+	/*
+	 * Get a specific user
+	 */
 	@RequestMapping(path = "/{userId}", method = RequestMethod.GET)
 	public GetUserDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
 		return userDtoConverter.convertToDto(userService.loadById(userId));

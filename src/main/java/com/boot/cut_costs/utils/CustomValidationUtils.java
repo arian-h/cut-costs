@@ -98,6 +98,7 @@ public class CustomValidationUtils {
 		return length > 0 && length <= 25;
 	}
 
+	//TODO: fix this
 	public static boolean validateSharers(List<Long> sharers) {
 		return true;
 	}

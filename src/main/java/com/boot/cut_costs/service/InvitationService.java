@@ -24,12 +24,22 @@ public class InvitationService {
 	
 	@Autowired
 	private GroupService groupService;
-	
-	public Invitation get(long invitationId, String username){
-		Invitation invitation = this.loadById(invitationId);
-		User user = userService.loadByUsername(username);
-		validateAccessToInvitation(invitation, user);
-		return invitation;
+
+	public void create(long groupId, long inviteeId, String inviterUsername) {
+		User inviter = userService.loadByUsername(inviterUsername);
+		Group group = groupService.loadById(groupId);
+		groupService.validateMemberAccessToGroup(group, inviter);
+		User invitee = userService.loadById(inviteeId);
+		if (groupService.isMemberOrAdmin(group, invitee)) {
+			throw new BadRequestException("User with id " + inviteeId + " is already a member of group with id " + groupId);
+		}
+		Invitation invitation = new Invitation();
+		invitation.setGroup(group);
+		invitation.setInvitee(invitee);
+		invitation.setInviter(inviter);
+		invitee.addReceivedInvitation(invitation);
+		inviter.addOwnedInvitation(invitation);
+		invitationRepository.save(invitation);
 	}
 	
 	public List<Invitation> list(String username) {
@@ -47,17 +57,24 @@ public class InvitationService {
 	
 	public void accept(long invitationId, String username) {
 		Invitation invitation = this.loadById(invitationId);
-		User user = userService.loadByUsername(username);
-		validateAccessToInvitation(invitation, user);
+		User invitee = userService.loadByUsername(username);
+		validateAccessToInvitation(invitation, invitee);
 		Group group = invitation.getGroup();
-		groupService.addMember(group.getId(), user.getId());
+		groupService.addMember(group.getId(), invitee.getId());
+		invitee.addMemberGroup(group);
+		invitee.removeReceivedInvitation(invitation);
+		User inviter = userService.loadById(invitation.getInviter().getId());
+		inviter.removeOwnedInvitation(invitation);
 		invitationRepository.delete(invitation);
 	}
 	
 	public void reject(long invitationId, String username) {
 		Invitation invitation = this.loadById(invitationId);
-		User user = userService.loadByUsername(username);
-		validateAccessToInvitation(invitation, user);
+		User invitee = userService.loadByUsername(username);
+		validateAccessToInvitation(invitation, invitee);
+		invitee.removeReceivedInvitation(invitation);
+		User inviter = userService.loadById(invitation.getInviter().getId());
+		inviter.removeOwnedInvitation(invitation);
 		invitationRepository.delete(invitation);
 	}
 	
@@ -66,22 +83,5 @@ public class InvitationService {
 		if (!invitation.getInvitee().equals(user)) {
 			throw new AccessDeniedException("User with id " + user.getId() + " does not have access to invitation with id " + invitation.getId()); 
 		}
-	}
-
-	public void create(long groupId, long inviteeId, String inviterUsername, String description) {
-		User inviter = userService.loadByUsername(inviterUsername);
-		Group group = groupService.loadById(groupId);
-		groupService.validateAdminAccessToGroup(group, inviter);
-		User invitee = userService.loadById(inviteeId);
-		if (groupService.isMemberOrAdmin(group, invitee)) {
-			throw new BadRequestException("User with id " + inviteeId + " is already a member of group with id " + groupId);
-		}
-		Invitation invitation = new Invitation();
-		invitation.setGroup(group);
-		invitation.setDescription(description);
-		invitation.setInvitee(invitee);
-		invitation.setInviter(inviter);
-		invitee.addReceivedInvitation(invitation);
-		invitationRepository.save(invitation);
 	}
 }
