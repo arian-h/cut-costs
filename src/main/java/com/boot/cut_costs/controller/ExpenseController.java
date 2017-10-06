@@ -71,12 +71,13 @@ public class ExpenseController {
 	 * Update an existing expense
 	 */
 	@RequestMapping(path = "/{expenseId}", method = RequestMethod.PUT)
-	public void update(@RequestBody PostExpenseDto expenseDto , @PathVariable long expenseId, Principal principal, BindingResult result) throws BadRequestException, IOException {
+	public GetExpenseDto update(@RequestBody PostExpenseDto expenseDto , @PathVariable long expenseId, Principal principal, BindingResult result) throws BadRequestException, IOException {
 		expenseDtoValidator.validate(expenseDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException();
 		}
-		expenseService.update(expenseId, expenseDto.getTitle(), expenseDto.getAmount(), expenseDto.getDescription(), expenseDto.getSharers(), expenseDto.getImage(), principal.getName());
+		Expense expense = expenseService.update(expenseId, expenseDto.getTitle(), expenseDto.getAmount(), expenseDto.getDescription(), expenseDto.getSharers(), expenseDto.getImage(), principal.getName());
+		return expenseDtoConverter.convertToDto(expense);
 	}
 
 	/*
@@ -96,13 +97,14 @@ public class ExpenseController {
 	 * Create expense (i.e. create and add an expense to a group)
 	 */
 	@RequestMapping(path = "/{groupId}/expense", method = RequestMethod.POST)
-	public void create(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public GetExpenseDto create(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		expenseDtoValidator.validate(expenseDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		expenseService.create(expenseDto.getTitle(), expenseDto.getAmount(),
+		Expense expense = expenseService.create(expenseDto.getTitle(), expenseDto.getAmount(),
 				expenseDto.getDescription(), expenseDto.getSharers(),
 				expenseDto.getImage(), groupId, principal.getName());
+		return expenseDtoConverter.convertToDto(expense);
 	}
 }

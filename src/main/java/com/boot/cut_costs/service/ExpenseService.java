@@ -80,7 +80,7 @@ public class ExpenseService {
 	/*
 	 * Owner of the expense and admin of the group can change it
 	 */
-	public void update(long expenseId, String title, long amount, String description, List<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
+	public Expense update(long expenseId, String title, long amount, String description, List<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
 		Expense expense = loadById(expenseId);
 		User user = userService.loadByUsername(username);
 		if (expense.getOwner().getId() != user.getId() && !expense.getGroup().isAdmin(user)) {
@@ -107,9 +107,10 @@ public class ExpenseService {
 		}
 		expenseRepository.save(expense);
 		logger.debug("Expense with title " + title + " was updated by user " + username);
+		return expense;
 	}
 
-	public void create(String title, long amount, String description, List<Long> sharersIds, String image, long groupId, String username) throws IOException {
+	public Expense create(String title, long amount, String description, List<Long> sharersIds, String image, long groupId, String username) throws IOException {
 		Group group = groupService.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		groupService.validateMemberAccessToGroup(group, owner);
@@ -139,6 +140,7 @@ public class ExpenseService {
 		owner.addOwnedExpense(expense);
 		expenseRepository.save(expense);
 		logger.debug("Expense with title " + title + " was added to group with id " + groupId + "by user " + username);
+		return expense;
 	}
 
 	public List<Expense> listExpenses(long groupId, String username) {

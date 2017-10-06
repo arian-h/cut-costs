@@ -18,6 +18,7 @@ import com.boot.cut_costs.dto.user.ExtendedGetUserDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.PostUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.UserDtoValidator;
 
@@ -48,11 +49,12 @@ public class UserController {
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public void update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
+	public GetUserDto update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
 		updateUserDtoValidator.validate(userDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		userService.update(userDto.getName(), userDto.getDescription(), userDto.getImage(), principal.getName());
+		User user = userService.update(userDto.getName(), userDto.getDescription(), userDto.getImage(), principal.getName());
+		return userDtoConverter.convertToDto(user);
 	}
 }

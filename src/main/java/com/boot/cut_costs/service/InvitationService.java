@@ -2,6 +2,8 @@ package com.boot.cut_costs.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
@@ -24,8 +26,10 @@ public class InvitationService {
 	
 	@Autowired
 	private GroupService groupService;
+	
+	private static Logger logger = LoggerFactory.getLogger(InvitationService.class);
 
-	public void create(long groupId, long inviteeId, String inviterUsername) {
+	public Invitation create(long groupId, long inviteeId, String inviterUsername) {
 		User inviter = userService.loadByUsername(inviterUsername);
 		Group group = groupService.loadById(groupId);
 		groupService.validateMemberAccessToGroup(group, inviter);
@@ -40,6 +44,8 @@ public class InvitationService {
 		invitee.addReceivedInvitation(invitation);
 		inviter.addOwnedInvitation(invitation);
 		invitationRepository.save(invitation);
+		logger.debug("invitation ");
+		return invitation;
 	}
 	
 	public List<Invitation> list(String username) {

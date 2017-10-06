@@ -50,7 +50,7 @@ public class ExpenseControllerTest extends BaseControllerTest {
 		for (int index = 0; index < 3; index++) {
 			//TODO fix here
 			expenses[index] = createExpense(
-					expense_titles[index], index, expense_descriptions[index], DUMMY_IMAGE_ID,
+					expense_titles[index], index, expense_descriptions[index], null,
 					Arrays.asList(sharer_ids[index]), expense_owners[index], expense_groups[index].getId());
 		}
 
@@ -67,15 +67,22 @@ public class ExpenseControllerTest extends BaseControllerTest {
 		//assert
 		Assert.assertEquals("wrong response status", 200, status);
 		Assert.assertEquals("wrong number of expenses returned", 3, content.length());
-		for (int index = 0; index < 3; index++) {
-			JSONObject responseExpense = ((JSONObject)content.get(index));
-			Assert.assertEquals("wrong expense "+ index +" returned (wrong title)", expense_titles[index], responseExpense.get("title"));
-			Assert.assertEquals("wrong expense " + index + " returned (wrong amount)", index, responseExpense.get("amount"));
+		int expectedIndex = 0;
+		for (int actualIndex : new int[] {2,0,1}) { // first comes the received expenses
+			JSONObject responseExpense = ((JSONObject)content.get(expectedIndex));
+			Assert.assertEquals("wrong title for expense " + actualIndex, expense_titles[actualIndex], responseExpense.get("title"));
+			Assert.assertEquals("wrong amount for expense " + actualIndex, actualIndex, responseExpense.get("amount"));
+			expectedIndex++;
 		}
 	}
 
 	@Test
 	//TODO fix here
+	public void testUpdate() throws Exception {
+		//WRITE TEST HERE
+	}
+	
+	@Test
 	public void testCreate() throws Exception {
 		//prepare
     	Principal mockPrincipal = Mockito.mock(Principal.class);
@@ -109,7 +116,6 @@ public class ExpenseControllerTest extends BaseControllerTest {
 
 		//assert
 		Assert.assertEquals("wrong response status", 200, response.getStatus());
-		Assert.assertEquals("wrong response content", "", response.getContentAsString());
 		List<Expense> expenses = Lists.newArrayList(expenseRepository.findAll());
 		Assert.assertEquals("wrong number of expenses created", 1, expenses.size());
 

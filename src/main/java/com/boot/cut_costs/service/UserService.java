@@ -38,13 +38,14 @@ public class UserService {
 		return user;
 	}
 
-	public void update(String name, String description, String image, String username) throws IOException {
+	public User update(String name, String description, String image, String username) throws IOException {
 		User user = customUserDetailsService.loadUserByUsername(username).getUser();
 		user.setName(name);
 		user.setDescription(description);
 		user.setImageId(CommonUtils.decodeBase64AndSaveImage(image));
 		userRepository.save(user);
 		logger.debug("User updated id: " + user.getId());
+		return user;
 	}
 
 	public User loadByUsername(String username) {

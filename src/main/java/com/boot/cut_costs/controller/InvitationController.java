@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.boot.cut_costs.dto.invitation.GetInvitationDto;
 import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
 import com.boot.cut_costs.dto.invitation.PostInvitationDto;
+import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.service.InvitationService;
 
 @RestController
@@ -29,8 +30,9 @@ public class InvitationController {
 	private InvitationDtoConverter invitationDtoConverter;
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
-		invitationService.create(invitationDto.getGroupId(), invitationDto.getInviteeId(), principal.getName());
+	public GetInvitationDto create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
+		Invitation invitation = invitationService.create(invitationDto.getGroupId(), invitationDto.getInviteeId(), principal.getName());
+		return invitationDtoConverter.convertToDto(invitation);
 	}
 
 	/*

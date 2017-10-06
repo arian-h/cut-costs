@@ -83,10 +83,9 @@ public class UserControllerTest extends BaseControllerTest {
     	Principal mockPrincipal = Mockito.mock(Principal.class);
 		String username = createUniqueEmail();
         Mockito.when(mockPrincipal.getName()).thenReturn(username);
-		String name = createUniqueAlphanumericString(10);
-        String description = createUniqueAlphanumericString(40);
-        String imageId = createUniqueAlphanumericString(15);
-		createUser(username, name, description, imageId);
+		createUser(username, createUniqueAlphanumericString(10),
+				createUniqueAlphanumericString(40),
+				createUniqueAlphanumericString(15));
 		String updatedName = createUniqueAlphanumericString(10);
         String updatedDescription = createUniqueAlphanumericString(40);
 		JSONObject jo = new JSONObject();
@@ -103,11 +102,9 @@ public class UserControllerTest extends BaseControllerTest {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();
 		int status = response.getStatus();
-		String content = response.getContentAsString();
 
 		//assert
 		Assert.assertEquals("wrong response status", 200, status);
-		Assert.assertEquals("wrong response content", "", content);
 		List<User> createdUsers = Lists.newArrayList(userRepository.findAll());
 		Assert.assertEquals("number of users in the db should not change", 1, createdUsers.size());
 		User createdUser = createdUsers.get(0);

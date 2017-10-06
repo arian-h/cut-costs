@@ -34,11 +34,10 @@ public class InvitationControllerTest extends BaseControllerTest {
         Group group = createGroup(createUniqueAlphanumericString(10), null, null, admin);
         group.addMember(inviter);
         JSONObject jo = new JSONObject();
-        String group_description = createUniqueAlphanumericString(50);
-		jo.put(ID_FIELD_NAME, group.getId());
+        String invitation_description = createUniqueAlphanumericString(50);
 		jo.put(INVITEE_ID_FIELD_NAME, invitee.getId());
 		jo.put(GROUP_ID_FIELD_NAME, group.getId());
-		jo.put(DESCRIPTION_FIELD_NAME, group_description);
+		jo.put(DESCRIPTION_FIELD_NAME, invitation_description);
 
 		//action
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -49,11 +48,9 @@ public class InvitationControllerTest extends BaseControllerTest {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();
 		int status = response.getStatus();
-		String content = response.getContentAsString();
 
 		//assert
 		Assert.assertEquals("wrong response status", 200, status);
-		Assert.assertEquals("wrong response content", "", content);
 		List<Invitation> invitations = Lists.newArrayList(invitationRepository.findAll());
 		Assert.assertEquals("wrong number of invitations created", 1, invitations.size());
 		Invitation invitation = invitations.get(0);
@@ -84,7 +81,7 @@ public class InvitationControllerTest extends BaseControllerTest {
         long[] inviterIds = new long[] {users[0].getId(), users[1].getId()};
         long[] inviteeIds = new long[] {users[1].getId(), users[0].getId()};
         for (int index = 0; index < 2; index++) {
-            createInvitation(inviteeIds[index], inviterIds[index], groups[index].getId());        	
+            createInvitation(inviterIds[index], inviteeIds[index], groups[index].getId());        	
         }
 
         //action

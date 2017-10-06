@@ -46,24 +46,26 @@ public class GroupController {
 	 * Create a group
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public void create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
+	public GetGroupDto create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		groupService.create(groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		return groupDtoConverter.convertToDto(group);
 	}
 
 	/*
 	 * Update a group with specific id
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
-	public void update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public GetGroupDto update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		return groupDtoConverter.convertToDto(group);
 	}
 
 	/*

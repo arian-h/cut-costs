@@ -46,13 +46,11 @@ public class GroupControllerTest extends BaseControllerTest {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();
 		int status = response.getStatus();
-		String content = response.getContentAsString();
 
 		//assert
 		List<Group> createdGroups = Lists.newArrayList(groupRepository.findAll());
 		Group createdGroup = createdGroups.get(0);
 		Assert.assertEquals("wrong response status", 200, status);
-		Assert.assertEquals("wrong response content", "", content);
 		Assert.assertEquals("wrong number of groups created", 1, createdGroups.size());
 		Assert.assertEquals("wrong group name", group_name, createdGroup.getName());
 		Assert.assertEquals("wrong group description", group_description, createdGroup.getDescription());
@@ -90,11 +88,9 @@ public class GroupControllerTest extends BaseControllerTest {
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();
 		int status = response.getStatus();
-		String content = response.getContentAsString();
 		
 		//assert
 		Assert.assertEquals("wrong response status", 200, status);
-		Assert.assertEquals("wrong response content", "", content);
 		Assert.assertEquals("wrong number of groups exist", 1, Lists.newArrayList(groupRepository.findAll()).size());
 		Group updatedGroup = groupRepository.findById(group.getId());
 		Assert.assertEquals("wrong updated group name", updated_group_name, group.getName());
