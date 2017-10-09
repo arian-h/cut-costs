@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import com.boot.cut_costs.repository.UserRepository;
 import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
+@Transactional
 public class ExpenseService {
 
 	@Autowired
@@ -122,9 +125,11 @@ public class ExpenseService {
 					User sharer = userService.loadById(sharerId);
 					groupService.validateMemberAccessToGroup(group, sharer);
 					sharers.add(sharer);
-					sharer.addReceivedExpense(expense);
 				}
 			}
+		}
+		for (User sharer: sharers) {
+			sharer.addReceivedExpense(expense);
 		}
 		expense.setTitle(title);
 		expense.setAmount(amount);

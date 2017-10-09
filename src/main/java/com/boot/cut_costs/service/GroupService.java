@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.boot.cut_costs.exception.BadRequestException;
 import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
+import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
 import com.boot.cut_costs.utils.CommonUtils;
@@ -32,6 +33,9 @@ public class GroupService {
 	
 	@Autowired
 	private ExpenseService expenseService;
+	
+	@Autowired
+	private InvitationService invitationService;
 	
 	private static Logger logger = LoggerFactory.getLogger(GroupService.class);
 	
@@ -66,6 +70,14 @@ public class GroupService {
 		}
 		for (Long expenseId: expenseIds) {
 			expenseService.delete(expenseId, username);
+		}
+		List<Long> invitationIds = new ArrayList<Long>();
+		//TODO fix here
+		for (Invitation e: group.getInvitations()) {
+			invitationIds.add(e.getId());
+		}
+		for (Long invitationId: invitationIds) {
+			invitationService.delete(invitationId, username);
 		}
 		groupRepository.delete(groupId);
 		logger.debug("Group with id " + groupId + " was deleted");

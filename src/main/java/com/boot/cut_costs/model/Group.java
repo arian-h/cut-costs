@@ -47,6 +47,9 @@ public class Group implements Serializable {
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Expense> expenses;
 	
+	@OneToMany(cascade=CascadeType.ALL)
+	private List<Invitation> invitations;
+	
 	@Column(name="description")
 	private String description;
 
@@ -61,6 +64,7 @@ public class Group implements Serializable {
 	public Group() {
 		this.expenses = new ArrayList<Expense>();
 		this.members = new ArrayList<User>();
+		this.invitations = new ArrayList<Invitation>();
 	}
 	
 	public long getId() {
@@ -117,6 +121,18 @@ public class Group implements Serializable {
 	
 	public void removeExpense(Expense expense) {
 		this.expenses.remove(expense);
+	}
+	
+	public List<Invitation> getInvitations() {
+		return invitations;
+	}
+	
+	public void addInvitation(Invitation invitation) {
+		this.invitations.add(invitation);
+	}
+	
+	public void removeInvitation(Invitation invitation) {
+		this.invitations.remove(invitation);
 	}
 
 	public String getDescription() {

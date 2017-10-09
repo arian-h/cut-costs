@@ -1,15 +1,18 @@
 package com.boot.cut_costs.controller;
 
 import java.security.Principal;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -25,142 +28,253 @@ public class ScenarioTest extends BaseControllerTest {
         	users[index] = createUser(usernames[index], createUniqueAlphanumericString(10), null, null);
         }
 		Principal mockPrincipal = Mockito.mock(Principal.class);
-        Mockito.when(mockPrincipal.getName()).thenReturn(usernames[0]);
-        //user0 creates group0
-        JSONObject jo = new JSONObject();
-        String group_name = createUniqueAlphanumericString(10);
-        String group_description = createUniqueAlphanumericString(50);
-		jo.put(NAME_FIELD_NAME, group_name);
-		jo.put(DESCRIPTION_FIELD_NAME, group_description);
+		ArrayList<String> expenseTitles = new ArrayList<String>();
+		ArrayList<Integer> expenseAmounts = new ArrayList<Integer>();
+		Map<Integer, Integer> expenseIds = new HashMap<Integer, Integer>();
+
+        //user0 creates group
+        String groupName = createUniqueAlphanumericString(10);
+        MockHttpServletResponse response = createGroup(mockPrincipal, usernames[0], groupName);
+
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		long groupId = new JSONObject(response.getContentAsString()).getLong("id");
+		
+		long[] invitationId = new long[3];
+		
+		//user0 invites user1 to group
+		response = invite(mockPrincipal, usernames[0], users[1].getId(), groupId);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		invitationId[0] = new JSONObject(response.getContentAsString()).getLong("id");
+		
+		//user0 invites user2 to group
+		response = invite(mockPrincipal, usernames[0], users[2].getId(), groupId);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		invitationId[1] = new JSONObject(response.getContentAsString()).getLong("id");
+
+		//user0 invites user3 to group
+		response = invite(mockPrincipal, usernames[0], users[3].getId(), groupId);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		invitationId[2] = new JSONObject(response.getContentAsString()).getLong("id");
+		
+		//user3 rejects invitation2
+        response = rejectInvitation(mockPrincipal, usernames[3], invitationId[2]);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		
+		//user1 accepts invitation0
+		response = acceptInvitation(mockPrincipal, usernames[1], invitationId[0]);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+
+		//user0 posts an expense to group, sharers are user0, user1, user3
+        response = postExpense(mockPrincipal, usernames[0], groupId, new long[] {users[0].getId(), users[1].getId(), users[3].getId()}, createUniqueAlphanumericString(10), 120);
+		Assert.assertEquals("wrong response status", 403, response.getStatus());
+		
+		//user0 posts an expense to group, sharers are user0, user1, user2
+        response = postExpense(mockPrincipal, usernames[0], groupId, new long[] {users[0].getId(), users[1].getId(),users[2].getId()}, createUniqueAlphanumericString(10), 120);
+		Assert.assertEquals("wrong response status", 403, response.getStatus());
+		
+		//user2 accepts invitation1
+		response = acceptInvitation(mockPrincipal, usernames[2], invitationId[1]);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		
+		//user0 posts an expense to group, sharers are user0, user1, user2
+		String expenseTitle = createUniqueAlphanumericString(10);
+		expenseTitles.add(expenseTitle);
+        int expenseAmount = (int) (Math.random() * 100 + 1);
+        expenseAmounts.add(expenseAmount);
+		response = postExpense(mockPrincipal, usernames[0], groupId, new long[] {users[0].getId(), users[1].getId(),users[2].getId()}, expenseTitle, expenseAmount);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		expenseIds.put(0, (int)new JSONObject(response.getContentAsString()).get("id"));
+		
+		//user1 posts an expense to group, sharer is user0
+		expenseTitle = createUniqueAlphanumericString(10);
+        expenseTitles.add(expenseTitle);
+        expenseAmount = (int) (Math.random() * 100 + 1);
+        expenseAmounts.add(expenseAmount);
+		response = postExpense(mockPrincipal, usernames[1], groupId, new long[] {users[0].getId()}, expenseTitle, expenseAmount);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		expenseIds.put(1, (int)new JSONObject(response.getContentAsString()).get("id"));
+
+		//user2 posts an expense to group, sharers are user0, user1
+		expenseTitle = createUniqueAlphanumericString(10);
+        expenseTitles.add(expenseTitle);
+        expenseAmount = (int) (Math.random() * 100 + 1);
+        expenseAmounts.add(expenseAmount);
+		response = postExpense(mockPrincipal, usernames[2], groupId, new long[] {users[0].getId(), users[1].getId()}, expenseTitle, expenseAmount);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		expenseIds.put(2, (int)new JSONObject(response.getContentAsString()).get("id"));
+
+        //user2 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[2]);
+		JSONArray contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		Assert.assertEquals("wrong number of expenses returned", 2, contentArray.length());
+		int actualIndex = 0;
+		for (int expectedIndex : new int[] {0, 2}) { // first comes the received expenses
+			JSONObject responseExpense = ((JSONObject)contentArray.get(actualIndex));
+			Assert.assertEquals("wrong title for expense ", expenseTitles.get(expectedIndex), responseExpense.get("title"));
+			Assert.assertEquals("wrong amount for expense ", expenseAmounts.get(expectedIndex), responseExpense.get("amount"));
+			actualIndex++;
+		}
+		
+        //user0 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[0]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		Assert.assertEquals("wrong number of expenses returned", 3, contentArray.length());
+		actualIndex = 0;
+		for (int expectedIndex : new int[] {1, 2, 0}) { // first comes the received expenses
+			JSONObject responseExpense = ((JSONObject)contentArray.get(actualIndex));
+			Assert.assertEquals("wrong title for expense ", expenseTitles.get(expectedIndex), responseExpense.get("title"));
+			Assert.assertEquals("wrong amount for expense ", expenseAmounts.get(expectedIndex), responseExpense.get("amount"));
+			actualIndex++;
+		}
+		
+        //user1 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[1]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		Assert.assertEquals("wrong number of expenses returned", 3, contentArray.length());
+		actualIndex = 0;
+		for (int expectedIndex : new int[] {0, 2, 1}) { // first comes the received expenses
+			JSONObject responseExpense = ((JSONObject)contentArray.get(actualIndex));
+			Assert.assertEquals("wrong title for expense ", expenseTitles.get(expectedIndex), responseExpense.get("title"));
+			Assert.assertEquals("wrong amount for expense ", expenseAmounts.get(expectedIndex), responseExpense.get("amount"));
+			actualIndex++;
+		}
+
+		//user1 deletes expense0
+		response = deleteExpense(mockPrincipal, usernames[1], expenseIds.get(0));
+		Assert.assertEquals("wrong response status", 400, response.getStatus());
+
+		//user1 deletes expense0
+		response = deleteExpense(mockPrincipal, usernames[0], expenseIds.get(1));
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+
+        //user0 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[0]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		Assert.assertEquals("wrong number of expenses returned", 2, contentArray.length());
+		actualIndex = 0;
+		for (int expectedIndex : new int[] {2, 0}) { // first comes the received expenses
+			JSONObject responseExpense = ((JSONObject)contentArray.get(actualIndex));
+			Assert.assertEquals("wrong title for expense ", expenseTitles.get(expectedIndex), responseExpense.get("title"));
+			Assert.assertEquals("wrong amount for expense ", expenseAmounts.get(expectedIndex), responseExpense.get("amount"));
+			actualIndex++;
+		}
+		
+		//user1 attempts to delete group
+		response = deleteGroup(mockPrincipal, usernames[1], groupId);
+		Assert.assertEquals("wrong response status", 403, response.getStatus());
+
+		//user0 deletes group
+		response = deleteGroup(mockPrincipal, usernames[0], groupId);
+		Assert.assertEquals("wrong response status", 200, response.getStatus());
+		
+        //user0 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[0]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong number of expenses returned", 0, contentArray.length());
+		
+        //user1 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[1]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong number of expenses returned", 0, contentArray.length());
+		
+		//user2 gets list of expenses
+		response = listExpenses(mockPrincipal, usernames[2]);
+		contentArray = new JSONArray(response.getContentAsString());
+		Assert.assertEquals("wrong number of expenses returned", 0, contentArray.length());
+	}
+
+	private MockHttpServletResponse createGroup(Principal mockPrincipal, String username, String groupName) throws Exception {
+		Mockito.when(mockPrincipal.getName()).thenReturn(username);
+		JSONObject jo = new JSONObject();
+		jo.put(NAME_FIELD_NAME, groupName);
 		jo.put(IMAGE_FIELD_NAME, DUMMY_IMAGE);
-		//action
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(GROUP_ENDPOINT_URL).content(jo.toString())
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-		MockHttpServletResponse response = result.getResponse();
-		int status = response.getStatus();
-		JSONObject content = new JSONObject(response.getContentAsString());
-		long groupId = content.getLong("id");
-		Assert.assertEquals("wrong response status", 200, status);
-		
-		long[] invitationId = new long[3];
-		
-		//user0 invites user1 to group0
-		jo.put(INVITEE_ID_FIELD_NAME, users[1].getId());
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse invite(Principal mockPrincipal, String inviterName, long inviteeId, long groupId) throws Exception {
+		Mockito.when(mockPrincipal.getName()).thenReturn(inviterName);
+		JSONObject jo = new JSONObject();
+		jo.put(INVITEE_ID_FIELD_NAME, inviteeId);
 		jo.put(GROUP_ID_FIELD_NAME, groupId);
 		jo.put(DESCRIPTION_FIELD_NAME, null);
-		//action
-		requestBuilder = MockMvcRequestBuilders
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(INVITATION_ENDPOINT).content(jo.toString())
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		response = result.getResponse();
-		status = response.getStatus();
-		content = new JSONObject(response.getContentAsString());
-		invitationId[0] = content.getLong("id");
-
-		Assert.assertEquals("wrong response status", 200, status);
-		
-		//user0 invites user2 to group0
-		jo.put(INVITEE_ID_FIELD_NAME, users[2].getId());
-		jo.put(GROUP_ID_FIELD_NAME, groupId);
-		jo.put(DESCRIPTION_FIELD_NAME, null);
-		//action
-		requestBuilder = MockMvcRequestBuilders
-				.post(INVITATION_ENDPOINT).content(jo.toString())
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		response = result.getResponse();
-		status = response.getStatus();
-		content = new JSONObject(response.getContentAsString());
-		invitationId[1] = content.getLong("id");
-
-		Assert.assertEquals("wrong response status", 200, status);
-
-		//user0 invites user3 to group0
-		jo.put(INVITEE_ID_FIELD_NAME, users[3].getId());
-		jo.put(GROUP_ID_FIELD_NAME, groupId);
-		jo.put(DESCRIPTION_FIELD_NAME, null);
-		//action
-		requestBuilder = MockMvcRequestBuilders
-				.post(INVITATION_ENDPOINT).content(jo.toString())
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		response = result.getResponse();
-		status = response.getStatus();
-		content = new JSONObject(response.getContentAsString());
-		invitationId[2] = content.getLong("id");
-
-		Assert.assertEquals("wrong response status", 200, status);
-
-		//user3 rejects invitation2
-        Mockito.when(mockPrincipal.getName()).thenReturn(usernames[3]);
-		requestBuilder = MockMvcRequestBuilders
-				.get(INVITATION_ENDPOINT + invitationId[2] + "/reject")
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse rejectInvitation(Principal mockPrincipal, String username, long invitationId) throws Exception {
+        Mockito.when(mockPrincipal.getName()).thenReturn(username);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get(INVITATION_ENDPOINT + invitationId + "/reject")
 				.accept(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		Assert.assertEquals("wrong response status", 200, result.getResponse().getStatus());
-
-		//user1 accepts invitation0
-        Mockito.when(mockPrincipal.getName()).thenReturn(usernames[1]);
-		requestBuilder = MockMvcRequestBuilders
-				.get(INVITATION_ENDPOINT + invitationId[0] + "/accept")
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse acceptInvitation(Principal mockPrincipal, String username, long invitationId) throws Exception {
+        Mockito.when(mockPrincipal.getName()).thenReturn(username);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get(INVITATION_ENDPOINT + invitationId + "/accept")
 				.accept(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		Assert.assertEquals("wrong response status", 200, result.getResponse().getStatus());
-		
-        Mockito.when(mockPrincipal.getName()).thenReturn(usernames[0]);
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
 
-		//user0 posts an expense to group, sharers are user0, user1, user3
-        jo = new JSONObject();
-		jo.put(TITLE_FIELD_NAME, createUniqueAlphanumericString(10));
-		jo.put(DESCRIPTION_FIELD_NAME, createUniqueAlphanumericString(35));
-		jo.put(IMAGE_FIELD_NAME, DUMMY_IMAGE);
-		jo.put(AMOUNT_FIELD_NAME, 120);
-		jo.put(SHARERS_FIELD_NAME, Arrays.asList(users[0].getId(), users[1].getId(), users[3].getId()));
-
-		requestBuilder = MockMvcRequestBuilders
+	private MockHttpServletResponse postExpense(Principal mockPrincipal, String username, long groupId, long[] sharers, String title, long amount) throws Exception {
+        Mockito.when(mockPrincipal.getName()).thenReturn(username);
+		JSONObject jo = new JSONObject();
+		jo.put(TITLE_FIELD_NAME, title);
+		jo.put(AMOUNT_FIELD_NAME, amount);
+		List<Long> sharers_ids = new ArrayList<Long>();
+		for (long sharer_id: sharers) {
+			sharers_ids.add(sharer_id);
+		}
+		jo.put(SHARERS_FIELD_NAME, sharers_ids);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post(EXPENSE_ENDPOINT_URL + groupId + "/expense").content(jo.toString())
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		Assert.assertEquals("wrong response status", 403, result.getResponse().getStatus());
-		
-//		//user0 posts an expense to group, sharers are user0, user1, user2
-        jo = new JSONObject();
-		jo.put(TITLE_FIELD_NAME, createUniqueAlphanumericString(10));
-		jo.put(DESCRIPTION_FIELD_NAME, createUniqueAlphanumericString(35));
-		jo.put(IMAGE_FIELD_NAME, DUMMY_IMAGE);
-		jo.put(AMOUNT_FIELD_NAME, 120);
-		jo.put(SHARERS_FIELD_NAME, Arrays.asList(users[0].getId(), users[1].getId(), users[2].getId()));
-
-		requestBuilder = MockMvcRequestBuilders
-				.post(EXPENSE_ENDPOINT_URL + groupId + "/expense").content(jo.toString())
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		Assert.assertEquals("wrong response status", 403, result.getResponse().getStatus());
-		
-		//user2 accepts invitation1
-        Mockito.when(mockPrincipal.getName()).thenReturn(usernames[2]);
-		requestBuilder = MockMvcRequestBuilders
-				.get(INVITATION_ENDPOINT + invitationId[1] + "/accept")
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse listExpenses(Principal mockPrincipal, String username) throws Exception {
+		Mockito.when(mockPrincipal.getName()).thenReturn(username);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get(EXPENSE_ENDPOINT_URL)
 				.accept(MediaType.APPLICATION_JSON)
 				.principal(mockPrincipal);
-		result = mockMvc.perform(requestBuilder).andReturn();
-		Assert.assertEquals("wrong response status", 200, result.getResponse().getStatus());
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse deleteExpense(Principal mockPrincipal, String username, long expenseId) throws Exception {
+		Mockito.when(mockPrincipal.getName()).thenReturn(username);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete(EXPENSE_ENDPOINT_URL + expenseId)
+				.accept(MediaType.APPLICATION_JSON)
+				.principal(mockPrincipal);
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
+	}
+	
+	private MockHttpServletResponse deleteGroup(Principal mockPrincipal, String username, long groupId) throws Exception {
+		Mockito.when(mockPrincipal.getName()).thenReturn(username);
+		//action
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete(GROUP_ENDPOINT_URL + groupId)
+				.accept(MediaType.APPLICATION_JSON)
+				.principal(mockPrincipal);
+		return mockMvc.perform(requestBuilder).andReturn().getResponse();
 	}
 }

@@ -131,7 +131,7 @@ public class GroupControllerTest extends BaseControllerTest {
 	 * Deleting a group shouldn't delete the members of that group
 	 */
 	@Test
-	public void testDeleteGroupWithMembers() throws Exception {
+	public void testDelete() throws Exception {
 		//prepare
     	Principal mockPrincipal = Mockito.mock(Principal.class);
     	String[] usernames = createUniqueEmail(3);
@@ -171,7 +171,7 @@ public class GroupControllerTest extends BaseControllerTest {
 	 * Get a list of all groups a user is a member of
 	 */
 	@Test
-	public void testListGroups() throws Exception {
+	public void testList() throws Exception {
     	//prepare
 		Principal mockPrincipal = Mockito.mock(Principal.class);
 		String username = createUniqueEmail();

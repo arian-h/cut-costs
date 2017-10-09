@@ -2,6 +2,8 @@ package com.boot.cut_costs.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,12 @@ import com.boot.cut_costs.exception.BadRequestException;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
+import com.boot.cut_costs.repository.GroupRepository;
 import com.boot.cut_costs.repository.InvitationRepository;
+import com.boot.cut_costs.repository.UserRepository;
 
 @Service
+@Transactional
 public class InvitationService {
 
 	@Autowired
@@ -26,6 +31,12 @@ public class InvitationService {
 	
 	@Autowired
 	private GroupService groupService;
+	
+	@Autowired
+	private GroupRepository groupRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	private static Logger logger = LoggerFactory.getLogger(InvitationService.class);
 
@@ -84,10 +95,34 @@ public class InvitationService {
 		invitationRepository.delete(invitation);
 	}
 	
-	//check if user is invitee of the invitation
+	/*
+	 * if user is invitee of the invitation
+	 */
 	private void validateAccessToInvitation(Invitation invitation, User user) {
 		if (!invitation.getInvitee().equals(user)) {
 			throw new AccessDeniedException("User with id " + user.getId() + " does not have access to invitation with id " + invitation.getId()); 
 		}
+	}
+	
+	/*
+	 * only admin of the group while deleting a group can delete an invitation
+	 */
+	public void delete(long invitationId, String username) {
+		User admin = userService.loadByUsername(username);
+		Invitation invitation = invitationRepository.findById(invitationId);
+		Group group = invitation.getGroup();
+		if (!group.isAdmin(admin)) {
+			throw new BadRequestException("User is not allowed to delete the invitation as it is not admin of the group");
+		}
+		User invitee = invitation.getInvitee();
+		invitee.removeReceivedInvitation(invitation);
+		userRepository.save(invitee);
+		User inviter = invitation.getInviter();
+		inviter.removeOwnedInvitation(invitation);
+		userRepository.save(inviter);
+		group.removeInvitation(invitation);
+		groupRepository.save(group);
+		invitationRepository.delete(invitation);
+		logger.debug("Invitation with id " + invitationId + "was deleted");
 	}
 }
