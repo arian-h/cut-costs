@@ -1,5 +1,7 @@
 package com.boot.cut_costs.security.config;
 
+import javax.servlet.Filter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -80,5 +82,10 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FilterRegistrationBean registration = new FilterRegistrationBean(filter);
         registration.setEnabled(false);
         return registration;
+    }
+    
+    @Bean
+    public Filter httpsEnforcerFilter(){
+        return new HttpsEnforcer();
     }
 }

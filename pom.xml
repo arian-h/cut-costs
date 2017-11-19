@@ -14,12 +14,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+	    <start-class>com.boot.cut_costs.App</start-class>	
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.2.RELEASE</version>
 	</parent>
+	
 	<!-- uncomment this if you see the "DerInputStream.getLength(): lengthTag=109, 
 		too big." error again. <build> <resources> <resource> <directory>src/main/resources</directory> 
 		<filtering>true</filtering> <excludes> <exclude>*.p12</exclude> </excludes> 
