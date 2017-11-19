@@ -188,5 +188,9 @@
 			<artifactId>je</artifactId>
 			<version>5.0.73</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+		</dependency>
 	</dependencies>
 </project>
