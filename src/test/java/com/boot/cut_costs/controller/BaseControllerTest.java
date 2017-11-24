@@ -99,7 +99,7 @@ public abstract class BaseControllerTest {
 	protected final static String EXPENSE_ENDPOINT_URL = "/expense/";
 	protected final static String GROUP_ENDPOINT_URL = "/group/";
 	protected final static String USER_ENDPOINT_URL = "/user/";
-	protected final static String SIGNUP_ENDPOINT = "/signup";
+	protected final static String SIGNUP_ENDPOINT = "/auth/signup";
 	protected final static String INVITATION_ENDPOINT = "/invitation/";
 
 	@BeforeClass

@@ -25,6 +25,7 @@ import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.validator.UserDetailsDtoValidator;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthenticationController {
 	
 	@Autowired

@@ -44,7 +44,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.csrf().disable()
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.authorizeRequests()
-	            .anyRequest().authenticated().and()
+	            .antMatchers("/**").authenticated().and()
 			.sessionManagement()
 	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
@@ -57,10 +57,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web)
             throws Exception {
         web.ignoring()
-        	.antMatchers(HttpMethod.POST, "/login")
-        	.antMatchers(HttpMethod.POST, "/signup")
-    		// TODO: This is used for initializing h2 console. Remove this when going to prod
-        	.antMatchers("/console/**");
+        	.antMatchers(HttpMethod.POST, "/auth/**");
+    		/*
+    		 * This is used for initializing h2 console. Remove this when going to prod
+        		.antMatchers("/console/**"); 
+        	*/
     }
 	
 	/*

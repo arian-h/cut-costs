@@ -14,12 +14,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-	    <start-class>com.boot.cut_costs.App</start-class>	
+	    <start-class>com.boot.cut_costs.App</start-class>
+	    <java.version>1.8</java.version>
 	</properties>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.2.RELEASE</version>
+		<version>1.5.8.RELEASE</version>
 	</parent>
 	
 	<!-- uncomment this if you see the "DerInputStream.getLength(): lengthTag=109, 
@@ -193,6 +194,30 @@
 		<dependency>
 			<groupId>commons-dbcp</groupId>
 			<artifactId>commons-dbcp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+		</dependency>
+		<dependency>
+	    	<groupId>org.springframework.hateoas</groupId>
+	    	<artifactId>spring-hateoas</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.data</groupId>
+	   	 	<artifactId>spring-data-rest-core</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.plugin</groupId>
+		    <artifactId>spring-plugin-core</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-orm</artifactId>
 		</dependency>
 	</dependencies>
     <build>

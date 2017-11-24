@@ -5,6 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/*
+ * TODO do we really need this filter ? 
+ */
 public class HttpsEnforcer implements Filter {
 
     private FilterConfig filterConfig;
