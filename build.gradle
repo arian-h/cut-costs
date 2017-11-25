@@ -1,0 +1,84 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'com.boot'
+version = '0.0.1-SNAPSHOT'
+
+description = """cut-costs"""
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+test{
+
+    forkEvery = 1
+    testLogging {
+        showStandardStreams = true
+    }
+}
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version:'1.5.8.RELEASE'
+    compile group: 'mysql', name: 'mysql-connector-java', version:'5.1.44'
+    compile group: 'org.javassist', name: 'javassist', version:'3.18.0-GA'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version:'1.5.8.RELEASE'
+    compile group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version:'2.0.14.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version:'1.5.8.RELEASE'
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version:'0.7.0'
+    compile group: 'org.springframework.security', name: 'spring-security-cas', version:'4.2.3.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-acl', version:'4.2.3.RELEASE'
+    compile group: 'bsf', name: 'bsf', version:'2.4.0'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version:'1.5.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version:'1.5.8.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-ldap', version:'4.2.3.RELEASE'
+    compile group: 'javax.jdo', name: 'jdo-api', version:'3.0.1'
+    compile group: 'com.querydsl', name: 'querydsl-core', version:'4.1.4'
+    compile group: 'org.springframework', name: 'springloaded', version:'1.2.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-rest', version:'1.5.8.RELEASE'
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version:'1.0.6'
+    compile group: 'org.scala-lang', name: 'scala-library', version:'2.11.0'
+    compile group: 'commons-validator', name: 'commons-validator', version:'1.6'
+    compile group: 'commons-io', name: 'commons-io', version:'2.5'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jersey', version:'1.5.8.RELEASE'
+    compile group: 'org.modelmapper', name: 'modelmapper', version:'0.7.5'
+    compile(group: 'org.apache.httpcomponents', name: 'httpclient', version:'4.5.3') {
+exclude(module: 'commons-logging')
+    }
+    compile group: 'org.apache.commons', name: 'commons-lang3', version:'3.4'
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:'1.5.8.RELEASE') {
+exclude(module: 'commons-logging')
+    }
+    compile group: 'org.eclipse.jetty.aggregate', name: 'jetty-all', version:'9.2.13.v20150730'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb', version:'1.5.8.RELEASE'
+    compile group: 'com.h2database', name: 'h2', version:'1.4.196'
+    compile group: 'org.springframework.integration', name: 'spring-integration-test', version:'4.3.12.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-test', version:'4.2.3.RELEASE'
+    compile group: 'org.apache.hadoop', name: 'hadoop-core', version:'1.0.0'
+    compile group: 'com.sleepycat', name: 'je', version:'5.0.73'
+    compile group: 'commons-dbcp', name: 'commons-dbcp', version:'1.4'
+    compile group: 'org.springframework', name: 'spring-webmvc', version:'4.3.12.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version:'1.13.8.RELEASE'
+    compile group: 'org.springframework.hateoas', name: 'spring-hateoas', version:'0.23.0.RELEASE'
+    compile group: 'org.springframework.data', name: 'spring-data-rest-core', version:'2.6.8.RELEASE'
+    compile group: 'org.springframework.plugin', name: 'spring-plugin-core', version:'1.2.0.RELEASE'
+    compile group: 'org.springframework', name: 'spring-orm', version:'4.3.12.RELEASE'
+    testCompile group: 'junit', name: 'junit', version:'4.11'
+    testCompile group: 'org.springframework', name: 'spring-test', version:'4.3.12.RELEASE'
+}

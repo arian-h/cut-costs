@@ -13,17 +13,17 @@ public class CustomValidationUtils {
 	 * all alphanumeric character (starts with alphabet), with at most one period (dot) allowed in the middle
 	 * and size between 8 and 15
 	*/
-	private final static String NAME_PATTERN = "^(?![^.]*\\.[^.]*\\.)[A-Za-z](?:\\.?[A-Za-z0-9]){7,14}$";
+	private final static String NAME_PATTERN = "^(?![^.\\n]*\\.[^.\\n]*\\.)[A-Za-z](?:\\.?[A-Za-z0-9]){7,14}$";
 	/* 
 	 * at least one uppercase, one lowercase, one digit and no special characters
-	 * and size between 6 and 20 
+	 * and size between 8 and 30
 	 */
-	private final static String PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{5,20}$"; 
+	private final static String PASSWORD_PATTERN = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])[a-zA-Z0-9]{7,29}$"; 
 	
 	private final static EmailValidator emailValidator = EmailValidator.getInstance();
 	
 	public static boolean validateUserName(String name){
-		return !isEmptyOrWhitespace(name) && name.matches(NAME_PATTERN);
+		return !isEmptyOrWhitespace(name);// && name.matches(NAME_PATTERN);
 	}
 	
 	public static boolean validatePassword(String password) {
