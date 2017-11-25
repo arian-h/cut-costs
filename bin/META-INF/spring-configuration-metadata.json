@@ -6,12 +6,6 @@
       "name": "spring.datasource",
       "sourceMethod": "public javax.sql.DataSource testDataSource() throws java.net.URISyntaxException",
       "type": "javax.sql.DataSource"
-    },
-    {
-      "sourceType": "com.boot.cut_costs.config.datasource.ProductionDataSourceConfiguration",
-      "name": "spring.datasource",
-      "sourceMethod": "public org.apache.commons.dbcp.BasicDataSource productionDataSource() throws java.net.URISyntaxException",
-      "type": "org.apache.commons.dbcp.BasicDataSource"
     }
   ],
   "properties": [

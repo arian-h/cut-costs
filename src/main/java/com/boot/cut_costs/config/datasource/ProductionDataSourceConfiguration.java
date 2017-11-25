@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -15,7 +14,6 @@ public class ProductionDataSourceConfiguration {
 	@Bean
 	@Primary
 	@Profile("!test")
-	@ConfigurationProperties(prefix="spring.datasource")
 	public BasicDataSource productionDataSource() throws URISyntaxException {
 		URI dbUri = new URI(System.getenv("DATABASE_URL"));
 		String username = dbUri.getUserInfo().split(":")[0];
