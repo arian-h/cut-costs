@@ -14,7 +14,7 @@ import com.boot.cut_costs.exception.BadRequestException;
 
 public class CommonUtils {
 	
-	public final static File IMAGE_FOLDER = new File("/temp");
+	public final static File IMAGE_FOLDER = new File("/tmp");
 	public final static String IMAGE_FORMAT_NAME = "png";
 
     public static String decodeBase64AndSaveImage(String data) throws IOException, BadRequestException {
