@@ -16,6 +16,8 @@ public class ProductionDataSourceConfiguration {
 	@Profile("!test")
 	public BasicDataSource productionDataSource() throws URISyntaxException {
 		URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+		System.out.println("---------------------------------------");
+		System.out.println(System.getenv("CLEARDB_DATABASE_URL"));
 		String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = String.format("jdbc:mysql://%s:%d%s?useSSL=false", dbUri.getHost(), dbUri.getPort(),  dbUri.getPath());
