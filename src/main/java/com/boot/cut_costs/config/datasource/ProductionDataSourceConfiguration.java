@@ -20,7 +20,7 @@ public class ProductionDataSourceConfiguration {
 		System.out.println(System.getenv("CLEARDB_DATABASE_URL"));
 		String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = String.format("jdbc:mysql://%s:%d%s?useSSL=false", dbUri.getHost(), dbUri.getPort(),  dbUri.getPath());
+        String dbUrl = String.format("jdbc:mysql://%s%s?useSSL=false", dbUri.getHost(),  dbUri.getPath());
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         BasicDataSource basicDataSource = new BasicDataSource();
         basicDataSource.setUrl(dbUrl);
