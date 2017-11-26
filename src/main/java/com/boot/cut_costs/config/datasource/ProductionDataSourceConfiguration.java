@@ -21,11 +21,15 @@ public class ProductionDataSourceConfiguration {
 		String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = String.format("jdbc:mysql://%s:%d%s?useSSL=false", dbUri.getHost(), dbUri.getPort(),  dbUri.getPath());
-        
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         BasicDataSource basicDataSource = new BasicDataSource();
         basicDataSource.setUrl(dbUrl);
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
+        System.out.println(username);
+        System.out.println(password);
+        System.out.println(dbUrl);
+        System.out.println("+++++++++++++++++++++");
         return basicDataSource;
 	}
 	
