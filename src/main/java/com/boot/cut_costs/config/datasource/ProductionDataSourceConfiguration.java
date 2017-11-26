@@ -16,22 +16,13 @@ public class ProductionDataSourceConfiguration {
 	@Profile("!test")
 	public BasicDataSource productionDataSource() throws URISyntaxException {
 		URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
-		System.out.println("---------------------------------------");
-		System.out.println(System.getenv("CLEARDB_DATABASE_URL"));
 		String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = String.format("jdbc:mysql://%s%s?useSSL=false", dbUri.getHost(),  dbUri.getPath());
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         BasicDataSource basicDataSource = new BasicDataSource();
         basicDataSource.setUrl(dbUrl);
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
-        System.out.println("PORT " + dbUri.getPort());
-        //basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        System.out.println(username);
-        System.out.println(password);
-        System.out.println(dbUrl);
-        System.out.println("+++++++++++++++++++++");
         return basicDataSource;
 	}
 	
