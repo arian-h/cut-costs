@@ -26,6 +26,7 @@ public class ProductionDataSourceConfiguration {
         basicDataSource.setUrl(dbUrl);
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
+        System.out.println("PORT " + dbUri.getPort());
         //basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
         System.out.println(username);
         System.out.println(password);
