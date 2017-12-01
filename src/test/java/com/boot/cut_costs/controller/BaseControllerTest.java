@@ -12,6 +12,7 @@ import javax.servlet.Filter;
 import javax.transaction.Transactional;
 
 import org.h2.tools.Server;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -101,15 +102,18 @@ public abstract class BaseControllerTest {
 	protected final static String USER_ENDPOINT_URL = "/user/";
 	protected final static String SIGNUP_ENDPOINT = "/auth/signup";
 	protected final static String INVITATION_ENDPOINT = "/invitation/";
-
+	
+	private static Server webServer;
+	
 	@BeforeClass
 	public static void init() throws SQLException {
-		/*
-		 * TODO: Delete the following two lines when going into production. These two lines help developer to 
-		 * access the H2 web console through http://localhost:8082/
-		 * */
-	    Server webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "6109");
+	    webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
 	    webServer.start();
+	}
+	
+	@AfterClass
+	public static void tearDown() throws SQLException {
+	    webServer.stop();
 	}
 	
 	@Before
