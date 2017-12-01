@@ -108,7 +108,7 @@ public abstract class BaseControllerTest {
 		 * TODO: Delete the following two lines when going into production. These two lines help developer to 
 		 * access the H2 web console through http://localhost:8082/
 		 * */
-	    Server webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
+	    Server webServer = Server.createWebServer("-web", "-webAllowOthers", "-webPort", "6109");
 	    webServer.start();
 	}
 	
