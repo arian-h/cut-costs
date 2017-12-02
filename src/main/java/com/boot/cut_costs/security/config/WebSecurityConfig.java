@@ -85,8 +85,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return registration;
     }
     
-    @Bean
-    public Filter httpsEnforcerFilter(){
-        return new HttpsEnforcer();
-    }
+//    @Bean
+//    public Filter httpsEnforcerFilter(){
+//        return new HttpsEnforcer();
+//    }
 }
