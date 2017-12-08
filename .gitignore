@@ -3,3 +3,19 @@ build/*
 .gradle/*
 *.class
 bin/
+#.classpath
+#.project
+#.settings
+#STS project files
+.springBeans
+
+.apt_generated/*
+
+#Node
+bundle.js
+npm-debug.log
+src/main/frontend/node_modules
+.DS_Store
+/*.env
+/.idea
+

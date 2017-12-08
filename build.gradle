@@ -7,7 +7,10 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
+plugins {
+  id "com.moowork.node" version "1.2.0"
+  id "java"
+}
 
 group = 'com.boot'
 version = '0.0.1-SNAPSHOT'
@@ -16,12 +19,13 @@ description = """cut-costs"""
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
+// The maximum number of test classes to execute in a forked test process. T
 test{
-
     forkEvery = 1
     testLogging {
         showStandardStreams = true
@@ -31,6 +35,19 @@ test{
 repositories {
      maven { url "http://repo.maven.apache.org/maven2" }
 }
+
+node {
+    version = '8.9.1'
+    npmWorkDir = file('src/main/frontend')
+    nodeModulesDir = file('src/main/frontend')
+    download = true
+}
+
+task webpack(type: NodeTask, dependsOn: 'npmInstall') {
+	script = file("$projectDir/src/main/frontend/node_modules/.bin/webpack")
+}
+
+processResources.dependsOn 'webpack'
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.8.RELEASE'
