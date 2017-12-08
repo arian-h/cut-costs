@@ -13,10 +13,10 @@ public class AppConfig {
 	    return new ModelMapper();
 	}
 	// TODO: This is used for initializing h2 console. Remove this when going to prod
-    @Bean
-    ServletRegistrationBean h2servletRegistration(){
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean( new WebServlet());
-        registrationBean.addUrlMappings("/console/*");
-        return registrationBean;
-    }
+//    @Bean
+//    ServletRegistrationBean h2servletRegistration(){
+//        ServletRegistrationBean registrationBean = new ServletRegistrationBean( new WebServlet());
+//        registrationBean.addUrlMappings("/console/*");
+//        return registrationBean;
+//    }
 }

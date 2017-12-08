@@ -12,10 +12,11 @@ plugins {
   id "java"
 }
 
-group = 'com.boot'
-version = '0.0.1-SNAPSHOT'
-
-description = """cut-costs"""
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.boot.cut_costs.App'
+    }
+}
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -43,8 +44,9 @@ node {
     download = true
 }
 
-task webpack(type: NodeTask, dependsOn: 'npmInstall') {
-	script = file("$projectDir/src/main/frontend/node_modules/.bin/webpack")
+task webpack(type: YarnTask, dependsOn: 'npmInstall') {
+	args = ['build']
+	// the same name as the script in package.json
 }
 
 processResources.dependsOn 'webpack'
