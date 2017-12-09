@@ -51,7 +51,12 @@ task webpack(type: YarnTask, dependsOn: 'npmInstall') {
 	// the same name as the script in package.json
 }
 
-processResources.dependsOn 'webpack'
+task copyTask(type: Copy, dependsOn: 'webpack') {
+    from 'src/main/frontend/bundle.js'
+    into 'src/main/resources/static/js'
+}
+
+processResources.dependsOn 'copyTask'
 
 dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.8.RELEASE'

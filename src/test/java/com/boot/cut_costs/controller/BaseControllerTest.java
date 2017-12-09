@@ -97,11 +97,12 @@ public abstract class BaseControllerTest {
 	protected final static String INVITEE_ID_FIELD_NAME = "inviteeId";
 	protected final static String GROUP_ID_FIELD_NAME = "groupId";
 	
-	protected final static String EXPENSE_ENDPOINT_URL = "/expense/";
-	protected final static String GROUP_ENDPOINT_URL = "/group/";
-	protected final static String USER_ENDPOINT_URL = "/user/";
-	protected final static String SIGNUP_ENDPOINT = "/auth/signup";
-	protected final static String INVITATION_ENDPOINT = "/invitation/";
+	protected final static String API_BASE_URL = "/api";
+	protected final static String EXPENSE_ENDPOINT_URL = API_BASE_URL + "/expense/";
+	protected final static String GROUP_ENDPOINT_URL = API_BASE_URL + "/group/";
+	protected final static String USER_ENDPOINT_URL = API_BASE_URL + "/user/";
+	protected final static String SIGNUP_ENDPOINT = API_BASE_URL + "/auth/signup";
+	protected final static String INVITATION_ENDPOINT = API_BASE_URL + "/invitation/";
 	
 	private static Server webServer;
 	
