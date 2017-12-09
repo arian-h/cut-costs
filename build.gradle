@@ -10,11 +10,13 @@ buildscript {
 plugins {
   id "com.moowork.node" version "1.2.0"
   id "java"
+  id "org.springframework.boot" version "1.5.8.RELEASE"
+  
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'com.boot.cut_costs.App'
+        attributes 'Main-Class': 'main.java.com.boot.cut_costs.App'
     }
 }
 
@@ -25,7 +27,7 @@ tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
 
-// The maximum number of test classes to execute in a forked test process. T
+// The maximum number of test classes to execute in a forked test process
 test{
     forkEvery = 1
     testLogging {
@@ -96,6 +98,6 @@ exclude(module: 'commons-logging')
     compile group: 'org.springframework.data', name: 'spring-data-rest-core', version:'2.6.8.RELEASE'
     compile group: 'org.springframework.plugin', name: 'spring-plugin-core', version:'1.2.0.RELEASE'
     compile group: 'org.springframework', name: 'spring-orm', version:'4.3.12.RELEASE'
-    testCompile group: 'junit', name: 'junit', version:'4.11'
+	testCompile 'junit:junit:4.12'
     testCompile group: 'org.springframework', name: 'spring-test', version:'4.3.12.RELEASE'
 }

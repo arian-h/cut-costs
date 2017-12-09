@@ -1,8 +1,6 @@
 package com.boot.cut_costs;
 
-import org.h2.server.web.WebServlet;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
