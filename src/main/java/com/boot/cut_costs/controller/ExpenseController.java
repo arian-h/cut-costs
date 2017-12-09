@@ -25,7 +25,7 @@ import com.boot.cut_costs.service.ExpenseService;
 import com.boot.cut_costs.validator.ExpenseDtoValidator;
 
 @RestController
-@RequestMapping("/expense")
+@RequestMapping("/api/expense")
 public class ExpenseController {
 	
 	@Autowired

@@ -27,7 +27,7 @@ import com.boot.cut_costs.service.GroupService;
 import com.boot.cut_costs.validator.GroupDtoValidator;
 
 @RestController
-@RequestMapping("/group")
+@RequestMapping("/api/group")
 public class GroupController {
 
 	@Autowired

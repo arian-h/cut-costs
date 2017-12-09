@@ -20,7 +20,7 @@ import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.service.InvitationService;
 
 @RestController
-@RequestMapping("/invitation")
+@RequestMapping("/api/invitation")
 public class InvitationController {
 
 	@Autowired

@@ -23,7 +23,7 @@ import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.UserDtoValidator;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
 	@Autowired
