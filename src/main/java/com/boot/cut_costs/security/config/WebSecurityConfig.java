@@ -17,34 +17,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.boot.cut_costs.AppConfig;
-import com.boot.cut_costs.repository.UserDetailsRepository;
 import com.boot.cut_costs.security.auth.jwt.JWTAuthenticationFilter;
-import com.boot.cut_costs.service.CustomUserDetailsService;
-
 
 @EnableWebSecurity
 @Configuration
 @Import(AppConfig.class)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
-	@Autowired 
-    private UserDetailsRepository accountRepository;
-	
-	@Autowired
-	private CustomUserDetailsService customUserDetailsService;
-	
+		
 	@Autowired
 	private JWTAuthenticationFilter jwtAuthenticationFilter;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-        	.csrf().disable()
-			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-			.authorizeRequests()
-	            .antMatchers("/**").authenticated().and()
+			//disable CSRF, so we can use postman
+			//TODO likely to re-enable it after dev is done
+			.csrf().disable()
+			.addFilter(jwtAuthenticationFilter)
+			//as we are using JWT, we don't need Session. Sessions are harder to scale and manage
 			.sessionManagement()
-	            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	/*
@@ -55,7 +47,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web)
             throws Exception {
         web.ignoring()
-        	.antMatchers(HttpMethod.POST, "/auth/**");
+        	.antMatchers(HttpMethod.POST, "/api/auth/**");
     		/*
     		 * This is used for initializing h2 console. Remove this when going to prod
         		.antMatchers("/console/**"); 

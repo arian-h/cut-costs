@@ -32,7 +32,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
     private static Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     private final static UrlPathHelper urlPathHelper = new UrlPathHelper();
     
-    final static String defaultFilterProcessesUrl = "/**";
+    final static String defaultFilterProcessesUrl = "/api/**";
     
 	public JWTAuthenticationFilter() {
 		super(defaultFilterProcessesUrl);

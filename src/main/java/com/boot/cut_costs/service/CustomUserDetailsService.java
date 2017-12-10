@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.exception.DuplicateUsernameException;
@@ -22,9 +21,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	private static Logger logger = LoggerFactory.getLogger(CustomUserDetailsService.class);
 	
@@ -41,12 +37,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 	}
 
-	public void saveIfNotExists(String username, String password, String name) {
+	public void saveIfNotExists(String username, String encodedPassword, String name) {
 		if (userDetailsRepository.existsByUsername(username)) {
 			logger.debug("Duplicate username " + username);
         	throw new DuplicateUsernameException("Username " + username + " is already taken");
 		}
-		CustomUserDetails userDetails = new CustomUserDetails(username, passwordEncoder.encode(password), true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
+		CustomUserDetails userDetails = new CustomUserDetails(username, encodedPassword, true, true, true, true, AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
 		User user = new User();
 		user.setName(name);
 		userDetails.setUser(user);

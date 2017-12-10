@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,9 @@ public class AuthenticationController {
 	@Autowired
 	private UserDetailsDtoValidator createUserDetailsDtoValidator;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -55,7 +59,7 @@ public class AuthenticationController {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getAllErrors().get(0).getCode());
 		}
-		userDetailsService.saveIfNotExists(username, password, name);
+		userDetailsService.saveIfNotExists(username, passwordEncoder.encode(password), name);
 		authenticateUserAndSetSession(username, password, response);
 		logger.debug("New UserDetails with username " + username + " was created");
 	}
