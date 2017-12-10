@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,36 +26,43 @@ import com.boot.cut_costs.service.AuthenticationService;
 
 @Component
 public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
-	
+
 	@Autowired
 	private UserDetailsService customUserDetailsService;
 	
     private static Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
-    private final static UrlPathHelper urlPathHelper = new UrlPathHelper();
+    private final static UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
     
-    final static String defaultFilterProcessesUrl = "/api/**";
+    //Authentication will only be initiated for the request url matching this pattern
+    final static String DEFAULT_FILTER_PROCESS_URL = "/api/**";
     
 	public JWTAuthenticationFilter() {
-		super(defaultFilterProcessesUrl);
-        super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(defaultFilterProcessesUrl)); //Authentication will only be initiated for the request url matching this pattern
-		setAuthenticationManager(new NoOpAuthenticationManager());
+		super(DEFAULT_FILTER_PROCESS_URL);
+        super.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(DEFAULT_FILTER_PROCESS_URL));
+	}
+	
+	//we must set authentication manager for our custom filter, otherwise we would get an error
+	@Override
+	@Autowired
+	public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+	    super.setAuthenticationManager(authenticationManager);
 	}
 	
 	@Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
-		Authentication authentication = AuthenticationService.getAuthentication(request, customUserDetailsService);
-		return getAuthenticationManager().authenticate(authentication);
+		return AuthenticationService.getAuthentication(request, customUserDetailsService);
 	}
 	
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
-	    logger.debug("failed authentication while attempting to access "+ urlPathHelper.getPathWithinApplication((HttpServletRequest) request));
+	    logger.debug("failed authentication while attempting to access "+ URL_PATH_HELPER.getPathWithinApplication((HttpServletRequest) request));
 	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Authentication Failed");
 	}
 	
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-	    SecurityContextHolder.getContext().setAuthentication(authResult);
+		// Changes/removes the currently authenticated principal
+		SecurityContextHolder.getContext().setAuthentication(authResult);
 	    chain.doFilter(request, response);
 	}
 	

@@ -33,7 +33,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			//disable CSRF, so we can use postman
 			//TODO likely to re-enable it after dev is done
 			.csrf().disable()
-			.addFilter(jwtAuthenticationFilter)
+			// we must specify ordering for our custom filter, otherwise it doesn't work
+			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			//as we are using JWT, we don't need Session. Sessions are harder to scale and manage
 			.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
