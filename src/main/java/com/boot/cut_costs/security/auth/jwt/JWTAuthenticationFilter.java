@@ -34,7 +34,7 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
     private final static UrlPathHelper URL_PATH_HELPER = new UrlPathHelper();
     
     //Authentication will only be initiated for the request url matching this pattern
-    final static String DEFAULT_FILTER_PROCESS_URL = "/api/**";
+    private final static String DEFAULT_FILTER_PROCESS_URL = "/api/**";
     
 	public JWTAuthenticationFilter() {
 		super(DEFAULT_FILTER_PROCESS_URL);
@@ -56,7 +56,8 @@ public class JWTAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
 	    logger.debug("failed authentication while attempting to access "+ URL_PATH_HELPER.getPathWithinApplication((HttpServletRequest) request));
-	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Authentication Failed");
+	    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+	    response.sendRedirect("/");
 	}
 	
 	@Override

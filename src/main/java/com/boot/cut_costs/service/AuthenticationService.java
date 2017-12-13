@@ -18,10 +18,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class AuthenticationService {
 
-	static final long EXPIRATIONTIME = 864_000_000; // 10 days
-	static final String SECRET = "ThisIsASecret";
-	static final String TOKEN_PREFIX = "Bearer";
-	static final String HEADER_STRING = "Authorization";
+	private static final long EXPIRATIONTIME = 864_000_000; // 10 days
+	private static final String SECRET = "ThisIsASecret";
+	private static final String TOKEN_PREFIX = "Bearer";
+	private static final String HEADER_STRING = "Authorization";
 	
 	public static void addAuthentication(HttpServletResponse res, String username) {
 		res.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + generateJWToken(username));
