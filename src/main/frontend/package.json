@@ -1,7 +1,6 @@
 {
   "name": "cut-costs-ui",
   "version": "1.0.0",
-
   "description": "User interface for the cut costs project",
   "main": "index.js",
   "repository": "git@github.com:arian-h/cut-costs-ui.git",
