@@ -1,0 +1,48 @@
+{
+  "name": "cut-costs-ui",
+  "version": "1.0.0",
+
+  "description": "User interface for the cut costs project",
+  "main": "index.js",
+  "repository": "git@github.com:arian-h/cut-costs-ui.git",
+  "engines": {
+    "npm": "5.5.1",
+    "node": "8.9.1"
+  },
+  "scripts": {
+    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
+    "build": "node ./node_modules/webpack/bin/webpack.js",
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js --recursive ./test",
+    "test:watch": "npm run test -- --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-preset-es2015": "^6.1.18",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^3.5.0",
+    "chai-jquery": "^2.0.0",
+    "jquery": "^2.2.1",
+    "jsdom": "^8.1.0",
+    "mocha": "^2.4.5",
+    "react-addons-test-utils": "^0.14.7",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "axios": "^0.17.1",
+    "lodash": "^3.10.1",
+    "react": "^0.14.3",
+    "react-dom": "^0.14.3",
+    "react-redux": "4.3.0",
+    "react-router": "^2.0.1",
+    "react-router-dom": "^4.0.0",
+    "redux": "^3.0.4",
+    "redux-form": "^6.6.3",
+    "redux-promise": "^0.5.3",
+    "validator": "^9.1.2",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  }
+}

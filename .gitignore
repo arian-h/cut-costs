@@ -14,7 +14,7 @@ bin/
 #Node
 bundle.js
 npm-debug.log
-src/main/frontend/node_modules
+/node_modules/
 .DS_Store
 /*.env
 /.idea
