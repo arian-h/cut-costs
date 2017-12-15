@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const LOGIN_USER = 'login_user';
 
-const ROOT_URL = "http://localhost:8443";
+const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
 const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
 
