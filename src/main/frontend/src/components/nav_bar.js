@@ -3,12 +3,11 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logoutUser } from '../actions';
 
-
 class NavBar extends Component {
 
   onLogoutClick() {
     this.props.logoutUser();
-    this.props.history.push('/salam');
+    this.props.history.push('/login');
   }
 
   render() {

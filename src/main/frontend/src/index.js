@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import promise from 'redux-promise';
 
 import reducers from './reducers';
@@ -19,8 +19,16 @@ ReactDOM.render(
       <BrowserRouter>
         <div>
           <Switch>
-            <PrivateRoute exact path="/salam" component={Homepage} />
-            <Route path="/login" component={LoginForm} />
+            <Route path="/login" render={(props) => {
+                if (localStorage.getItem('jwt_token')) {
+                  return <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
+                } else {
+                  return <LoginForm {...props}/>
+                }
+              }
+            } />
+            {/* <Route exact path="/login" component={LoginForm} /> */}
+            <PrivateRoute path="/"/>
           </Switch>
         </div>
       </BrowserRouter>

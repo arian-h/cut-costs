@@ -3,8 +3,6 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions';
 import validator from 'validator';
-import { withRouter } from 'react-router';
-
 
 const AT_LEAST_ONE_SMALL_LETTER_PATTERN = /^(?=.*[a-z]).+$/;
 const AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN = /^(?=.*[A-Z]).+$/;
@@ -30,11 +28,12 @@ class LoginForm extends Component {
 
   onSubmit(values) {
     const { history } = this.props;
+    let original_pathname = this.props.location.state.from.pathname;
     this.props.loginUser(values, ({status, headers}) => {
       if (status === 200) {
-        const {authorization} = headers;
+        const { authorization } = headers;
         localStorage.setItem('jwt_token', authorization);
-        history.push("/salam");
+        history.push(original_pathname);
       }
     });
   }
