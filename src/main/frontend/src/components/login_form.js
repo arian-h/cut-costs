@@ -28,7 +28,11 @@ class LoginForm extends Component {
 
   onSubmit(values) {
     const { history } = this.props;
-    let original_pathname = this.props.location.state.from.pathname;
+    let original_pathname = '/';
+    if (this.props.location.state) {
+      original_pathname = this.props.location.state.from.pathname;
+    }
+
     this.props.loginUser(values, ({status, headers}) => {
       if (status === 200) {
         const { authorization } = headers;
