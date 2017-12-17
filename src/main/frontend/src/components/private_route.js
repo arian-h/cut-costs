@@ -29,7 +29,6 @@ function renderComponent(pathname, props) {
 
 export const PrivateRoute = ({ ...rest }) => (
     <Route {...rest} render={(props) => {
-      debugger;
         if (localStorage.getItem('jwt_token')) {
           return renderComponent(location.pathname, props);
         } else {

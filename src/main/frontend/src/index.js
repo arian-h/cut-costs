@@ -27,7 +27,6 @@ ReactDOM.render(
                 }
               }
             } />
-            {/* <Route exact path="/login" component={LoginForm} /> */}
             <PrivateRoute path="/"/>
           </Switch>
         </div>
