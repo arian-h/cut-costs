@@ -5,20 +5,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.resource.ResourceResolver;
 import org.springframework.web.servlet.resource.ResourceResolverChain;
-import org.modelmapper.ModelMapper;
-import org.springframework.context.annotation.Bean;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Configuration
 public class AppConfig extends WebMvcConfigurerAdapter {
@@ -100,8 +99,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 		}
 
 		private boolean isIgnored(String path) {
-			return false;
-			//			return !ignoredPaths.stream().noneMatch(rgx -> Pattern.matches(rgx, path));
+			return !ignoredPaths.stream().noneMatch(rgx -> Pattern.matches(rgx, path));
 		}
 
 		private boolean isHandled(String path) {
@@ -114,6 +112,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 	//remove this after active development of the front-end
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**");
+        registry.addMapping("/**")
+        	.exposedHeaders("Authorization");
     }
 }

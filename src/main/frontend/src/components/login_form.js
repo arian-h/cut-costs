@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginUser } from '../actions';
 import validator from 'validator';
+import { withRouter } from 'react-router';
+
 
 const AT_LEAST_ONE_SMALL_LETTER_PATTERN = /^(?=.*[a-z]).+$/;
 const AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN = /^(?=.*[A-Z]).+$/;
@@ -11,9 +12,8 @@ const AT_LEAST_ONE_DIGIT_PATTERN = /^(?=.*\d).+$/;
 
 class LoginForm extends Component {
   renderField(field) {
-      const {meta: {touched, error }} = field;
+      const {meta: {touched, error}} = field;
       const className = `form-group ${touched && error ? 'has-danger':''}`;
-      console.log(field);
       return (
         <div className={className}>
           <label>{field.label}</label>
@@ -29,12 +29,18 @@ class LoginForm extends Component {
   }
 
   onSubmit(values) {
-    this.props.loginUser(values, () => {
-      this.props.history.push('/');
+    const { history } = this.props;
+    this.props.loginUser(values, ({status, headers}) => {
+      if (status === 200) {
+        const {authorization} = headers;
+        localStorage.setItem('jwt_token', authorization);
+        history.push("/salam");
+      }
     });
   }
 
   render() {
+
     const {handleSubmit} = this.props;
 
     return (

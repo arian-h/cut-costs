@@ -47,8 +47,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web)
             throws Exception {
+    	//TODO Change it back to the following after front-end active dev work is done
         web.ignoring()
-        	.antMatchers(HttpMethod.POST, "/api/auth/**");
+        	.antMatchers("/api/auth/**");
     		/*
     		 * This is used for initializing h2 console. Remove this when going to prod
         		.antMatchers("/console/**"); 
