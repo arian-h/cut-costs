@@ -21,7 +21,7 @@ ReactDOM.render(
           <Switch>
             <Route path="/login" render={(props) => {
                 if (localStorage.getItem('jwt_token')) {
-                  return <Redirect to={{ pathname: '/', state: { from: props.location } }} />;
+                  return <Redirect to='/' />;
                 } else {
                   return <LoginForm {...props}/>
                 }
