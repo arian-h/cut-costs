@@ -1,27 +1,20 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import LoginForm from './login_form';
-import Homepage from './home_page';
-import Dashboard from './dashboard';
-import FindPeople from './find_people';
 import NavBar from './nav_bar';
+import LeftNavBar from './left_nav_bar';
+import NavBarComponents from './nav_bar_components';
 
 function renderComponent(pathname, props) {
-  let Component;
   let _pathname = pathname.substring(1).toLowerCase();
-  switch(_pathname) {
-    case 'dashboard':
-      Component = Dashboard;
-      break;
-    case 'findpeople':
-      Component = FindPeople;
-      break;
-    default:
-      Component = Homepage;
+  if (!NavBarComponents[_pathname]) {
+    _pathname = 'home';
   }
+  let Component = NavBarComponents[_pathname].component;
+
   return (
     <div>
       <NavBar/>
+      <LeftNavBar/>
       <Component {...props} />
     </div>
   );
