@@ -54,6 +54,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     		 * This is used for initializing h2 console. Remove this when going to prod
         		.antMatchers("/console/**"); 
         	*/
+        web.ignoring()
+        	.antMatchers(HttpMethod.OPTIONS, "/**");
     }
 	
 	/*
