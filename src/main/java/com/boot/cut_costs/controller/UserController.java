@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.user.ExtendedGetUserDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.PostUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
@@ -44,8 +43,8 @@ public class UserController {
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public ExtendedGetUserDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
-		return userDtoConverter.convertToExtendedDto(userService.loadByUsername(principal.getName()));
+	public GetUserDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
+		return userDtoConverter.convertToDto(userService.loadByUsername(principal.getName()));
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.PUT)
