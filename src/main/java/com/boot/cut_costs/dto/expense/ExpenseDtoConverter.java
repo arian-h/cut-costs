@@ -39,7 +39,7 @@ public class ExpenseDtoConverter {
     	return modelMapper.map(expense, GetExpenseDto.class);
     }
     
-    public ExtendedGetExpenseDto convertToExtendedDto(Expense expense, User loggedInUser) {
+    public ExtendedGetExpenseDto convertToExtendedDto(Expense expense, final User loggedInUser) {
     	if (modelMapper.getTypeMap(Expense.class, ExtendedGetExpenseDto.class) == null) {
         	Converter<Expense, ExtendedGetExpenseDto> converter = context -> {
         		Expense source = context.getSource();

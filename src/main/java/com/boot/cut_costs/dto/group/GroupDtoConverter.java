@@ -28,7 +28,7 @@ public class GroupDtoConverter {
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
 	
-	public GetGroupDto convertToDto(Group group, User loggedInUser) {
+	public GetGroupDto convertToDto(Group group, final User loggedInUser) {
 		if (modelMapper.getTypeMap(Group.class, GetGroupDto.class) == null) {
 			Converter<Group, GetGroupDto> converter = context -> {
 				Group source = context.getSource();

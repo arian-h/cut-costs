@@ -22,7 +22,7 @@ public class InvitationDtoConverter {
 	@Autowired
 	private UserDtoConverter userDtoConverter;
 	
-    public GetInvitationDto convertToDto(Invitation invitation, User loggedInUser) {
+    public GetInvitationDto convertToDto(Invitation invitation, final User loggedInUser) {
     	if (modelMapper.getTypeMap(Invitation.class, GetInvitationDto.class) == null) {
         	Converter<Invitation, GetInvitationDto> converter = context -> {
         		GetInvitationDto target = new GetInvitationDto();

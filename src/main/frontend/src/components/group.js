@@ -14,16 +14,33 @@ class Group extends Component {
 
   renderGroups() {
     return _.map(this.props.groups, group => {
+      let deleteButton = null;
+      if (group.isAdmin) {
+        deleteButton = <button
+          className="btn btn-danger pull-xs-right"
+          // onClick={this.onDeleteClick.bind(this)}
+        >
+          Delete
+        </button>;
+      }
       return (
         <li className="list-group-item" key={group.id}>
           <Link to={`/groups/${group.id}`}>{group.name}</Link>
+          <span>{group.description}</span>
+          <span>{group.numberOfMembers}</span>
+          <span>{group.numberOfExpenses}</span>
+          {deleteButton}
         </li>
       )
     });
   }
 
   render() {
-
+    const { groups } = this.props;
+    debugger;
+    if (!groups) {
+      return <div>Loading...</div>;
+    }
     return (
       <div>
         <div className="text-xs-right">

@@ -14,7 +14,7 @@ public class GetGroupDto extends AbstractGroupDto {
 	
 	private boolean isAdmin = false;
 	
-	public boolean isAdmin() {
+	public boolean getIsAdmin() {
 		return isAdmin;
 	}
 
