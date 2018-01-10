@@ -24,6 +24,7 @@ import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.GroupService;
+import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.GroupDtoValidator;
 
 @RestController
@@ -32,6 +33,9 @@ public class GroupController {
 
 	@Autowired
 	private GroupService groupService;
+	
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private GroupDtoValidator groupDtoValidator;
@@ -48,11 +52,12 @@ public class GroupController {
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public GetGroupDto create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
+		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
 		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
-		return groupDtoConverter.convertToDto(group);
+		return groupDtoConverter.convertToDto(group, loggedInUser);
 	}
 
 	/*
@@ -61,11 +66,12 @@ public class GroupController {
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
 	public GetGroupDto update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
+		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
 		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
-		return groupDtoConverter.convertToDto(group);
+		return groupDtoConverter.convertToDto(group, loggedInUser);
 	}
 
 	/*
@@ -92,8 +98,9 @@ public class GroupController {
 	public List<GetGroupDto> list(Principal principal) {
 		List<Group> groups = groupService.list(principal.getName());
 		List<GetGroupDto> result = new ArrayList<GetGroupDto>();
+		User loggedInUser = userService.loadByUsername(principal.getName());
 		for (Group group: groups) {
-			result.add(groupDtoConverter.convertToDto(group));
+			result.add(groupDtoConverter.convertToDto(group, loggedInUser));
 		}
 		return result;
 	}

@@ -14,7 +14,6 @@ public class ExtendedGetGroupDto extends GetGroupDto {
 	
 	private List<GetUserDto> members;
 
-
 	private List<GetExpenseDto> expenses;
 	
 	public ExtendedGetGroupDto() {

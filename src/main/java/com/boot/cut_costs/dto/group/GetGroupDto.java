@@ -6,7 +6,29 @@ public class GetGroupDto extends AbstractGroupDto {
 
 	private long id;
 
-	private String imageId;
+	private String imageId = null;
+
+	private int numberOfMembers = 0;
+	
+	private int numberOfExpenses = 0;
+	
+	private boolean isAdmin = false;
+	
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	public int getNumberOfExpenses() {
+		return numberOfExpenses;
+	}
+
+	public void setNumberOfExpenses(int numberOfExpenses) {
+		this.numberOfExpenses = numberOfExpenses;
+	}
 
 	public String getImageId() {
 		return imageId;
@@ -23,4 +45,14 @@ public class GetGroupDto extends AbstractGroupDto {
 	public void setId(long id) {
 		this.id = id;
 	}
+	
+	public void setNumberOfMembers(int numberOfMembers) {
+		this.numberOfMembers = numberOfMembers;
+	}
+	
+	public int getNumberOfMembers() {
+		return this.numberOfMembers;
+	}
+	
+	
 }

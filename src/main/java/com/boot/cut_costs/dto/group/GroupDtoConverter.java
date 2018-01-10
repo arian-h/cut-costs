@@ -11,6 +11,7 @@ import com.boot.cut_costs.dto.expense.ExpenseDtoConverter;
 import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.model.Group;
+import com.boot.cut_costs.model.User;
 
 @Service
 public class GroupDtoConverter {
@@ -27,7 +28,7 @@ public class GroupDtoConverter {
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
 	
-	public GetGroupDto convertToDto(Group group) {
+	public GetGroupDto convertToDto(Group group, User loggedInUser) {
 		if (modelMapper.getTypeMap(Group.class, GetGroupDto.class) == null) {
 			Converter<Group, GetGroupDto> converter = context -> {
 				Group source = context.getSource();
@@ -35,6 +36,11 @@ public class GroupDtoConverter {
 				target.setId(source.getId());
 				target.setName(source.getName());
 				target.setDescription(source.getDescription());
+				target.setNumberOfMembers(source.getMembers().size() + 1); //including the admin
+				target.setNumberOfExpenses(source.getExpenses().size());
+				if(source.isAdmin(loggedInUser)) {
+					target.setAdmin(true);
+				}
 				return target;
 			};
 			modelMapper.createTypeMap(Group.class, GetGroupDto.class).setConverter(converter);			

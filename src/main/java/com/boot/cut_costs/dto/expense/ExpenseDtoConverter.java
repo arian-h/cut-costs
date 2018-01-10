@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.boot.cut_costs.dto.group.GroupDtoConverter;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.model.Expense;
+import com.boot.cut_costs.model.User;
 
 @Service
 public class ExpenseDtoConverter {
@@ -38,7 +39,7 @@ public class ExpenseDtoConverter {
     	return modelMapper.map(expense, GetExpenseDto.class);
     }
     
-    public ExtendedGetExpenseDto convertToExtendedDto(Expense expense) {
+    public ExtendedGetExpenseDto convertToExtendedDto(Expense expense, User loggedInUser) {
     	if (modelMapper.getTypeMap(Expense.class, ExtendedGetExpenseDto.class) == null) {
         	Converter<Expense, ExtendedGetExpenseDto> converter = context -> {
         		Expense source = context.getSource();
@@ -48,7 +49,7 @@ public class ExpenseDtoConverter {
         		target.setTitle(source.getTitle());
         		target.setDescription(source.getDescription());
         		target.setImageId(source.getImageId());
-        		target.setGroup(groupDtoConverter.convertToDto(source.getGroup()));
+        		target.setGroup(groupDtoConverter.convertToDto(source.getGroup(), loggedInUser));
     			target.setSharers(source.getSharers().stream()
     					.map(user -> userDtoConverter.convertToDto(user))
     					.collect(Collectors.toList()));

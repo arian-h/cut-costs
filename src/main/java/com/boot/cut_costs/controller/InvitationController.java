@@ -17,7 +17,9 @@ import com.boot.cut_costs.dto.invitation.GetInvitationDto;
 import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
 import com.boot.cut_costs.dto.invitation.PostInvitationDto;
 import com.boot.cut_costs.model.Invitation;
+import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.InvitationService;
+import com.boot.cut_costs.service.UserService;
 
 @RestController
 @RequestMapping("/api/invitation")
@@ -25,6 +27,9 @@ public class InvitationController {
 
 	@Autowired
 	private InvitationService invitationService;
+	
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
@@ -32,7 +37,8 @@ public class InvitationController {
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public GetInvitationDto create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
 		Invitation invitation = invitationService.create(invitationDto.getGroupId(), invitationDto.getInviteeId(), principal.getName());
-		return invitationDtoConverter.convertToDto(invitation);
+		User currentLoggedInUser = userService.loadByUsername(principal.getName());
+		return invitationDtoConverter.convertToDto(invitation, currentLoggedInUser);
 	}
 
 	/*
@@ -40,10 +46,11 @@ public class InvitationController {
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
 	public List<GetInvitationDto> list(Principal principal) throws IOException {
+		User currentLoggedInUser = userService.loadByUsername(principal.getName());
 		return invitationService
 				.list(principal.getName())
 				.stream()
-				.map(invitation -> invitationDtoConverter.convertToDto(invitation))
+				.map(invitation -> invitationDtoConverter.convertToDto(invitation, currentLoggedInUser))
 						.collect(Collectors.toList());
 	}
 	

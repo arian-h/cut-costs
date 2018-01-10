@@ -21,7 +21,9 @@ import com.boot.cut_costs.dto.expense.GetExpenseDto;
 import com.boot.cut_costs.dto.expense.PostExpenseDto;
 import com.boot.cut_costs.exception.BadRequestException;
 import com.boot.cut_costs.model.Expense;
+import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.ExpenseService;
+import com.boot.cut_costs.service.UserService;
 import com.boot.cut_costs.validator.ExpenseDtoValidator;
 
 @RestController
@@ -33,6 +35,9 @@ public class ExpenseController {
 	
 	@Autowired
 	private ExpenseService expenseService;
+
+	@Autowired
+	private UserService userService;
 	
 	@Autowired
 	private ExpenseDtoValidator expenseDtoValidator;
@@ -43,7 +48,8 @@ public class ExpenseController {
 	@RequestMapping(path = "/{expenseId}", method = RequestMethod.GET)
 	public ExtendedGetExpenseDto get(@PathVariable long expenseId, Principal principal) {
 		Expense expense = expenseService.get(expenseId, principal.getName());
-		return expenseDtoConverter.convertToExtendedDto(expense);
+		User currentLoggedInUser = userService.loadByUsername(principal.getName());
+		return expenseDtoConverter.convertToExtendedDto(expense, currentLoggedInUser);
 	}
 
 	/*

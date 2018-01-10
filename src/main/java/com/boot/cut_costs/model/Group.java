@@ -40,7 +40,7 @@ public class Group implements Serializable {
 
 	@ManyToMany
 	@JoinTable(name = "GROUP_USER", 
-		joinColumns = @JoinColumn(referencedColumnName = "id"), 
+		joinColumns = @JoinColumn(name="group_id", referencedColumnName = "id"), 
 		inverseJoinColumns = @JoinColumn(name = "MEMBER_ID", referencedColumnName = "id"))
 	private List<User> members;
 
