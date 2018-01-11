@@ -37,7 +37,7 @@ class Group extends Component {
 
   render() {
     const { groups } = this.props;
-    debugger;
+    //TODO how to distinguish between the first time and no group ? 
     if (!groups) {
       return <div>Loading...</div>;
     }
