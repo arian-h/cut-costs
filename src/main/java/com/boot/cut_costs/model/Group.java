@@ -17,13 +17,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 
 @Entity
-@Table(name="\"Group\"") // Group is a reserved word, use \" as a work-around
+@Table(name="GroupEntity")
 public class Group implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,38 +34,34 @@ public class Group implements Serializable {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name = "ADMIN_ID", referencedColumnName = "id")
+	@JoinColumn(name = "admin_id", referencedColumnName = "id")
 	private User admin;
 
 	@ManyToMany
-	@JoinTable(name = "GROUP_USER", 
+	@JoinTable(name = "group_user", 
 		joinColumns = @JoinColumn(name="group_id", referencedColumnName = "id"), 
-		inverseJoinColumns = @JoinColumn(name = "MEMBER_ID", referencedColumnName = "id"))
+		inverseJoinColumns = @JoinColumn(name = "member_id", referencedColumnName = "id"))
 	private List<User> members;
 
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Expense> expenses;
-	
+
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Invitation> invitations;
-	
+
 	@Column(name="description")
 	private String description;
 
 	@NotEmpty
 	@Column(name="name")
 	private String name;
-	
-	@Size(min=15, max=15)
-	@Column(name="image_id")
-	private String imageId;
-	
+
 	public Group() {
 		this.expenses = new ArrayList<Expense>();
 		this.members = new ArrayList<User>();
 		this.invitations = new ArrayList<Invitation>();
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -78,7 +73,7 @@ public class Group implements Serializable {
 	public User getAdmin() {
 		return admin;
 	}
-	
+
 	public boolean isAdmin(User user) {
 		return admin.equals(user);
 	}
@@ -87,18 +82,10 @@ public class Group implements Serializable {
 		this.admin = admin;
 	}
 
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
-	
-	public String getImageId() {
-		return imageId;
-	}
-	
 	public List<User> getMembers() {
 		return members;
 	}
-	
+
 	public boolean isMember(User user) {
 		return members.contains(user);
 	}
@@ -150,7 +137,7 @@ public class Group implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other == null) {
@@ -165,5 +152,4 @@ public class Group implements Serializable {
 		Group otherGroup = (Group)other;
 		return otherGroup.getId() == getId();
 	}
-
 }

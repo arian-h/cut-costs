@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
-import com.boot.cut_costs.utils.CommonUtils;
 
 public class GroupControllerTest extends BaseControllerTest {
 
@@ -58,7 +57,6 @@ public class GroupControllerTest extends BaseControllerTest {
 		List<Group> groups = userRepository.findById(user.getId()).getOwnedGroups();
 		Assert.assertEquals("wrong number of groups created for the admin", 1, groups.size());
 		Assert.assertEquals("wrong group is assigned to the admin", user.getOwnedGroups().get(0).getId(), createdGroup.getId());
-		Assert.assertTrue("image file not created", CommonUtils.getImageFile(createdGroup.getImageId()).exists());
 	}
 	
 	@Test
@@ -95,7 +93,6 @@ public class GroupControllerTest extends BaseControllerTest {
 		Group updatedGroup = groupRepository.findById(group.getId());
 		Assert.assertEquals("wrong updated group name", updated_group_name, group.getName());
 		Assert.assertEquals("wrong updated group description", updated_group_description, group.getDescription());
-		Assert.assertTrue("image file not created", CommonUtils.getImageFile(updatedGroup.getImageId()).exists());
 	}
 
 	@Test

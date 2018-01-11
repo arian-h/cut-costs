@@ -12,16 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name="Invitation")
+@Table(name="InvitationEntity")
 public class Invitation implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@JsonIgnore
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private long id;
@@ -35,7 +32,7 @@ public class Invitation implements Serializable {
 	@JoinColumn(name="invitee_id", referencedColumnName="id")
 	@ManyToOne
 	private User invitee;
-	
+
 	@NotNull
 	@JoinColumn(referencedColumnName = "id")
 	@ManyToOne
@@ -46,27 +43,27 @@ public class Invitation implements Serializable {
 	public User getInviter() {
 		return inviter;
 	}
-	
+
 	public void setInviter(User inviter) {
 		this.inviter = inviter;
 	}
-	
+
 	public User getInvitee() {
 		return invitee;
 	}
-	
+
 	public void setInvitee(User invitee) {
 		this.invitee = invitee;
 	}
-	
+
 	public Group getGroup() {
 		return group;
 	}
-	
+
 	public void setGroup(Group group) {
 		this.group = group;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -74,5 +71,4 @@ public class Invitation implements Serializable {
 	public void setId(long id) {
 		this.id = id;
 	}
-
 }

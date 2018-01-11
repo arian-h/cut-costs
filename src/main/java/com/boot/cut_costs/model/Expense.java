@@ -19,35 +19,32 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
-@Table(name="Expense")
+@Table(name="ExpenseEntity")
 public class Expense implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
-	
+
 	@Size(max=100)
 	private String description;
-	
+
 	@Size(min=5, max=25)
 	private String title;
-	
+
 	@Min(value=0L)
 	private long amount;
-	
+
 	@Size(min=15, max=15)
 	private String imageId;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
 	@NotNull
-	@JoinColumn(name="OWNER_ID", referencedColumnName="id")
+	@JoinColumn(name="owner_id", referencedColumnName="id")
 	private User owner;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)
@@ -56,13 +53,13 @@ public class Expense implements Serializable {
 	private Group group;
 
 	@ManyToMany
-	@JoinTable(name = "EXPENSE_SHARER", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
+	@JoinTable(name = "expense_sharer", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
 	private List<User> sharers;
 
 	public Expense() {
 		this.sharers = new ArrayList<User>();
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -74,7 +71,7 @@ public class Expense implements Serializable {
 	public void setImageId(String imageId) {
 		this.imageId = imageId;
 	}
-	
+
 	public String getImageId() {
 		return imageId;
 	}
@@ -130,7 +127,7 @@ public class Expense implements Serializable {
 	public void addShareres(List<User> users) { 
 		this.sharers.addAll(users);
 	}
-	
+
 	public void setShareres(List<User> users) {
 		this.sharers = users;
 	}

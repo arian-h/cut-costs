@@ -56,7 +56,6 @@ public class GroupDtoConverter {
     			target.setId(source.getId());
     			target.setDescription(source.getDescription());
     			target.setName(source.getName());
-    			target.setImageId(source.getImageId());
     			target.setAdmin(userDtoConverter.convertToDto(source.getAdmin()));
     			target.setExpenses(source.getExpenses().stream()
     					.map(expense -> expenseDtoConverter.convertToDto(expense))

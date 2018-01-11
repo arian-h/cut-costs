@@ -19,7 +19,6 @@ import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.GroupRepository;
-import com.boot.cut_costs.utils.CommonUtils;
 
 @Service
 @Transactional
@@ -45,10 +44,6 @@ public class GroupService {
 		group.setAdmin(user);
 		group.setName(groupName);
 		group.setDescription(description);
-		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
-		if (imageId != null) {
-			group.setImageId(imageId);
-		}
 		user.addOwnedGroup(group);
 		groupRepository.save(group);
 		logger.debug("Group with name " + group.getName() + " and id " + group.getId() + " was created");
@@ -89,10 +84,6 @@ public class GroupService {
 		validateAdminAccessToGroup(group, user);
 		group.setName(groupName);
 		group.setDescription(description);
-		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
-		if (imageId != null) {
-			group.setImageId(imageId);
-		}
 		groupRepository.save(group);
 		logger.debug("Group with id " + groupId + " was updated");
 		return group;

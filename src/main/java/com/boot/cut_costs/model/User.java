@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="User")
+@Table(name="UserEntity")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
