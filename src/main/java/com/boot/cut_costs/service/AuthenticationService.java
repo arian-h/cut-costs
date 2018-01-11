@@ -44,7 +44,9 @@ public class AuthenticationService {
 					.parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
 					.getSubject();
 			UserDetails user = customUserDetailsService.loadUserByUsername(userName);
-			return user != null ? new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword(),user.getAuthorities()) : null;
+			if (user != null) {
+				return new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword(),user.getAuthorities());
+			}
 		}
 		throw new BadCredentialsException("Bad credentials provided");
 	}

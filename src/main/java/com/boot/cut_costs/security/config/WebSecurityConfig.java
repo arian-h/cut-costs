@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.boot.cut_costs.AppConfig;
+import com.boot.cut_costs.security.auth.jwt.ExceptionHandlerFilter;
 import com.boot.cut_costs.security.auth.jwt.JWTAuthenticationFilter;
 
 @EnableWebSecurity
@@ -27,6 +28,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JWTAuthenticationFilter jwtAuthenticationFilter;
 	
+	@Autowired
+	private ExceptionHandlerFilter exceptionHandlerFilter;
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -34,7 +38,8 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			//TODO likely to re-enable it after dev is done
 			.csrf().disable()
 			// we must specify ordering for our custom filter, otherwise it doesn't work
-			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterAfter(exceptionHandlerFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterAfter(jwtAuthenticationFilter, ExceptionHandlerFilter.class)
 			//as we are using JWT, we don't need Session. Sessions are harder to scale and manage
 			.sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

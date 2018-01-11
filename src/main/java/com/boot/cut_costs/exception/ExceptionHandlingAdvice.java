@@ -1,5 +1,7 @@
 																																																																																																																					package com.boot.cut_costs.exception;
 
+import io.jsonwebtoken.JwtException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+@Component
 @ControllerAdvice
 public class ExceptionHandlingAdvice {
     
@@ -33,6 +37,7 @@ public class ExceptionHandlingAdvice {
         error_status_map.put(ValidationException.class.getName(), HttpStatus.BAD_REQUEST); // 400
         error_status_map.put(MethodArgumentTypeMismatchException.class.getName(), HttpStatus.BAD_REQUEST);
         error_status_map.put(BadCredentialsException.class.getName(), HttpStatus.UNAUTHORIZED); // 401
+        error_status_map.put(JwtException.class.getName(), HttpStatus.UNAUTHORIZED); // 401
         error_status_map.put(AccessDeniedException.class.getName(), HttpStatus.FORBIDDEN); // 403
         error_status_map.put(ResourceNotFoundException.class.getName(), HttpStatus.NOT_FOUND); // 404
         error_status_map.put(DuplicateUsernameException.class.getName(), HttpStatus.CONFLICT); // 409
@@ -40,7 +45,7 @@ public class ExceptionHandlingAdvice {
     }
     
 	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<String> RuntimeExceptionHandler(RuntimeException e) throws JSONException {
+	public ResponseEntity<String> RuntimeExceptionHandler(RuntimeException e) {
 		HttpStatus statusCode = ERROR_STATUS_MAP.get(e.getClass().getName());
 		if (statusCode == null) {
 			logger.debug("Error " + e.getMessage());
@@ -49,7 +54,11 @@ public class ExceptionHandlingAdvice {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 		JSONObject response = new JSONObject();
-		response.put("message", e.getMessage());
+		try {
+			response.put("message", e.getMessage());			
+		} catch(JSONException jwtException) {
+			//this is a very rare case. In case it happens, return response with empty message
+		}
 		return new ResponseEntity<String>(response.toString(), headers, ERROR_STATUS_MAP.get(e.getClass().getName()));
 	}
 }
