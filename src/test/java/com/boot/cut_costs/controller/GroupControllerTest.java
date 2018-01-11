@@ -91,8 +91,8 @@ public class GroupControllerTest extends BaseControllerTest {
 		Assert.assertEquals("wrong response status", 200, status);
 		Assert.assertEquals("wrong number of groups exist", 1, Lists.newArrayList(groupRepository.findAll()).size());
 		Group updatedGroup = groupRepository.findById(group.getId());
-		Assert.assertEquals("wrong updated group name", updated_group_name, group.getName());
-		Assert.assertEquals("wrong updated group description", updated_group_description, group.getDescription());
+		Assert.assertEquals("wrong updated group name", updated_group_name, updatedGroup.getName());
+		Assert.assertEquals("wrong updated group description", updated_group_description, updatedGroup.getDescription());
 	}
 
 	@Test
