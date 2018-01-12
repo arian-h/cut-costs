@@ -5,15 +5,18 @@ import HomePage from './home_page';
 const nav = {
   'group': {
     'path': '/group',
-    'component': Group
+    'component': Group,
+    'title': 'Groups'
   },
   'expense': {
     'path': '/expense',
-    'component': Expense
+    'component': Expense,
+    'title': 'Expenses'
   },
   'home': {
     'path': '/',
-    'component': HomePage
+    'component': HomePage,
+    'title': 'Home'
   }
 };
 

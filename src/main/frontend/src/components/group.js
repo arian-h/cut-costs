@@ -8,10 +8,6 @@ class Group extends Component {
     this.props.fetchGroups();
   }
 
-  static getTitle() {
-    return 'Group';
-  }
-
   renderGroups() {
     return _.map(this.props.groups, group => {
       let deleteButton = null;
@@ -37,7 +33,7 @@ class Group extends Component {
 
   render() {
     const { groups } = this.props;
-    //TODO how to distinguish between the first time and no group ? 
+    //TODO how to distinguish between the first time and no group ?
     if (!groups) {
       return <div>Loading...</div>;
     }

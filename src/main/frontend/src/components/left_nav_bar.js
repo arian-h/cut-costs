@@ -18,9 +18,9 @@ class LeftNavBar extends Component {
         <button
           className="btn pull-xs-right"
           onClick={this.onNavigate.bind(this, value.path)}
-          key={value.component.getTitle()}
+          key={buttons.length}
         >
-          {value.component.getTitle()}
+          {value.title}
         </button>
       )
     });
