@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { componentsNavbarNavigate } from '../../actions';
-import componentsList from '../routing/navbar_components_list';
+import RouteList from '../../routing/route_list';
+import ComponentsList from './components_list';
 
 class ComponentsNavBar extends Component {
 
@@ -13,14 +14,14 @@ class ComponentsNavBar extends Component {
 
   render() {
     let buttons = [];
-    Object.entries(componentsList).forEach(([key, value]) => {
+    Object.entries(ComponentsList).forEach(([key, value]) => {
       buttons.push(
         <button
           className="btn pull-xs-right"
-          onClick={this.onNavigate.bind(this, value.path)}
+          onClick={this.onNavigate.bind(this, RouteList[key].path)}
           key={buttons.length}
         >
-          {value.navbarTitle}
+          {value.title}
         </button>
       )
     });
