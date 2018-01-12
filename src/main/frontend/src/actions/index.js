@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const LOGIN_USER = 'login_user';
 export const LOGOUT_USER = 'logout_user';
-export const LEFT_NAV_BAR_NAVIGATE = 'left_nav_bar_navigate';
+export const COMPONENTS_NAVBAR_NAVIGATE = 'left_nav_bar_navigate';
 export const FETCH_GROUPS = 'fetch_groups';
 
 const ROOT_URL = "http://localhost:8443/api";
@@ -32,10 +32,10 @@ export function logoutUser(callback) {
 }
 
 //TODO: not useful yet
-export function leftNavBarNavigate(callback) {
+export function componentsNavbarNavigate(callback) {
   //calback()
   return {
-    type: LEFT_NAV_BAR_NAVIGATE
+    type: COMPONENTS_NAVBAR_NAVIGATE
   }
 }
 

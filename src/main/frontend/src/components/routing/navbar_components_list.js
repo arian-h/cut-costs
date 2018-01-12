@@ -6,17 +6,17 @@ const nav = {
   'group': {
     'path': '/group',
     'component': GroupsList,
-    'title': 'Groups'
+    'navbarTitle': 'Groups'
   },
   'expense': {
     'path': '/expense',
     'component': Expense,
-    'title': 'Expenses'
+    'navbarTitle': 'Expenses'
   },
   'home': {
     'path': '/',
     'component': HomePage,
-    'title': 'Home'
+    'navbarTitle': 'Home'
   }
 };
 

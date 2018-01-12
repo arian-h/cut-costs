@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { leftNavBarNavigate } from '../../actions';
+import { componentsNavbarNavigate } from '../../actions';
 import componentsList from '../routing/navbar_components_list';
 
 class ComponentsNavBar extends Component {
@@ -20,7 +20,7 @@ class ComponentsNavBar extends Component {
           onClick={this.onNavigate.bind(this, value.path)}
           key={buttons.length}
         >
-          {value.title}
+          {value.navbarTitle}
         </button>
       )
     });
@@ -32,4 +32,4 @@ class ComponentsNavBar extends Component {
   }
 }
 
-export default withRouter(connect(null, {leftNavBarNavigate})(ComponentsNavBar));
+export default withRouter(connect(null, {componentsNavbarNavigate})(ComponentsNavBar));
