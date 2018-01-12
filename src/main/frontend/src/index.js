@@ -8,9 +8,7 @@ import promise from 'redux-promise';
 import reducers from './reducers';
 
 import LoginForm from './components/login_form';
-import NavBar from './components/nav_bar';
-import Homepage from './components/home_page';
-import PrivateRoute from './components/private_route';
+import PrivateRoute from './components/routing/private_route';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
 

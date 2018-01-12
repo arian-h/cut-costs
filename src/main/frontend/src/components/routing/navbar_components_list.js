@@ -1,11 +1,11 @@
-import Group from './group';
-import Expense from './expense';
-import HomePage from './home_page';
+import GroupsList from '../group/list_groups';
+import Expense from '../expense';
+import HomePage from '../home_page';
 
 const nav = {
   'group': {
     'path': '/group',
-    'component': Group,
+    'component': GroupsList,
     'title': 'Groups'
   },
   'expense': {

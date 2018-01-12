@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { logoutUser } from '../actions';
+import { logoutUser } from '../../actions';
 
-class NavBar extends Component {
+class AppNavBar extends Component {
 
   onLogoutClick() {
     this.props.logoutUser();
@@ -24,4 +24,4 @@ class NavBar extends Component {
   }
 }
 
-export default withRouter(connect(null, {logoutUser})(NavBar));
+export default withRouter(connect(null, {logoutUser})(AppNavBar));

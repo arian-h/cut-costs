@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { leftNavBarNavigate } from '../actions';
-import NavBarComponents from './nav_bar_components';
+import { leftNavBarNavigate } from '../../actions';
+import componentsList from '../routing/navbar_components_list';
 
-class LeftNavBar extends Component {
+class ComponentsNavBar extends Component {
 
   onNavigate() {
     this.props.leftNavBarNavigate();
@@ -13,7 +13,7 @@ class LeftNavBar extends Component {
 
   render() {
     let buttons = [];
-    Object.entries(NavBarComponents).forEach(([key, value]) => {
+    Object.entries(componentsList).forEach(([key, value]) => {
       buttons.push(
         <button
           className="btn pull-xs-right"
@@ -32,4 +32,4 @@ class LeftNavBar extends Component {
   }
 }
 
-export default withRouter(connect(null, {leftNavBarNavigate})(LeftNavBar));
+export default withRouter(connect(null, {leftNavBarNavigate})(ComponentsNavBar));

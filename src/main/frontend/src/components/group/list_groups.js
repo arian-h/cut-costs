@@ -1,22 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchGroups } from '../actions';
+import { fetchGroups } from '../../actions';
 import { Link } from 'react-router-dom';
 
-class Group extends Component {
+class GroupsList extends Component {
   componentDidMount() {
     this.props.fetchGroups();
   }
 
-  renderGroups() {
+  renderGroupsList() {
     return _.map(this.props.groups, group => {
       let deleteButton = null;
+      let editButton = null;
       if (group.isAdmin) {
         deleteButton = <button
           className="btn btn-danger pull-xs-right"
           // onClick={this.onDeleteClick.bind(this)}
         >
           Delete
+        </button>;
+        editButton = <button
+          className="btn btn-danger pull-xs-right"
+          // onClick={this.onDeleteClick.bind(this)}
+        >
+          Edit
         </button>;
       }
       return (
@@ -25,6 +32,7 @@ class Group extends Component {
           <span>{group.description}</span>
           <span>{group.numberOfMembers}</span>
           <span>{group.numberOfExpenses}</span>
+          {editButton}
           {deleteButton}
         </li>
       )
@@ -34,19 +42,19 @@ class Group extends Component {
   render() {
     const { groups } = this.props;
     //TODO how to distinguish between the first time and no group ?
-    if (!groups) {
-      return <div>Loading...</div>;
-    }
+    // if (!groups) {
+    //   return <div>Loading...</div>;
+    // }
     return (
       <div>
         <div className="text-xs-right">
           <Link className="btn btn-primary" to="/groups/new">
-            Add a Group
+            New Group
           </Link>
         </div>
         <h3>Groups</h3>
         <ul className="list-group">
-          {this.renderGroups()}
+          {this.renderGroupsList()}
         </ul>
       </div>
     );
@@ -57,4 +65,4 @@ function mapStateToProps(state) {
   return { groups: state.groups };
 }
 
-export default connect(mapStateToProps, {fetchGroups})(Group);
+export default connect(mapStateToProps, {fetchGroups})(GroupsList);

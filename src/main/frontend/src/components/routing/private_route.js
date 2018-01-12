@@ -1,20 +1,20 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import NavBar from './nav_bar';
-import LeftNavBar from './left_nav_bar';
-import NavBarComponents from './nav_bar_components';
+import NavBar from '../navbar/app_navbar';
+import ComponentsNavBar from '../navbar/components_navbar';
+import NavBarComponentsList from './navbar_components_list';
 
 function renderComponent(pathname, props) {
   let _pathname = pathname.substring(1).toLowerCase();
-  if (!NavBarComponents[_pathname]) {
+  if (!NavBarComponentsList[_pathname]) {
     _pathname = 'home';
   }
-  let Component = NavBarComponents[_pathname].component;
+  let Component = NavBarComponentsList[_pathname].component;
 
   return (
     <div>
       <NavBar/>
-      <LeftNavBar/>
+      <ComponentsNavBar/>
       <Component {...props} />
     </div>
   );
