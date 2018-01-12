@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { componentsNavbarNavigate } from '../../actions';
-import RouteList from '../../routing/route_list';
+import RouteList from '../../routing/routes_list';
 import ComponentsList from './components_list';
 
 class ComponentsNavBar extends Component {

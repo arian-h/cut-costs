@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import AppNavBar from '../components/navbar/app_navbar';
 import ComponentsNavBar from '../components/navbar/components_navbar';
-import RouteList from './route_list';
+import RouteList from './routes_list';
 
 function renderComponent(pathname, props) {
   let _pathname = pathname.substring(1).toLowerCase();
