@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { fetchGroups } from '../../actions';
 import { Link } from 'react-router-dom';
 
-class GroupsList extends Component {
+class GroupList extends Component {
   componentDidMount() {
     this.props.fetchGroups();
   }
@@ -65,4 +65,4 @@ function mapStateToProps(state) {
   return { groups: state.groups };
 }
 
-export default connect(mapStateToProps, {fetchGroups})(GroupsList);
+export default connect(mapStateToProps, {fetchGroups})(GroupList);

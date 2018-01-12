@@ -7,7 +7,7 @@ import componentsList from '../routing/navbar_components_list';
 class ComponentsNavBar extends Component {
 
   onNavigate() {
-    this.props.leftNavBarNavigate();
+    this.props.componentsNavbarNavigate();
     this.props.history.push(arguments[0]);
   }
 

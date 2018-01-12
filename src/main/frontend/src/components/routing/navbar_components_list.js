@@ -1,16 +1,16 @@
-import GroupsList from '../group/list_groups';
-import Expense from '../expense';
+import GroupList from '../group/list_group';
+import ExpenseList from '../expense/list_expense';
 import HomePage from '../home_page';
 
 const nav = {
   'group': {
     'path': '/group',
-    'component': GroupsList,
+    'component': GroupList,
     'navbarTitle': 'Groups'
   },
   'expense': {
     'path': '/expense',
-    'component': Expense,
+    'component': ExpenseList,
     'navbarTitle': 'Expenses'
   },
   'home': {

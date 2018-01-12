@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class Expense extends Component {
+export default class ExpenseList extends Component {
   render() {
     return (
       <div>Expense</div>
