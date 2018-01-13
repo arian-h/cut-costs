@@ -62,6 +62,7 @@ public class GroupController {
 
 	/*
 	 * Update a group with specific id
+	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
 	public GetGroupDto update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
@@ -85,6 +86,7 @@ public class GroupController {
 
 	/*
 	 * Delete a group
+	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.DELETE)
 	public void delete(@PathVariable long groupId, Principal principal) {
@@ -107,6 +109,7 @@ public class GroupController {
 
 	/*
 	 * Get all members of a group
+	 * If user is a group member
 	 */
 	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
 	public List<GetUserDto> listMembers(@PathVariable long groupId, Principal principal) {
@@ -119,7 +122,8 @@ public class GroupController {
 	}
 
 	/*
-	 * Delete a specific member of a group. Deleting admin is not possible
+	 * Delete a specific member of a group. Deleting admin is not possible.
+	 * Only enabled for admins
 	 */
 	@RequestMapping(path = "/{groupId}/user/{userId}", method = RequestMethod.DELETE)
 	public void removeMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
