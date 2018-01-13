@@ -64,5 +64,6 @@ class GroupList extends Component {
 function mapStateToProps(state) {
   return { groups: state.groups };
 }
-
+/* This is where action creator is connected to the component and
+the redux store through mapStateToProps */
 export default connect(mapStateToProps, {fetchGroups})(GroupList);

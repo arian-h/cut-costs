@@ -5,7 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import promise from 'redux-promise';
 import rootReducer from './reducers';
-import LoginForm from './components/login_form';
+import LoginForm from './components/auth/form_login';
 import PrivateRoute from './routing/private_route';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
