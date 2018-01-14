@@ -24,9 +24,6 @@ public class GroupDtoValidator implements Validator {
 		if (!CustomValidationUtils.validateGroupDescription(groupDTO.getDescription())){
 			errors.rejectValue("description", "group description does not meet expectations");
 		}
-		if (!CustomValidationUtils.validateImage(groupDTO.getImage(), 2)){
-			errors.rejectValue("image", "image does not meet expectations");
-		}
 	}
 	
 }

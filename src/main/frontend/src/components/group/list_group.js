@@ -4,7 +4,7 @@ import { fetchGroups } from '../../actions';
 import { Link } from 'react-router-dom';
 
 class GroupList extends Component {
-  componentDidMount() {
+  componentWillMount() {
     this.props.fetchGroups();
   }
 
@@ -48,7 +48,7 @@ class GroupList extends Component {
     return (
       <div>
         <div className="text-xs-right">
-          <Link className="btn btn-primary" to="/groups/new">
+          <Link className="btn btn-primary" to="/group/new">
             New Group
           </Link>
         </div>
@@ -60,7 +60,9 @@ class GroupList extends Component {
     );
   }
 }
-
+/*this function works directly with the <Provider> placed inside
+index.js (i.e. around the app)
+*/
 function mapStateToProps(state) {
   return { groups: state.groups };
 }

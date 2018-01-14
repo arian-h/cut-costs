@@ -3,11 +3,16 @@ import ExpenseList from '../components/expense/list_expense';
 import HomePage from '../components/home_page';
 import RegisterForm from '../components/auth/form_register';
 import LoginForm from '../components/auth/form_login';
+import NewGroup from '../components/group/new_group';
 
 export const RouteList = {
   'group': {
     'path': '/group',
     'component': GroupList
+  },
+  'group/new': {
+    'path': '/group/new',
+    'component': NewGroup
   },
   'expense': {
     'path': '/expense',

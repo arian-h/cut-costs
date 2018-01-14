@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { loginUser } from '../../actions';
-import {validatePassword, validateEmail, AT_LEAST_ONE_SMALL_LETTER_PATTERN, AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN, AT_LEAST_ONE_DIGIT_PATTERN} from '../../helpers/auth_utils';
+import {validatePassword, validateEmail} from '../../helpers/auth_utils';
+import { renderField, validate } from '../../helpers/form_utils';
 
 const FIELDS = {
   username: {
@@ -21,24 +22,6 @@ const FIELDS = {
 };
 
 class LoginForm extends Component {
-  renderField(fieldConfig, field) {
-    //this is provided by redux-form
-    const fieldHelper = this.props.fields[field];
-    const {touched, invalid, error} = fieldHelper;
-    const className = `auth-form form-group ${touched && invalid ? 'has-danger':''}`;
-    return (
-      <div className={className} key={field}>
-        <label>{fieldConfig.label}</label>
-        <input className="form-control"
-          type={fieldConfig.type}
-          {...fieldHelper}
-        />
-        <div className="text-help">
-          {touched ? error[field]:''}
-        </div>
-      </div>
-    );
-  }
 
   onSubmit(values) {
     const { history } = this.props;
@@ -56,11 +39,11 @@ class LoginForm extends Component {
   }
 
   render() {
-    const {handleSubmit} = this.props;
+    const { handleSubmit } = this.props;
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          {_.map(FIELDS, this.renderField.bind(this))}
+          {_.map(FIELDS, renderField.bind(this))}
           <button type="submit" className="btn btn-primary">Login</button>
           <Link className="auth-switch-link" to='/register'>Sign up</Link>
         </form>
@@ -69,19 +52,12 @@ class LoginForm extends Component {
   }
 }
 
-function validate(values) {
-  let errors = {};
-  _.each(FIELDS, (val, key) => {
-    errors[key] = val.validate(values[key]);
-  });
-  return errors;
-}
-
 export default reduxForm({
   validate,
   //a unique id for this form
   form:'LoginForm',
-  fields: _.keys(FIELDS)
+  fields: _.keys(FIELDS),
+  fields_def: FIELDS
 })(
   connect(null, { loginUser })(LoginForm)
 );

@@ -38,7 +38,7 @@ public class GroupService {
 	
 	private static Logger logger = LoggerFactory.getLogger(GroupService.class);
 	
-	public Group create(String groupName, String description, String image, String username) throws IOException {
+	public Group create(String groupName, String description, String username) throws IOException {
 		User user = userService.loadByUsername(username);
 		Group group = new Group();
 		group.setAdmin(user);
@@ -78,7 +78,7 @@ public class GroupService {
 		logger.debug("Group with id " + groupId + " was deleted");
 	}
 
-	public Group update(long groupId, String groupName, String description, String image, String username) throws IOException {
+	public Group update(long groupId, String groupName, String description, String username) throws IOException {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
 		validateAdminAccessToGroup(group, user);

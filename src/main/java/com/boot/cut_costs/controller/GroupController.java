@@ -56,7 +56,7 @@ public class GroupController {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), principal.getName());
 		return groupDtoConverter.convertToDto(group, loggedInUser);
 	}
 
@@ -71,7 +71,7 @@ public class GroupController {
 		if (result.hasErrors()) {
 			throw new ValidationException(result.getFieldError().getCode());
 		}
-		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), groupDto.getImage(), principal.getName());
+		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), principal.getName());
 		return groupDtoConverter.convertToDto(group, loggedInUser);
 	}
 

@@ -5,6 +5,7 @@ export const LOGOUT_USER = 'logout_user';
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const FETCH_GROUPS = 'fetch_groups';
 export const REGISTER_USER = 'register_user';
+export const CREATE_GROUP = 'create_group';
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
@@ -52,6 +53,25 @@ export function fetchGroups() {
   );
   return {
     type: FETCH_GROUPS,
+    payload: request
+  }
+}
+
+export function createGroup(values) {
+  const request = axios.post(GROUP_ENDPOINT,
+    {
+      data: {
+        name: values.name,
+        description: values.description
+      },
+      headers: {
+        'Authorization': localStorage.getItem('jwt_token'),
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+  return {
+    type: CREATE_GROUP,
     payload: request
   }
 }
