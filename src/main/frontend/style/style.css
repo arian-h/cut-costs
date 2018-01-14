@@ -1,6 +1,10 @@
-.auth-form {
+.auth-form-container {
 	width: 400px;
   margin-right: auto;
   margin-left: auto;
-  margin-top: 20%;
+  margin-top: 5%;
+}
+
+.auth-switch-link {
+  margin-left: 20px;
 }

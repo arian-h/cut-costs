@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { loginUser } from '../../actions';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
+
+import { loginUser } from '../../actions';
 import {validatePassword, validateEmail, AT_LEAST_ONE_SMALL_LETTER_PATTERN, AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN, AT_LEAST_ONE_DIGIT_PATTERN} from '../../helpers/auth_utils';
 
 const FIELDS = {
   username: {
-    type: 'input',
+    type: 'text',
     label: 'Email',
     validate: validateEmail
   },
   password: {
-    type: 'input',
+    type: 'password',
     label: 'Password',
     validate: validatePassword
   }
@@ -20,7 +22,6 @@ const FIELDS = {
 
 class LoginForm extends Component {
   renderField(fieldConfig, field) {
-    debugger;
     //this is provided by redux-form
     const fieldHelper = this.props.fields[field];
     const {touched, invalid, error} = fieldHelper;
@@ -28,8 +29,8 @@ class LoginForm extends Component {
     return (
       <div className={className} key={field}>
         <label>{fieldConfig.label}</label>
-        <fieldConfig.type className="form-control"
-          type="text"
+        <input className="form-control"
+          type={fieldConfig.type}
           {...fieldHelper}
         />
         <div className="text-help">
@@ -57,10 +58,13 @@ class LoginForm extends Component {
   render() {
     const {handleSubmit} = this.props;
     return (
-      <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-        {_.map(FIELDS, this.renderField.bind(this))}
-        <button type="submit" className="btn btn-primary">Enter</button>
-      </form>
+      <div className="auth-form-container">
+        <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+          {_.map(FIELDS, this.renderField.bind(this))}
+          <button type="submit" className="btn btn-primary">Login</button>
+          <Link className="auth-switch-link" to='/register'>Sign up</Link>
+        </form>
+      </div>
     );
   }
 }
