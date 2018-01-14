@@ -2,12 +2,14 @@ import axios from 'axios';
 
 export const LOGIN_USER = 'login_user';
 export const LOGOUT_USER = 'logout_user';
-export const COMPONENTS_NAVBAR_NAVIGATE = 'left_nav_bar_navigate';
+export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const FETCH_GROUPS = 'fetch_groups';
+export const REGISTER_USER = 'register_user';
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
 const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
+const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
 const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
 
 export function loginUser(values, callback) {
@@ -52,4 +54,19 @@ export function fetchGroups() {
     type: FETCH_GROUPS,
     payload: request
   }
+}
+
+export function registerUser(values, callback) {
+  const request = axios.post(REGISTER_ENDPOINT,
+    {
+      name: values.name,
+      username: values.email,
+      password: values.password
+    }
+  ).then((response) => callback(response));
+
+  return {
+    type: REGISTER_USER,
+    payload: request
+  };
 }

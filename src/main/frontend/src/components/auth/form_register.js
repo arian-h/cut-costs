@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { loginUser } from '../../actions';
+import { registerUser } from '../../actions';
+import validator from 'validator';
 import _ from 'lodash';
-import {validatePassword, validateEmail, AT_LEAST_ONE_SMALL_LETTER_PATTERN, AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN, AT_LEAST_ONE_DIGIT_PATTERN} from '../../helpers/auth_utils';
+import {validatePassword, validateEmail, validateName, AT_LEAST_ONE_SMALL_LETTER_PATTERN, AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN, AT_LEAST_ONE_DIGIT_PATTERN} from '../../helpers/auth_utils';
 
 const FIELDS = {
-  username: {
+  name: {
+    type: 'input',
+    label: 'Username',
+    validate: validateName
+  },
+  email: {
     type: 'input',
     label: 'Email',
     validate: validateEmail
@@ -18,9 +24,8 @@ const FIELDS = {
   }
 };
 
-class LoginForm extends Component {
+class RegisterForm extends Component {
   renderField(fieldConfig, field) {
-    debugger;
     //this is provided by redux-form
     const fieldHelper = this.props.fields[field];
     const {touched, invalid, error} = fieldHelper;
@@ -41,15 +46,12 @@ class LoginForm extends Component {
 
   onSubmit(values) {
     const { history } = this.props;
-    let original_pathname = '/';
-    if (this.props.location.state) {
-      original_pathname = this.props.location.state.from.pathname;
-    }
-    this.props.loginUser(values, ({status, headers}) => {
+    debugger;
+    this.props.registerUser(values, ({status, headers}) => {
       if (status === 200) {
         const { authorization } = headers;
         localStorage.setItem('jwt_token', authorization);
-        history.push(original_pathname);
+        history.push('/');
       }
     });
   }
@@ -59,7 +61,7 @@ class LoginForm extends Component {
     return (
       <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
         {_.map(FIELDS, this.renderField.bind(this))}
-        <button type="submit" className="btn btn-primary">Enter</button>
+        <button type="submit" className="btn btn-primary">Sign up</button>
       </form>
     );
   }
@@ -79,5 +81,5 @@ export default reduxForm({
   form:'LoginForm',
   fields: _.keys(FIELDS)
 })(
-  connect(null, { loginUser })(LoginForm)
+  connect(null, { registerUser })(RegisterForm)
 );

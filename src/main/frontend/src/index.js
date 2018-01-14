@@ -29,6 +29,3 @@ ReactDOM.render(
       </BrowserRouter>
   </Provider>
   , document.querySelector('.container'));
-
-
-//  <Route exact path="/login" component={LoginForm} />

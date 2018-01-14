@@ -13,6 +13,9 @@ class ComponentsNavBar extends Component {
   }
 
   render() {
+    if (!this.props.isLoggedOn) {
+      return null;
+    }
     let buttons = [];
     Object.entries(ComponentsList).forEach(([key, value]) => {
       buttons.push(
