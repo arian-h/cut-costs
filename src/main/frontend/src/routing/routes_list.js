@@ -2,8 +2,9 @@ import GroupList from '../components/group/list_group';
 import ExpenseList from '../components/expense/list_expense';
 import HomePage from '../components/home_page';
 import RegisterForm from '../components/auth/form_register';
+import LoginForm from '../components/auth/form_login';
 
-const RouteList = {
+export const RouteList = {
   'group': {
     'path': '/group',
     'component': GroupList
@@ -19,7 +20,9 @@ const RouteList = {
   'register': {
     'path': '/register',
     'component': RegisterForm
+  },
+  'login': {
+    'path': '/login',
+    'component': LoginForm
   }
 };
-
-export default RouteList;

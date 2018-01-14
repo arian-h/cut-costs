@@ -11,9 +11,6 @@ class AppNavBar extends Component {
   }
 
   render() {
-    if (!this.props.isLoggedOn) {
-      return null;
-    }
     return (
       <div>
         <button
