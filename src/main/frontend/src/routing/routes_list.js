@@ -16,7 +16,7 @@ export const RouteList = {
     'component': GroupList,
     'props': {
       'modal': {
-        'content': <NewGroup />,
+        'content': NewGroup,
         'className': 'new-group-modal'
       }
     }

@@ -21,23 +21,28 @@ const FIELDS = {
 
 class NewGroup extends Component {
 
-  onSubmit(values) {
+  _onSubmit(values) {
     const { history } = this.props;
-    this.props.createGroup(values, ({status, headers}) => {
-      // if (status === 200) {
-      //   history.push('/');
-      // }
+    this.props.createGroup(values, ({status}) => {
+      if (status === 200) {
+        history.push('/group');
+      }
     });
+  }
+
+  _onCancel() {
+    const { history } = this.props;
+    history.push('/group');
   }
 
   render() {
     const { handleSubmit } = this.props;
     return (
       <div>
-        <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <form onSubmit={handleSubmit(this._onSubmit.bind(this))}>
           {_.map(FIELDS, renderField.bind(this))}
           <button type="submit" className="btn btn-primary">Create</button>
-          <button className="btn btn-primary">Cancel</button>
+          <button type="button" className="btn btn-primary" onClick={this._onCancel.bind(this)}>Cancel</button>
         </form>
       </div>
     );

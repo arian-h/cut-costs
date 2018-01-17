@@ -58,11 +58,11 @@ public class CustomValidationUtils {
 	}
 	
 	public static boolean validateGroupName(String name) {
-		return name.length() >= 5 && name.length() <= 25;
+		return name.trim().length() >= 5 && name.trim().length() <= 25;
 	}
 
 	public static boolean validateGroupDescription(String description) {
-		return description == null || description.length() <= 200;
+		return description == null || description.trim().length() <= 200;
 	}
 	
 	public static boolean isEmptyOrWhitespace(String attr) {

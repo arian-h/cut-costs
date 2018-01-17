@@ -5,8 +5,8 @@ import { Provider } from 'react-redux';
 
 class Modal extends Component {
   constructor(props) {
-      super(props);
-      this.container = document.getElementsByClassName("container")[0];
+    super(props);
+    this.container = document.getElementsByClassName("container")[0];
   }
 
   componentDidMount() {
@@ -21,17 +21,18 @@ class Modal extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
     ReactDOM.unmountComponentAtNode(this.modalTarget);
     this.container.removeChild(this.modalTarget);
   }
 
   _render() {
-    const {content, className: customClassName} = this.props;
-    let className = `${customClassName} modal-container`
+    const {content: Content, className: customClassName} = this.props;
+    let className = `${customClassName} modal-container`;
     ReactDOM.render(
       <Provider store={store}>
-        <div className={className}>{content}</div>
+        <div className={className}>
+          <Content {...this.props}/>
+        </div>
       </Provider>,
       this.modalTarget
     );

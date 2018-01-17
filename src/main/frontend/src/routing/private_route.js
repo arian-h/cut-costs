@@ -13,6 +13,7 @@ function renderComponent(pathname, props) {
   }
   let Component = RouteList[_pathname].component;
   let customProps = RouteList[_pathname].props;
+  debugger;
   return (
     <div>
       <AppNavBar />

@@ -57,19 +57,20 @@ export function fetchGroups() {
   }
 }
 
-export function createGroup(values) {
+export function createGroup(values, callback) {
   const request = axios.post(GROUP_ENDPOINT,
     {
-      data: {
-        name: values.name,
-        description: values.description
-      },
+      name: values.name,
+      description: values.description
+    },
+    {
       headers: {
         'Authorization': localStorage.getItem('jwt_token'),
         'Content-Type': 'application/json'
       }
     }
-  );
+  ).then((response) => callback(response));
+
   return {
     type: CREATE_GROUP,
     payload: request
