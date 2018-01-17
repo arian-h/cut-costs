@@ -1,3 +1,4 @@
+import React from 'react';
 import GroupList from '../components/group/list_group';
 import ExpenseList from '../components/expense/list_expense';
 import HomePage from '../components/home_page';
@@ -12,7 +13,13 @@ export const RouteList = {
   },
   'group/new': {
     'path': '/group/new',
-    'component': NewGroup
+    'component': GroupList,
+    'props': {
+      'modal': {
+        'content': <NewGroup />,
+        'className': 'new-group-modal'
+      }
+    }
   },
   'expense': {
     'path': '/expense',

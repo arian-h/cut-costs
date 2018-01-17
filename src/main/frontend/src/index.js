@@ -9,9 +9,10 @@ import PrivateRoute from './routing/private_route';
 import {RouteList} from './routing/routes_list';
 
 const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+export const store = createStoreWithMiddleware(rootReducer);
 
 ReactDOM.render(
-  <Provider store={createStoreWithMiddleware(rootReducer)}>
+  <Provider store={store}>
       <BrowserRouter>
         <div>
           <Switch>

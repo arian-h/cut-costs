@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchGroups } from '../../actions';
 import { Link } from 'react-router-dom';
+
+import { fetchGroups } from '../../actions';
+import Modal from '../modal/modal';
 
 class GroupList extends Component {
   componentWillMount() {
@@ -39,8 +41,21 @@ class GroupList extends Component {
     });
   }
 
+  //returns modal if one exists in the props
+  _getModal() {
+    let modal = <noscript/>;
+    let modalContent, modalClassName;
+    if (this.props.modal) {
+      modalContent = this.props.modal.content;
+      modalClassName = this.props.modal.className;
+      modal = <Modal content={modalContent} className={modalClassName}/>;
+    }
+    return modal;
+  }
+
   render() {
-    const { groups } = this.props;
+    const { groups} = this.props;
+    let modal = this._getModal();
     //TODO how to distinguish between the first time and no group ?
     // if (!groups) {
     //   return <div>Loading...</div>;
@@ -52,10 +67,21 @@ class GroupList extends Component {
             New Group
           </Link>
         </div>
-        <h3>Groups</h3>
+        { modal }
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
+        <p>SalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalamSalam</p>
         <ul className="list-group">
           {this.renderGroupsList()}
         </ul>
+
       </div>
     );
   }

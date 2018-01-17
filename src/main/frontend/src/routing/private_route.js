@@ -12,11 +12,12 @@ function renderComponent(pathname, props) {
     _pathname = 'home';
   }
   let Component = RouteList[_pathname].component;
+  let customProps = RouteList[_pathname].props;
   return (
     <div>
       <AppNavBar />
       <ComponentsNavBar />
-      <Component {...props} />
+      <Component {...props} {...customProps}/>
     </div>
   );
 }

@@ -8,3 +8,23 @@
 .auth-switch-link {
   margin-left: 20px;
 }
+
+.modal-container {
+  position: fixed;
+  top: 25%;
+  left: 35%;
+  right: 40px;
+  bottom: 40px;
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: auto;
+  border-radius: 4px;
+  outline: none;
+  padding: 20px;
+  display: block;
+}
+
+.new-group-modal {
+	width: 30%;
+	height: 30%;
+}
