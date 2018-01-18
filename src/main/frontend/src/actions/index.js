@@ -5,7 +5,7 @@ export const LOGOUT_USER = 'logout_user';
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const FETCH_GROUPS = 'fetch_groups';
 export const REGISTER_USER = 'register_user';
-export const CREATE_GROUP = 'create_group';
+export const NEW_GROUP = 'create_group';
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
@@ -70,9 +70,8 @@ export function createGroup(values, callback) {
       }
     }
   ).then((response) => callback(response));
-
   return {
-    type: CREATE_GROUP,
+    type: NEW_GROUP,
     payload: request
   }
 }

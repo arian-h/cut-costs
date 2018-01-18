@@ -4,45 +4,15 @@ import { Link } from 'react-router-dom';
 
 import { fetchGroups } from '../../actions';
 import Modal from '../modal/modal';
+import GroupRow from './row_group';
 
 class GroupList extends Component {
   componentWillMount() {
     this.props.fetchGroups();
   }
 
-  componentWillUpdate() {
-    this.props.fetchGroups();
-  }
-
-  renderGroupsList() {
-    return _.map(this.props.groups, group => {
-      let deleteButton = null;
-      let editButton = null;
-      if (group.isAdmin) {
-        deleteButton = <button
-          className="btn btn-danger pull-xs-right"
-          // onClick={this.onDeleteClick.bind(this)}
-        >
-          Delete
-        </button>;
-        editButton = <button
-          className="btn btn-danger pull-xs-right"
-          // onClick={this.onDeleteClick.bind(this)}
-        >
-          Edit
-        </button>;
-      }
-      return (
-        <li className="list-group-item" key={group.id}>
-          <Link to={`/groups/${group.id}`}>{group.name}</Link>
-          <span>{group.description}</span>
-          <span>{group.numberOfMembers}</span>
-          <span>{group.numberOfExpenses}</span>
-          {editButton}
-          {deleteButton}
-        </li>
-      )
-    });
+  _onDelete() {
+    this.props.deleteGroup();
   }
 
   //returns modal if one exists in the props
@@ -50,10 +20,8 @@ class GroupList extends Component {
     let props = this.props;
     let modal = <noscript/>;
     let modalContent, modalClassName;
-    debugger;
     if (props.modal) {
       modalContent = props.modal.content;
-      debugger;
       modalClassName = props.modal.className;
       modal = <Modal content={modalContent} className={modalClassName} {...props}/>;
     }
@@ -61,13 +29,15 @@ class GroupList extends Component {
   }
 
   render() {
-    debugger;
     const { groups} = this.props;
     let modal = this._getModal();
     //TODO how to distinguish between the first time and no group ?
     // if (!groups) {
     //   return <div>Loading...</div>;
     // }
+    let groupList = _.map(this.props.groups, group => {
+      return <GroupRow group={group} onDelete={this._onDelete} key={group.id}/>;
+    });
     return (
       <div>
         <div className="text-xs-right">
@@ -77,7 +47,7 @@ class GroupList extends Component {
         </div>
         { modal }
         <ul className="list-group">
-          {this.renderGroupsList()}
+          {groupList}
         </ul>
 
       </div>
