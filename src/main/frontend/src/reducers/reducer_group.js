@@ -8,7 +8,7 @@ export default function(state=INITIAL_STATE, action) {
     case FETCH_GROUPS:
       return _.mapKeys(action.payload.data, 'id');
     case FETCH_GROUPS_ERROR:
-      return null;
+      return null; //TODO convert it to error signal
     case CREATE_GROUP:
       return { ...state, [action.payload.data.id]: action.payload.data};
     case DELETE_GROUP:

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched, groupsFetchErrored, loggedIn, loggedOut } from './creators';
+import { groupDeleted, groupsFetched, groupsFetchErrored } from './creators';
 
 //TODO: TRANSFORM ALL THESE ACTIONS FROM PROMISE TO THUNK
 
@@ -29,7 +29,6 @@ export function loginUser(values, callback) {
       }
     ).then((response) => {
       callback(response);
-      dispatch(loggedIn(response));
     });
   };
 }
@@ -83,7 +82,6 @@ export function logoutUser(callback) {
     return (dispatch) => {
       callback();
       localStorage.removeItem('jwt_token');
-      dispatch(loggedOut());
     }
 }
 

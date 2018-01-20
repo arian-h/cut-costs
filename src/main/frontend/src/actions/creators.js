@@ -23,16 +23,3 @@ export function groupsFetchErrored() {
      type: FETCH_GROUPS_ERROR
   }
 }
-
-export function loggedIn(response) {
-  return {
-    type: LOGIN_USER,
-    response: response
-  };
-}
-
-export function loggedOut() {
-  return {
-    type: LOGOUT_USER
-  };
-}
