@@ -28,11 +28,9 @@ class GroupList extends Component {
   }
 
   render() {
+    debugger;
     const { groups} = this.props;
     //TODO how to distinguish between the first time and no group ?
-    if (_.isEmpty(groups)) {
-      return <div>Something has gone wrong while fetching groups</div>;
-    }
     return (
       <div>
         <div className="text-xs-right">
@@ -41,13 +39,17 @@ class GroupList extends Component {
           </Link>
         </div>
         { this._getModal() }
-        <ul className="list-group">
-          {
-            _.map(this.props.groups, group =>
-              <GroupRow group={group} onDelete={this._onDelete} key={group.id}/>
-            )
-          }
-        </ul>
+        { _.isEmpty(groups) ? <div>No group listed !</div>
+            : <ul className="list-group">
+              {_.map(this.props.groups, group =>
+                <GroupRow group={group}
+                  onDelete={this._onDelete}
+                  key={group.id}
+                />
+              )}
+            </ul>
+        }
+
       </div>
     );
   }

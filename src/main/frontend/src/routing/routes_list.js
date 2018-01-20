@@ -1,6 +1,6 @@
 import GroupList from '../components/group/list_group';
 import ExpenseList from '../components/expense/list_expense';
-import HomePage from '../components/home_page';
+import Home from '../components/home';
 import RegisterForm from '../components/auth/form_register';
 import LoginForm from '../components/auth/form_login';
 import NewGroup from '../components/group/new_group';
@@ -26,7 +26,7 @@ export const RouteList = {
   },
   'home': {
     'path': '/',
-    'component': HomePage
+    'component': Home
   },
   'register': {
     'path': '/register',

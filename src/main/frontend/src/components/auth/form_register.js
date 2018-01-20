@@ -14,7 +14,7 @@ const FIELDS = {
     label: 'Username',
     validate: validateName
   },
-  email: {
+  username: {
     type: 'text',
     label: 'Email',
     validate: validateEmail
@@ -57,7 +57,8 @@ export default reduxForm({
   validate,
   //a unique id for this form
   form:'LoginForm',
-  fields: _.keys(FIELDS)
+  fields: _.keys(FIELDS),
+  fields_def: FIELDS
 })(
   connect(null, { registerUser })(RegisterForm)
 );

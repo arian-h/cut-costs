@@ -6,13 +6,13 @@ const INITIAL_STATE = {};
 export default function(state=INITIAL_STATE, action) {
   switch(action.type) {
     case FETCH_GROUPS:
-      return _.mapKeys(action.payload.data, 'id');
+      return _.mapKeys(action.response.data, 'id');
     case FETCH_GROUPS_ERROR:
       return null; //TODO convert it to error signal
     case CREATE_GROUP:
-      return { ...state, [action.payload.data.id]: action.payload.data};
+      return { ...state, [action.response.data.id]: action.response.data};
     case DELETE_GROUP:
-      return _.omit(state, action.payload.data);
+      return _.omit(state, action.response.data);
     default:
       return state;
   }

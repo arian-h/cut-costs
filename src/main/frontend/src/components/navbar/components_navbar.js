@@ -3,16 +3,10 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { componentsNavbarNavigate } from '../../actions';
 import { RouteList } from '../../routing/routes_list';
 import ComponentsList from './components_list';
 
 class ComponentsNavBar extends Component {
-
-  onNavigate() {
-    this.props.componentsNavbarNavigate();
-    this.props.history.push(arguments[0]);
-  }
 
   render() {
     let buttons = [];
@@ -20,8 +14,8 @@ class ComponentsNavBar extends Component {
       buttons.push(
         <button
           className="btn pull-xs-right"
-          onClick={this.onNavigate.bind(this, RouteList[key].path)}
-          key={buttons.length}
+          onClick={() => this.props.history.push(RouteList[key].path)}
+          key={key}
         >
           {value.title}
         </button>
@@ -35,4 +29,4 @@ class ComponentsNavBar extends Component {
   }
 }
 
-export default withRouter(connect(null, {componentsNavbarNavigate})(ComponentsNavBar));
+export default withRouter(ComponentsNavBar);

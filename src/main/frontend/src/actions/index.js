@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched, groupsFetchErrored } from './creators';
+import { groupDeleted, groupsFetched, groupsFetchErrored, groupCreated } from './creators';
 
 //TODO: TRANSFORM ALL THESE ACTIONS FROM PROMISE TO THUNK
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
-export const CREATE_GROUP = 'create_group';
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
@@ -21,7 +20,8 @@ const AUTHORIZATION_HEADER = {
 };
 
 export function loginUser(values, callback) {
-  return (dispatch) => {
+  debugger;
+  return () => {
     axios.post(LOGIN_ENDPOINT,
       {
         username: values.username,
@@ -31,13 +31,6 @@ export function loginUser(values, callback) {
       callback(response);
     });
   };
-}
-
-//TODO: not useful yet
-export function componentsNavbarNavigate() {
-  return {
-    type: COMPONENTS_NAVBAR_NAVIGATE
-  }
 }
 
 export function fetchGroups() {
@@ -54,16 +47,19 @@ export function fetchGroups() {
 }
 
 export function createGroup(values, callback) {
-  const request = axios.post(GROUP_ENDPOINT,
-    {
-      name: values.name,
-      description: values.description
-    }, AUTHORIZATION_HEADER
-  ).then((response) => callback(response));
-  return {
-    type: NEW_GROUP,
-    payload: request
-  }
+  return (dispatch) => {
+    axios.post(GROUP_ENDPOINT,
+      {
+        name: values.name,
+        description: values.description
+      }, AUTHORIZATION_HEADER)
+      .then((response) => {
+        if (response.status === 200) {
+          callback(response);
+          dispatch(groupCreated(response));
+        }
+      });
+    };
 }
 
 export function deleteGroup(groupID, callback) {
@@ -79,23 +75,19 @@ export function deleteGroup(groupID, callback) {
 }
 
 export function logoutUser(callback) {
-    return (dispatch) => {
+    return () => {
       callback();
-      localStorage.removeItem('jwt_token');
     }
 }
 
 export function registerUser(values, callback) {
-  const request = axios.post(REGISTER_ENDPOINT,
-    {
-      name: values.name,
-      username: values.email,
-      password: values.password
-    }
-  ).then((response) => callback(response));
-
-  return {
-    type: REGISTER_USER,
-    payload: request
-  };
+  return () => {
+    axios.post(REGISTER_ENDPOINT,
+      {
+        name: values.name,
+        username: values.username,
+        password: values.password
+      }
+    ).then((response) => callback(response));
+  }
 }

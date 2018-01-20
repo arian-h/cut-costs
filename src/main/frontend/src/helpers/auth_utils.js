@@ -26,7 +26,7 @@ export const validateEmail = (email) => {
   let errors = {};
   email = email || '';
   if (!validator.isEmail(email)) {
-    errors["email"] = "Invalid email address";
+    errors["username"] = "Invalid email address";
   }
   return errors;
 };

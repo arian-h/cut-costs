@@ -23,11 +23,7 @@ class NewGroup extends Component {
 
   _onSubmit(values) {
     const { history } = this.props;
-    this.props.createGroup(values, ({status}) => {
-      if (status === 200) {
-        history.push('/group');
-      }
-    });
+    this.props.createGroup(values, ({status}) => history.push('/group'));
   }
 
   _onCancel() {
