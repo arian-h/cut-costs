@@ -28,3 +28,11 @@
 	width: 30%;
 	height: 30%;
 }
+
+.group-table thead {
+	background-color: grey;
+}
+
+.group-table thead td {
+	padding-right: 100px;
+}

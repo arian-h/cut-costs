@@ -4,9 +4,7 @@ export const renderField = function(fieldConfig, field) {
   //this is provided by redux-form
   const fieldHelper = this.props.fields[field];
   const {touched, invalid, error} = fieldHelper;
-  debugger;
   const className = `form-group ${touched && invalid ? 'has-danger':''}`;
-  console.log(fieldHelper);
   return (
     <div className={className} key={field}>
       <label>{fieldConfig.label}</label>

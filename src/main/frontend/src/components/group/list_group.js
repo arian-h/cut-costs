@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../modal/modal';
 import GroupRow from './row_group';
+import DataTable, { TEXT_CELL } from '../platform/data_table';
 
 class GroupList extends Component {
   componentWillMount() {
@@ -28,9 +29,27 @@ class GroupList extends Component {
   }
 
   render() {
-    debugger;
-    const { groups} = this.props;
+    const { groups } = this.props;
     //TODO how to distinguish between the first time and no group ?
+    let configs = {
+      'name': {
+        label: 'Group',
+        type: TEXT_CELL, // this can be either text, image
+        href: group => '/api/group/' + group.id
+      },
+      'description': {
+        label: 'Description',
+        type: TEXT_CELL
+      },
+      'numberOfExpenses': {
+        label: 'Expenses',
+        type: TEXT_CELL
+      },
+      'numberOfMembers': {
+        label: 'Members',
+        type: TEXT_CELL
+      }
+    };
     return (
       <div>
         <div className="text-xs-right">
@@ -39,17 +58,10 @@ class GroupList extends Component {
           </Link>
         </div>
         { this._getModal() }
-        { _.isEmpty(groups) ? <div>No group listed !</div>
-            : <ul className="list-group">
-              {_.map(this.props.groups, group =>
-                <GroupRow group={group}
-                  onDelete={this._onDelete}
-                  key={group.id}
-                />
-              )}
-            </ul>
+        {
+          _.isEmpty(groups) ? <div>No group listed !</div>
+          : <DataTable className="group-table" data={groups} configs={configs}/>
         }
-
       </div>
     );
   }

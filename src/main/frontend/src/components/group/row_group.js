@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 class GroupRow extends Component {
@@ -30,4 +29,4 @@ class GroupRow extends Component {
   }
 }
 
-export default connect(null, {})(GroupRow);
+export default GroupRow;

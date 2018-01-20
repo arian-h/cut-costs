@@ -20,7 +20,6 @@ const AUTHORIZATION_HEADER = {
 };
 
 export function loginUser(values, callback) {
-  debugger;
   return () => {
     axios.post(LOGIN_ENDPOINT,
       {
