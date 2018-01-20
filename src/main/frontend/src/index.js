@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import promise from 'redux-promise';
+import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 import PrivateRoute from './routing/private_route';
 import {RouteList} from './routing/routes_list';
 
-const createStoreWithMiddleware = applyMiddleware(promise)(createStore);
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 export const store = createStoreWithMiddleware(rootReducer);
 
 ReactDOM.render(

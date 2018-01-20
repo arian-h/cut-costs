@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { fetchGroups } from '../../actions';
+import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../modal/modal';
 import GroupRow from './row_group';
 
@@ -11,24 +11,23 @@ class GroupList extends Component {
     this.props.fetchGroups();
   }
 
-  _onDelete() {
-    this.props.deleteGroup();
+  _onDelete = (groupId) => {
+    this.props.deleteGroup(groupId);
   }
 
   //returns modal if one exists in the props
   _getModal() {
-    let props = this.props;
+    const {props} = this;
     let modal = <noscript/>;
-    let modalContent, modalClassName;
     if (props.modal) {
-      modalContent = props.modal.content;
-      modalClassName = props.modal.className;
-      modal = <Modal content={modalContent} className={modalClassName} {...props}/>;
+      const { modal: {content, className} } = props;
+      modal = <Modal content={content} className={className} {...props}/>;
     }
     return modal;
   }
 
   render() {
+    debugger;
     const { groups} = this.props;
     let modal = this._getModal();
     //TODO how to distinguish between the first time and no group ?
@@ -49,7 +48,6 @@ class GroupList extends Component {
         <ul className="list-group">
           {groupList}
         </ul>
-
       </div>
     );
   }
@@ -60,6 +58,13 @@ index.js (i.e. around the app)
 function mapStateToProps(state) {
   return { groups: state.groups };
 }
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchGroups: () => dispatch(fetchGroups()),
+        deleteGroup: (id) => dispatch(deleteGroup(id))
+    };
+};
 /* This is where action creator is connected to the component and
 the redux store through mapStateToProps */
-export default connect(mapStateToProps, {fetchGroups})(GroupList);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupList);

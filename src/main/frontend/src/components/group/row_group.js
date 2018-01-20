@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { deleteGroup } from '../../actions';
 
 class GroupRow extends Component {
 
   render() {
-    const { group, onDelete } = this.props;
+    const { group, onDelete} = this.props;
     let deleteButton = null;
     if (group.isAdmin) {
       deleteButton = <button
-        type="button" onCLick={onDelete.bind(this)}
+        type="button"
+        // onClick={() => onDelete(group.id)}
+        onClick={() => onDelete(group.id)}
         className="btn btn-danger pull-xs-right"
         // onClick={this.onDeleteClick.bind(this)}
       >
@@ -29,4 +30,4 @@ class GroupRow extends Component {
   }
 }
 
-export default connect(null, { deleteGroup })(GroupRow);
+export default connect(null, {})(GroupRow);

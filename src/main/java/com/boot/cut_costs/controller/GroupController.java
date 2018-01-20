@@ -89,8 +89,8 @@ public class GroupController {
 	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.DELETE)
-	public void delete(@PathVariable long groupId, Principal principal) {
-		groupService.delete(groupId, principal.getName());
+	public long delete(@PathVariable long groupId, Principal principal) {
+		return groupService.delete(groupId, principal.getName());
 	}
 
 	/*

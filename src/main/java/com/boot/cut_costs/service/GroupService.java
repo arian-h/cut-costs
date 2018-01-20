@@ -50,7 +50,7 @@ public class GroupService {
 		return group;
 	}
 
-	public void delete(long groupId, String username) {
+	public long delete(long groupId, String username) {
 		Group group = this.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		validateAdminAccessToGroup(group, owner);
@@ -76,6 +76,7 @@ public class GroupService {
 		}
 		groupRepository.delete(groupId);
 		logger.debug("Group with id " + groupId + " was deleted");
+		return groupId;
 	}
 
 	public Group update(long groupId, String groupName, String description, String username) throws IOException {
