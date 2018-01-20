@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import _ from 'lodash';
 
 import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../modal/modal';
@@ -27,16 +28,11 @@ class GroupList extends Component {
   }
 
   render() {
-    debugger;
     const { groups} = this.props;
-    let modal = this._getModal();
     //TODO how to distinguish between the first time and no group ?
-    // if (!groups) {
-    //   return <div>Loading...</div>;
-    // }
-    let groupList = _.map(this.props.groups, group => {
-      return <GroupRow group={group} onDelete={this._onDelete} key={group.id}/>;
-    });
+    if (_.isEmpty(groups)) {
+      return <div>Something has gone wrong while fetching groups</div>;
+    }
     return (
       <div>
         <div className="text-xs-right">
@@ -44,9 +40,13 @@ class GroupList extends Component {
             New Group
           </Link>
         </div>
-        { modal }
+        { this._getModal() }
         <ul className="list-group">
-          {groupList}
+          {
+            _.map(this.props.groups, group =>
+              <GroupRow group={group} onDelete={this._onDelete} key={group.id}/>
+            )
+          }
         </ul>
       </div>
     );

@@ -1,5 +1,6 @@
 export const FETCH_GROUPS = 'fetch_groups';
 export const DELETE_GROUP = 'delete_group';
+export const FETCH_GROUPS_ERROR = 'fetch_groups_errored';
 
 export function groupDeleted(response) {
   return {
@@ -12,5 +13,11 @@ export function groupsFetched(response) {
   return {
      type: FETCH_GROUPS,
      payload: response
+  }
+}
+
+export function groupsFetchErrored() {
+  return {
+     type: FETCH_GROUPS_ERROR
   }
 }

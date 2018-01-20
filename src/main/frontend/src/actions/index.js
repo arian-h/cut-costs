@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched } from './creators';
+import { groupDeleted, groupsFetched, groupsFetchErrored } from './creators';
 
 export const LOGIN_USER = 'login_user';
 export const LOGOUT_USER = 'logout_user';
@@ -12,6 +12,13 @@ const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
 const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
 const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
 const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
+
+const AUTHORIZATION_HEADER = {
+  headers: {
+    'Authorization': localStorage.getItem('jwt_token'),
+    'Content-Type': 'application/json'
+  }
+};
 
 export function loginUser(values, callback) {
   const request = axios.post(LOGIN_ENDPOINT,
@@ -42,18 +49,14 @@ export function componentsNavbarNavigate() {
 
 export function fetchGroups() {
   return (dispatch) => {
-    axios.get(GROUP_ENDPOINT,
-      {
-        headers: {
-          'Authorization': localStorage.getItem('jwt_token'),
-          'Content-Type': 'application/json'
+    axios.get(GROUP_ENDPOINT, AUTHORIZATION_HEADER)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch(groupsFetched(response));
+        } else {
+          dispatch(groupsFetchErrored());
         }
-      }
-    ).then(response => {
-      debugger;
-      //TODO evaluate response
-      dispatch(groupsFetched(response));
-    })
+      })
   };
 }
 
@@ -62,13 +65,7 @@ export function createGroup(values, callback) {
     {
       name: values.name,
       description: values.description
-    },
-    {
-      headers: {
-        'Authorization': localStorage.getItem('jwt_token'),
-        'Content-Type': 'application/json'
-      }
-    }
+    }, AUTHORIZATION_HEADER
   ).then((response) => callback(response));
   return {
     type: NEW_GROUP,
@@ -79,15 +76,12 @@ export function createGroup(values, callback) {
 export function deleteGroup(groupID, callback) {
   return (dispatch) => {
     let deleteEndpoint = `${GROUP_ENDPOINT}${groupID}`;
-    debugger;
-    axios.delete(deleteEndpoint, {
-      headers: {
-        'Authorization': localStorage.getItem('jwt_token'),
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      dispatch(groupDeleted(response));
-    });
+    axios.delete(deleteEndpoint, AUTHORIZATION_HEADER)
+      .then((response) => {
+        if (response.status === 200) {
+          dispatch(groupDeleted(response));
+        } // else do nothing or show an error
+      });
   };
 }
 
