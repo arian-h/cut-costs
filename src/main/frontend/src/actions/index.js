@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched, groupsFetchErrored } from './creators';
+import { groupDeleted, groupsFetched, groupsFetchErrored, loggedIn, loggedOut } from './creators';
 
-export const LOGIN_USER = 'login_user';
-export const LOGOUT_USER = 'logout_user';
+//TODO: TRANSFORM ALL THESE ACTIONS FROM PROMISE TO THUNK
+
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
 export const CREATE_GROUP = 'create_group';
@@ -21,23 +21,17 @@ const AUTHORIZATION_HEADER = {
 };
 
 export function loginUser(values, callback) {
-  const request = axios.post(LOGIN_ENDPOINT,
-    {
-      username: values.username,
-      password: values.password
-    }
-  ).then((response) => callback(response));
-
-  return {
-    type: LOGIN_USER,
-    payload: request
+  return (dispatch) => {
+    axios.post(LOGIN_ENDPOINT,
+      {
+        username: values.username,
+        password: values.password
+      }
+    ).then((response) => {
+      callback(response);
+      dispatch(loggedIn(response));
+    });
   };
-}
-
-export function logoutUser() {
-    return {
-      type: LOGOUT_USER
-    };
 }
 
 //TODO: not useful yet
@@ -85,6 +79,13 @@ export function deleteGroup(groupID, callback) {
   };
 }
 
+export function logoutUser(callback) {
+    return (dispatch) => {
+      callback();
+      localStorage.removeItem('jwt_token');
+      dispatch(loggedOut());
+    }
+}
 
 export function registerUser(values, callback) {
   const request = axios.post(REGISTER_ENDPOINT,

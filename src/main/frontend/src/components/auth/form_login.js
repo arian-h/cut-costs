@@ -23,19 +23,19 @@ const FIELDS = {
 
 class LoginForm extends Component {
 
-  onSubmit(values) {
+  _login(response) {
+    const redirected_from = this.props.location.state ? this.props.location.state.from.pathname : '/';
     const { history } = this.props;
-    let original_pathname = '/';
-    if (this.props.location.state) {
-      original_pathname = this.props.location.state.from.pathname;
-    }
-    this.props.loginUser(values, ({status, headers}) => {
-      if (status === 200) {
-        const { authorization } = headers;
-        localStorage.setItem('jwt_token', authorization);
-        history.push(original_pathname);
-      }
-    });
+    const { status, headers } = response;
+    if (status === 200) {
+      const { authorization } = headers;
+      localStorage.setItem('jwt_token', authorization);
+      history.push(redirected_from);
+    } // TODO else, show error message
+  }
+
+  onSubmit(values) {
+    this.props.loginUser(values, this._login.bind(this));
   }
 
   render() {

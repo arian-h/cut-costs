@@ -6,8 +6,8 @@ import { logoutUser } from '../../actions';
 class AppNavBar extends Component {
 
   onLogoutClick() {
-    this.props.logoutUser();
-    this.props.history.push('/login');
+
+    this.props.logoutUser(() => this.props.history.push('/login'));
   }
 
   render() {
@@ -24,4 +24,4 @@ class AppNavBar extends Component {
   }
 }
 
-export default withRouter(connect(null, {logoutUser})(AppNavBar));
+export default withRouter(connect(null, { logoutUser })(AppNavBar));
