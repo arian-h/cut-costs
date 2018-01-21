@@ -5,11 +5,11 @@ import { TEXT_CELL, IMAGE_CELL } from './index';
 
 class TableRow extends Component {
   render() {
-    const { data } = this.props;
+    const { data, actions } = this.props;
     return (
       <tr>
         {
-          _.map(data, (cellData) => {
+          _.map(data.row, (cellData) => {
             let element;
             if (cellData.type === TEXT_CELL) {
               element = <span>{cellData.value}</span>;
@@ -20,6 +20,13 @@ class TableRow extends Component {
               element = <a href={cellData.href}>{element}</a>;
             }
             return <td>{element}</td>;
+          })
+        }
+        {
+          _.map(actions, (action) => {
+              if (action.isEnabled && action.isEnabled(data.id)) {
+                return <td><button onClick={() => action.action(data.id)}>{action.title}</button></td>;
+              }
           })
         }
       </tr>

@@ -6,7 +6,7 @@ export const IMAGE_CELL = "image";
 
 class DataTable extends Component {
   render() {
-    const { className, configs, data: entities } = this.props;
+    const { className, configs, data: entities, actions} = this.props;
     let rows = [];
     _.forOwn(entities, function(entity, id) {
         let row = [];
@@ -21,13 +21,16 @@ class DataTable extends Component {
               href: href
             });
         });
-        rows.push(row);
+        rows.push({
+          id: id,
+          row: row
+        });
     });
     return (
       <table className={className}>
         <TableHeader data={configs}/>
         <tbody>
-          {_.map(rows, row => <TableRow data={row} />)}
+          {_.map(rows, row => <TableRow data={row} actions={actions} />)}
         </tbody>
       </table>
     );

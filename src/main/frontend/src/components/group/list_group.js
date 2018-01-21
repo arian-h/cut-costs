@@ -13,12 +13,8 @@ class GroupList extends Component {
     this.props.fetchGroups();
   }
 
-  _onDelete = (groupId) => {
-    this.props.deleteGroup(groupId);
-  }
-
   //returns modal if one exists in the props
-  _getModal() {
+  _getModal = () => {
     const {props} = this;
     let modal = <noscript/>;
     if (props.modal) {
@@ -26,6 +22,14 @@ class GroupList extends Component {
       modal = <Modal content={content} className={className} {...props}/>;
     }
     return modal;
+  }
+
+  _deleteActionEnabled = (id) => {
+    return this.props.groups[id].isAdmin;
+  };
+
+  _onDelete = (groupId) => {
+    this.props.deleteGroup(groupId);
   }
 
   render() {
@@ -50,6 +54,11 @@ class GroupList extends Component {
         type: TEXT_CELL
       }
     };
+    let actions = [{
+      isEnabled: this._deleteActionEnabled,
+      action: this._onDelete,
+      title: 'Delete'
+    }];
     return (
       <div>
         <div className="text-xs-right">
@@ -60,7 +69,7 @@ class GroupList extends Component {
         { this._getModal() }
         {
           _.isEmpty(groups) ? <div>No group listed !</div>
-          : <DataTable className="group-table" data={groups} configs={configs}/>
+          : <DataTable className="group-table" data={groups} configs={configs} actions={actions}/>
         }
       </div>
     );
