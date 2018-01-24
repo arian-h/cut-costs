@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { groupDeleted, groupsFetched, groupsFetchErrored, groupCreated } from './creators';
 
-//TODO: TRANSFORM ALL THESE ACTIONS FROM PROMISE TO THUNK
-
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
 
@@ -42,6 +40,24 @@ export function fetchGroups() {
           dispatch(groupsFetchErrored());
         }
       })
+  };
+}
+
+export function updateGroup(values, callback) {
+  return (dispatch) => {
+    console.log(values);
+    debugger;
+    // axios.put(`${GROUP_ENDPOINT}values.id`,
+    //   {
+    //
+    //   }, AUTHORIZATION_HEADER)
+    //   .then(response => {
+    //     if (response.status === 200) {
+    //       dispatch(groupsFetched(response));
+    //     } else {
+    //       dispatch(groupsFetchErrored());
+    //     }
+    //   })
   };
 }
 

@@ -4,14 +4,14 @@ import Home from '../components/home';
 import RegisterForm from '../components/auth/form_register';
 import LoginForm from '../components/auth/form_login';
 import NewGroup from '../components/group/new_group';
+import ShowGroup from '../components/group/show_group';
 
 export const RouteList = {
   'group': {
-    'path': '/group',
+    'navPath': '/group', // used for component on the nav bar
     'component': GroupList
   },
   'group/new': {
-    'path': '/group/new',
     'component': GroupList,
     'props': {
       'modal': {
@@ -20,20 +20,29 @@ export const RouteList = {
       }
     }
   },
+  'group\/[0-9]+': {
+    'component': ShowGroup
+  },
   'expense': {
-    'path': '/expense',
+    'navPath': '/expense',
     'component': ExpenseList
   },
   'home': {
-    'path': '/',
+    'navPath': '/',
     'component': Home
   },
   'register': {
-    'path': '/register',
     'component': RegisterForm
   },
   'login': {
-    'path': '/login',
     'component': LoginForm
   }
 };
+
+export function getNavPath(_pathname) {
+  let route = _.find(_.keys(RouteList), key => _pathname.match(new RegExp(`^${key}$`, "ig")));
+  if (!RouteList[route]) {
+    route = 'home';
+  }
+  return route;
+}

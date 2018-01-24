@@ -110,6 +110,7 @@ public class GroupController {
 	/*
 	 * Get all members of a group
 	 * If user is a group member
+	 * TODO: we may not need this endpoint
 	 */
 	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
 	public List<GetUserDto> listMembers(@PathVariable long groupId, Principal principal) {

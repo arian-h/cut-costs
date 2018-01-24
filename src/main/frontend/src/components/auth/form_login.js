@@ -10,14 +10,20 @@ import { renderField, validate } from '../../helpers/form_utils';
 
 const FIELDS = {
   username: {
-    type: 'text',
     label: 'Email',
-    validate: validateEmail
+    validate: validateEmail,
+    fieldType: 'input',
+    props: {
+      type: 'text'
+    }
   },
   password: {
-    type: 'password',
     label: 'Password',
-    validate: validatePassword
+    validate: validatePassword,
+    fieldType: 'input',
+    props: {
+      type: 'password'
+    }
   }
 };
 

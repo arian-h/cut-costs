@@ -1,18 +1,18 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import _ from 'lodash';
+
 import AppNavBar from '../components/navbar/app_navbar';
 import ComponentsNavBar from '../components/navbar/components_navbar';
-import {RouteList} from './routes_list';
+import {RouteList, getNavPath} from './routes_list';
 import {isAuthenticated} from '../helpers/auth_utils';
 
 //renders components with authenticated access
 function renderComponent(pathname, props) {
-  let _pathname = pathname.substring(1).toLowerCase();
-  if (!RouteList[_pathname]) {
-    _pathname = 'home';
-  }
-  let Component = RouteList[_pathname].component;
-  let customProps = RouteList[_pathname].props;
+  let _pathName = pathname.substring(1).toLowerCase();
+  let route = getNavPath(_pathName);
+  let Component = RouteList[route].component;
+  let customProps = RouteList[route].props;
   return (
     <div>
       <AppNavBar />

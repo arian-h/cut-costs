@@ -1,19 +1,28 @@
 import React from 'react';
+import _ from 'lodash';
 
-export const renderField = function(fieldConfig, field) {
-  //this is provided by redux-form
-  const fieldHelper = this.props.fields[field];
+export const renderField = function(fieldConfig, fieldName) {
+  //fieldHelper is provided by redux-form
+  const fieldHelper = this.props.fields[fieldName];
   const {touched, invalid, error} = fieldHelper;
   const className = `form-group ${touched && invalid ? 'has-danger':''}`;
+
+  let propKeys = _.keys(fieldConfig.props); //bind all callbacks passed in fieldConfig.props to 'this'
+  for (let i = 0; i < propKeys.length ;i++) {
+    if (fieldConfig.props[propKeys[i]].bind) {
+      fieldConfig.props[propKeys[i]] = fieldConfig.props[propKeys[i]].bind(this);
+    }
+  }
+
   return (
-    <div className={className} key={field}>
+    <div className={className} key={fieldName}>
       <label>{fieldConfig.label}</label>
-      <input className="form-control"
-        type={fieldConfig.type}
+      <fieldConfig.fieldType
         {...fieldHelper}
+        {...fieldConfig.props}
       />
       <div className="text-help">
-        {touched ? error[field]:''}
+        {touched ? error[fieldName]:''}
       </div>
     </div>
   );

@@ -36,3 +36,21 @@
 .group-table thead td {
 	padding-right: 100px;
 }
+
+.show-group .name-field {
+	border: none;
+	display: inline;
+	font-family: inherit;
+	font-size: inherit;
+	padding: none;
+	width: auto;
+}
+
+.show-group .desc-field {
+	border: none;
+	display: inline;
+	font-family: inherit;
+	font-size: inherit;
+	padding: none;
+	width: 40%;
+}

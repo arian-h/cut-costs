@@ -8,14 +8,20 @@ import { renderField, validate } from '../../helpers/form_utils';
 
 const FIELDS = {
   name: {
-    type: 'text',
     label: 'Name',
-    validate: validateName
+    validate: validateName,
+    fieldType: 'input',
+    props: {
+      type: 'text'
+    }
   },
   description: {
-    type: 'text',
     label: 'Description',
-    validate: validateDescription
+    validate: validateDescription,
+    fieldType: 'input',
+    props: {
+      type: 'text'
+    }
   }
 };
 

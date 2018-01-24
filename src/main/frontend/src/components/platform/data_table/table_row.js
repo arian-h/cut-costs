@@ -26,7 +26,7 @@ class TableRow extends Component {
           _.map(actions, (action) => {
               if (action.isEnabled && action.isEnabled(data.id)) {
                 return <td><button onClick={() => action.action(data.id)}>{action.title}</button></td>;
-              }
+              } //TODO, make it a dropdown action menu
           })
         }
       </tr>
