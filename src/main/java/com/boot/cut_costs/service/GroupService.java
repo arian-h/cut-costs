@@ -9,11 +9,11 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.exception.BadRequestException;
+import com.boot.cut_costs.exception.GroupNotFoundException;
 import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.Invitation;
@@ -139,7 +139,7 @@ public class GroupService {
 	public Group loadById(long groupId) {
 		Group group = groupRepository.findOne(groupId);
 		if (group == null) {
-			throw new ResourceNotFoundException("Group with id " + groupId + " was not found");
+			throw new GroupNotFoundException(groupId);
 		}
 		return group;
 	}

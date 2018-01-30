@@ -5,8 +5,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ValidationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +19,7 @@ import com.boot.cut_costs.dto.group.GroupDtoConverter;
 import com.boot.cut_costs.dto.group.PostGroupDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.GroupService;
@@ -54,7 +53,7 @@ public class GroupController {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
-			throw new ValidationException(result.getFieldError().getCode());
+			throw new InputValidationException(result.getFieldError().getField());
 		}
 		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), principal.getName());
 		return groupDtoConverter.convertToDto(group, loggedInUser);
@@ -69,7 +68,7 @@ public class GroupController {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
-			throw new ValidationException(result.getFieldError().getCode());
+			throw new InputValidationException(result.getFieldError().getField());
 		}
 		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), principal.getName());
 		return groupDtoConverter.convertToDto(group, loggedInUser);
@@ -79,8 +78,8 @@ public class GroupController {
 	 * Get information of a specific group
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.GET)
-	public ExtendedGetGroupDto get(@PathVariable long groupId, Principal principal) {
-		Group group = groupService.get(groupId, principal.getName());
+	public ExtendedGetGroupDto get(@PathVariable String groupId, Principal principal) {
+		Group group = groupService.get(Long.valueOf(groupId), principal.getName());
 		return groupDtoConverter.convertToExtendedDto(group);
 	}
 

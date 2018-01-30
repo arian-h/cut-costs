@@ -35,6 +35,7 @@ class GroupList extends Component {
   render() {
     const { groups } = this.props;
     //TODO how to distinguish between the first time and no group ?
+    //table config
     let configs = {
       'name': {
         label: 'Group',

@@ -5,8 +5,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.ValidationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +18,7 @@ import com.boot.cut_costs.dto.expense.ExtendedGetExpenseDto;
 import com.boot.cut_costs.dto.expense.GetExpenseDto;
 import com.boot.cut_costs.dto.expense.PostExpenseDto;
 import com.boot.cut_costs.exception.BadRequestException;
+import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.ExpenseService;
@@ -80,7 +79,7 @@ public class ExpenseController {
 	public GetExpenseDto update(@RequestBody PostExpenseDto expenseDto , @PathVariable long expenseId, Principal principal, BindingResult result) throws BadRequestException, IOException {
 		expenseDtoValidator.validate(expenseDto, result);
 		if (result.hasErrors()) {
-			throw new ValidationException();
+			throw new InputValidationException(result.getFieldError().getField());
 		}
 		Expense expense = expenseService.update(expenseId, expenseDto.getTitle(), expenseDto.getAmount(), expenseDto.getDescription(), expenseDto.getSharers(), expenseDto.getImage(), principal.getName());
 		return expenseDtoConverter.convertToDto(expense);
@@ -106,7 +105,7 @@ public class ExpenseController {
 	public GetExpenseDto create(@RequestBody PostExpenseDto expenseDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		expenseDtoValidator.validate(expenseDto, result);
 		if (result.hasErrors()) {
-			throw new ValidationException(result.getFieldError().getCode());
+			throw new InputValidationException(result.getFieldError().getField());
 		}
 		Expense expense = expenseService.create(expenseDto.getTitle(), expenseDto.getAmount(),
 				expenseDto.getDescription(), expenseDto.getSharers(),

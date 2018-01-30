@@ -38,6 +38,7 @@ const FIELDS = {
 class RegisterForm extends Component {
 
   onSubmit(values) {
+    debugger;
     const { history } = this.props;
     this.props.registerUser(values, ({status, headers}) => {
       if (status === 200) {
@@ -65,7 +66,7 @@ class RegisterForm extends Component {
 export default reduxForm({
   validate,
   //a unique id for this form
-  form:'LoginForm',
+  form:'RegisterForm',
   fields: _.keys(FIELDS),
   fields_def: FIELDS
 })(

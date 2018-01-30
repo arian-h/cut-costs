@@ -3,7 +3,6 @@ package com.boot.cut_costs.controller;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.ValidationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.cut_costs.dto.UserDetailsDto;
+import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.service.AuthenticationService;
 import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.validator.UserDetailsDtoValidator;
@@ -57,7 +57,7 @@ public class AuthenticationController {
 		logger.debug("User signup attempt with username: " + username);
 		createUserDetailsDtoValidator.validate(userDetailsDTO, result);
 		if (result.hasErrors()) {
-			throw new ValidationException(result.getAllErrors().get(0).getCode());
+			throw new InputValidationException(result.getFieldError().getField());
 		}
 		userDetailsService.saveIfNotExists(username, passwordEncoder.encode(password), name);
 		authenticateUserAndSetSession(username, password, response);

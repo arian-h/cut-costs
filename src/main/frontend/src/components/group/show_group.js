@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import _ from 'lodash';
 
-import { updateGroup } from '../../actions';
+import { updateGroup, fetchGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
@@ -24,7 +24,7 @@ const FIELDS = {
       rows: 2,
       placeholder: 'Add Description To Your Group',
       onBlur: function() {
-        this.updateGroupInfo();
+        this._updateGroupNameDesc();
       }
     }
   }
@@ -37,22 +37,35 @@ class ShowGroup extends Component {
     this.groupId = this.props.history.location.pathname.split("/")[2];
   }
 
-  componentWillMount() {
-    //TODO fetch the data for this group and update the state of this form
+  _fetchGroupErrorCallback = response => {
   }
 
-  updateGroupInfo = () => {
+  componentWillMount() {
+    debugger;
+    this.props.fetchGroup(this.groupId, this._fetchGroupErrorCallback);
+  }
+
+  _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
     const { updateGroup } = this.props;
     updateGroup({
       id: this.groupId,
       ...this.props.values
     }, () => {
-      debugger;
+
     });
     //update the form
   }
 
   render() {
+    debugger;
+    //what is the best practice here ?
+    if (_.isEmpty(this.props.groups)) {
+      return <div>Loading group ....</div>;
+    }
+    let group = this.props.groups[this.groupId];
+    if (group.status) {
+      return <div>{group.data.message}</div>;
+    }
     return (
       <div className="show-group">
         <form>
@@ -63,6 +76,17 @@ class ShowGroup extends Component {
   }
 }
 
+function mapStateToProps(state) {
+  return { groups: state.groups };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchGroup: (id, callback) => dispatch(fetchGroup(id, callback)),
+        updateGroup: (id) => dispatch(updateGroup(id))
+    };
+};
+
 export default reduxForm({
   validate,
   //a unique id for this form
@@ -70,5 +94,5 @@ export default reduxForm({
   fields: _.keys(FIELDS),
   fields_def: FIELDS
 })(
-  connect(null, { updateGroup })(ShowGroup)
+  connect(mapStateToProps, mapDispatchToProps)(ShowGroup)
 );

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched, groupsFetchErrored, groupCreated } from './creators';
+import { groupDeleted, groupsFetched, groupsFetchErrored, groupCreated, groupFetched, groupFetchErrored } from './creators';
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
@@ -39,6 +39,18 @@ export function fetchGroups() {
         } else {
           dispatch(groupsFetchErrored());
         }
+      })
+  };
+}
+
+export function fetchGroup(id, callback) {
+  return (dispatch) => {
+    axios.get(`${GROUP_ENDPOINT}${id}`, AUTHORIZATION_HEADER)
+      .then(response => {
+        dispatch(groupFetched(response))
+      })
+      .catch(({response}) => {
+        dispatch(groupFetchErrored(response));
       })
   };
 }
