@@ -3,7 +3,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { RouteList, getNavPath } from '../../routing/routes_list';
 import ComponentsList from './components_list';
 
 class ComponentsNavBar extends Component {
@@ -14,7 +13,7 @@ class ComponentsNavBar extends Component {
       buttons.push(
         <button
           className="btn pull-xs-right"
-          onClick={() => this.props.history.push(RouteList[getNavPath(key)].navPath)}
+          onClick={() => this.props.history.push(key)}
           key={key}
         >
           {value.title}
@@ -29,4 +28,4 @@ class ComponentsNavBar extends Component {
   }
 }
 
-export default withRouter(ComponentsNavBar);
+export default withRouter(ComponentsNavBar); // do we need withRouter here ? 

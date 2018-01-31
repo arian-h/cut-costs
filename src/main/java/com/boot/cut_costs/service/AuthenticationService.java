@@ -40,15 +40,20 @@ public class AuthenticationService {
 		String token = request.getHeader(HEADER_STRING);
 		if (token != null) {
 			// parse the token
-			String userName = Jwts.parser().setSigningKey(SECRET)
-					.parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
-					.getSubject();
+			String userName = null;
+			try {
+				userName = Jwts.parser().setSigningKey(SECRET)
+						.parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
+						.getSubject();				
+			} catch (Exception e) {
+				throw new BadCredentialsException("Wrong credentials provided");
+			}
 			UserDetails user = customUserDetailsService.loadUserByUsername(userName);
 			if (user != null) {
 				return new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword(),user.getAuthorities());
 			}
 		}
-		throw new BadCredentialsException("Bad credentials provided");
+		throw new BadCredentialsException("Wrong credentials provided");
 	}
 
 }

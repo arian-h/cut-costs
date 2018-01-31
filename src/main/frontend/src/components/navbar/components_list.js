@@ -1,11 +1,11 @@
 const ComponentsList = {
-  'group': {
+  '/group': {
     'title': 'Groups'
   },
-  'expense': {
+  '/expense': {
     'title': 'Expenses'
   },
-  'home': {
+  '/home': {
     'title': 'Home'
   }
 };

@@ -5,8 +5,16 @@ import { createStore, applyMiddleware } from 'redux';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
+
 import PrivateRoute from './routing/private_route';
-import {RouteList} from './routing/routes_list';
+import GroupList from './components/group/list_group';
+import ExpenseList from './components/expense/list_expense';
+import Home from './components/home';
+import RegisterForm from './components/auth/form_register';
+import LoginForm from './components/auth/form_login';
+import NewGroup from './components/group/new_group';
+import ShowGroup from './components/group/show_group';
+import { isAuthenticated } from './helpers/auth_utils';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 export const store = createStoreWithMiddleware(rootReducer);
@@ -16,16 +24,30 @@ ReactDOM.render(
       <BrowserRouter>
         <div>
           <Switch>
-            <Route path="/login" render={(props) => {
-                if (localStorage.getItem('jwt_token')) {
+            <Route exact path="/login" render={(props) => {
+                if (isAuthenticated()) {
                   return <Redirect to='/' />;
                 } else {
-                  let LoginForm = RouteList['login'].component;
                   return <LoginForm {...props}/>
                 }
               }
             } />
-            <PrivateRoute path="/"/>
+            <Route exact path="/register" render={(props) => {
+                if (isAuthenticated()) {
+                  return <Redirect to='/' />;
+                } else {
+                  return <RegisterForm {...props}/>
+                }
+              }
+            } />
+            <PrivateRoute exact path="/group" component={GroupList}/>
+            <PrivateRoute exact path="/group/new" component={GroupList} componentProps={{
+              modal:{
+                'content': NewGroup,
+                'className': 'new-group-modal'
+              }}}
+            />
+            <PrivateRoute component={Home}/>
           </Switch>
         </div>
       </BrowserRouter>

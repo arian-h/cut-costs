@@ -33,6 +33,7 @@ class GroupList extends Component {
   }
 
   render() {
+    debugger;
     const { groups } = this.props;
     //TODO how to distinguish between the first time and no group ?
     //table config
@@ -40,7 +41,7 @@ class GroupList extends Component {
       'name': {
         label: 'Group',
         type: TEXT_CELL, // this can be either text, image
-        href: group => '/api/group/' + group.id
+        href: group => '/group/' + group.id
       },
       'description': {
         label: 'Description',
