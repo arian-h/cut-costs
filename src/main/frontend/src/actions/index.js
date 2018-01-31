@@ -58,7 +58,6 @@ export function fetchGroup(id, callback) {
 export function updateGroup(values, callback) {
   return (dispatch) => {
     console.log(values);
-    debugger;
     // axios.put(`${GROUP_ENDPOINT}values.id`,
     //   {
     //
@@ -74,6 +73,7 @@ export function updateGroup(values, callback) {
 }
 
 export function createGroup(values, callback) {
+  debugger;
   return (dispatch) => {
     axios.post(GROUP_ENDPOINT,
       {

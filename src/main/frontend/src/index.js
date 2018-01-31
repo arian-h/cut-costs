@@ -24,21 +24,13 @@ ReactDOM.render(
       <BrowserRouter>
         <div>
           <Switch>
-            <Route exact path="/login" render={(props) => {
-                if (isAuthenticated()) {
-                  return <Redirect to='/' />;
-                } else {
-                  return <LoginForm {...props}/>
-                }
-              }
+            <Route exact path="/login" render={props =>
+                isAuthenticated() ? <Redirect to='/' /> :
+                <LoginForm {...props}/>
             } />
-            <Route exact path="/register" render={(props) => {
-                if (isAuthenticated()) {
-                  return <Redirect to='/' />;
-                } else {
-                  return <RegisterForm {...props}/>
-                }
-              }
+            <Route exact path="/register" render={props =>
+                isAuthenticated() ? <Redirect to='/' /> :
+                <RegisterForm {...props}/>
             } />
             <PrivateRoute exact path="/group" component={GroupList}/>
             <PrivateRoute exact path="/group/new" component={GroupList} componentProps={{
@@ -47,6 +39,7 @@ ReactDOM.render(
                 'className': 'new-group-modal'
               }}}
             />
+            <PrivateRoute exact path="/group/{:id}" component={ShowGroup} />
             <PrivateRoute component={Home}/>
           </Switch>
         </div>
