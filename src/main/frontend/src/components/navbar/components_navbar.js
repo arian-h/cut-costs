@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
@@ -8,24 +8,21 @@ import ComponentsList from './components_list';
 class ComponentsNavBar extends Component {
 
   render() {
-    let buttons = [];
-    _.forOwn(ComponentsList, (value, key) => {
-      buttons.push(
-        <button
-          className="btn pull-xs-right"
-          onClick={() => this.props.history.push(key)}
-          key={key}
-        >
-          {value.title}
-        </button>
-      )
-    });
     return (
       <div>
-        {buttons}
+        {_.map(ComponentsList, navItem =>
+            <Link to={navItem.path}>
+              <button
+                className="btn pull-xs-right"
+                key={navItem.path}
+              >
+                {navItem.title}
+              </button>
+            </Link>
+        )}
       </div>
     );
   }
 }
 
-export default withRouter(ComponentsNavBar); // do we need withRouter here ? 
+export default ComponentsNavBar;

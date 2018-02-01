@@ -1,13 +1,16 @@
-const ComponentsList = {
-  '/group': {
+const ComponentsList = [
+  {
+    'path': '/group',
     'title': 'Groups'
   },
-  '/expense': {
+  {
+    'path':'/expense',
     'title': 'Expenses'
   },
-  '/home': {
+  {
+    'path': '/home',
     'title': 'Home'
   }
-};
+];
 
 export default ComponentsList;
