@@ -1,19 +1,15 @@
-import validator from 'validator';
-
-export const validateName = (name) => {
-  let errors = {};
+export const validateName = name => {
   name = name || '';
   if (name.length < 5 || name.length > 25) {
-    errors['name'] = "Group name must be between 5 and 25 characters";
+    return "Group name must be between 5 and 25 characters";
   }
-  return errors;
+  return null;
 };
 
-export const validateDescription = (description) => {
-  let errors = {};
+export const validateDescription = description => {
   description = description || '';
   if (description.length > 200) {
-    errors['description'] = "Group description cannot be longer than 200 characters";
+    return "Group description cannot be longer than 200 characters";
   }
-  return errors;
+  return null;
 };

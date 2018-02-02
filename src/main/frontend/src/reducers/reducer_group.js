@@ -10,14 +10,21 @@ export default function(state=INITIAL_STATE, action) {
     case FETCH_GROUP:
       return {...state, [action.response.data.id]: action.response};
     case CREATE_GROUP:
-      return { ...state, [action.response.data.id]: action.response.data}; // maybe we should just return response instead of response.data as it could be an error
+      return { ...state, [action.response.data.id]: action.response.data}; // TODO maybe we should just return response instead of response.data as it could be an error
     case DELETE_GROUP:
-      return _.omit(state, action.response.data);
+      return _.omit(state, action.response.data); // TODO change DELET GROUP endpoint to return id inside a body
     case FETCH_GROUPS_ERROR:
-        return null; //TODO fix this
+        return {};
     case FETCH_GROUP_ERROR:
-      return {...state, [action.response.data.id]: action.response}; //TODO convert it to error signal
-    default: // no change in state if the action is unknown
+      const stateWithoutId = _.omit(state, action.response.data.id);
+      return {
+        ...stateWithoutId,
+        errorFetching: action.response.error,
+        isLoading: false
+      }
+    case FETCH_GROUP_STARTED:
+      return { ...state, isLoading: true };
+    default:
       return state;
   }
 }

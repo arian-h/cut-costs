@@ -8,7 +8,6 @@ import {isAuthenticated} from '../helpers/auth_utils';
 
 export const PrivateRoute = ({component: Component, componentProps, ...rest }) => {
     return (<Route {...rest} render={(props) => {
-      debugger;
         if (isAuthenticated()) {
           return (
             <div>

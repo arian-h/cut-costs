@@ -11,10 +11,9 @@ class ComponentsNavBar extends Component {
     return (
       <div>
         {_.map(ComponentsList, navItem =>
-            <Link to={navItem.path}>
+            <Link to={navItem.path} key={navItem.path}>
               <button
                 className="btn pull-xs-right"
-                key={navItem.path}
               >
                 {navItem.title}
               </button>

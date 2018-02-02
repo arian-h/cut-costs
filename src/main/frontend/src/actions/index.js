@@ -45,6 +45,7 @@ export function fetchGroups() {
 
 export function fetchGroup(id, callback) {
   return (dispatch) => {
+    dispatch()
     axios.get(`${GROUP_ENDPOINT}${id}`, AUTHORIZATION_HEADER)
       .then(response => {
         dispatch(groupFetched(response))

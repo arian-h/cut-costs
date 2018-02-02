@@ -46,3 +46,9 @@ export function groupFetchErrored(response) {
      response
   }
 }
+
+export function fetchGroupStarted(response) {
+  return {
+    type: FETCH_GROUP_STARTED
+  }
+}

@@ -9,7 +9,7 @@ export const renderField = function(fieldConfig, fieldName) {
 
   let propKeys = _.keys(fieldConfig.props); //bind all callbacks passed in fieldConfig.props to 'this'
   for (let i = 0; i < propKeys.length ;i++) {
-    if (fieldConfig.props[propKeys[i]].bind) {
+    if (fieldConfig.props[propKeys[i]].bind) { // if it is bindable, bind it to this
       fieldConfig.props[propKeys[i]] = fieldConfig.props[propKeys[i]].bind(this);
     }
   }

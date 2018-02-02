@@ -39,7 +39,7 @@ ReactDOM.render(
                 'className': 'new-group-modal'
               }}}
             />
-            <PrivateRoute exact path="/group/{:id}" component={ShowGroup} />
+            <PrivateRoute exact path="/group/:id" component={ShowGroup} />
             <PrivateRoute component={Home}/>
           </Switch>
         </div>

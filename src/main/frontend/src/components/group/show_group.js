@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
 
 import { updateGroup, fetchGroup } from '../../actions';
@@ -34,19 +34,16 @@ const FIELDS = {
 class ShowGroup extends Component {
   constructor(props) {
     super(props);
-    this.groupId = this.props.history.location.pathname.split("/")[2];
-  }
-
-  _fetchGroupErrorCallback = response => {
+    this.groupId = this.props.match.params.id;
   }
 
   componentWillMount() {
-    debugger;
-    this.props.fetchGroup(this.groupId, this._fetchGroupErrorCallback);
+    this.props.fetchGroup(this.groupId);
   }
 
   _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
     const { updateGroup } = this.props;
+    debugger;
     updateGroup({
       id: this.groupId,
       ...this.props.values
@@ -56,28 +53,53 @@ class ShowGroup extends Component {
     //update the form
   }
 
+  renderMyField = ({input, label, meta: {touched, error}, ...rest}) => {
+    const { fieldType } = rest;
+    const textareaType = <textarea {...input} {...rest} className={`form-control ${touched && error ? 'has-danger' : ''}`}/>;
+    const inputType = <input {...input} {...rest} className={`form-control ${touched && error ? 'has-danger' : ''}`}/>;
+    return (
+      <div>
+        <label>{label}</label>
+        <div>
+          {fieldType === 'textarea' ? textareaType : inputType}
+          {touched && error && <span>{error}</span>}
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    debugger;
     //what is the best practice here ?
-    if (_.isEmpty(this.props.groups)) {
+    let group = this.props.groups[this.groupId];
+    if (this.props.isLading) {
       return <div>Loading group ....</div>;
     }
-    let group = this.props.groups[this.groupId];
-    if (group.status) {
-      return <div>{group.data.message}</div>;
+    if (this.props.errorFetching) {
+      return <div>Cannot fetch group with id {this.groupId} </div>;
     }
+    console.log(group);
+    console.log(this.props);
+    debugger;
     return (
       <div className="show-group">
-        <form>
-          {_.map(FIELDS, renderField.bind(this))}
-        </form>
+        {/* <form>
+          <Field
+            name="name"
+            fieldType="input"
+            type="password"
+            component={this.renderMyField}
+            label="Name"
+            validate={validateName}
+          />
+        </form> */}
+        <span>{group.name}</span>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { groups: state.groups };
+  return { groups: state.groups, isLoading: state.isLoading, errorFetching: state.errorFetching };
 }
 
 const mapDispatchToProps = (dispatch) => {
