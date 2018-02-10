@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupCreateErrored, groupFetchSucceeded, groupFetchErrored } from './creators';
+import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupFetchSucceeded, groupFetchErrored } from './creators';
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
@@ -76,7 +76,7 @@ export function updateGroup(values, callback) {
   };
 }
 
-export function createGroup(values) {
+export function createGroup(values, successCallback, errorCallback) {
   return (dispatch) => {
     axios.post(GROUP_ENDPOINT,
       {
@@ -84,10 +84,12 @@ export function createGroup(values) {
         description: values.description
       }, AUTHORIZATION_HEADER)
       .then(({data}) => {
-        dispatch(groupCreateSucceeded(data));
+        successCallback();
+        dispatch(groupCreateSucceeded(data))
       })
-      .catch(response => {
-        dispatch(groupCreateErrored(response))
+      .catch(({response: {data}}) => {
+        debugger;
+        errorCallback(data.message);
       });
     };
 }

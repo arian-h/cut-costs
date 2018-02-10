@@ -1,4 +1,4 @@
-import { FETCH_GROUPS_SUCCESS, FETCH_GROUPS_ERROR, CREATE_GROUP_SUCCESS, CREATE_GROUP_ERROR, DELETE_GROUP, FETCH_GROUP_SUCCESS, FETCH_GROUP_ERROR } from '../actions/creators';
+import { FETCH_GROUPS_SUCCESS, FETCH_GROUPS_ERROR, CREATE_GROUP_SUCCESS, DELETE_GROUP, FETCH_GROUP_SUCCESS, FETCH_GROUP_ERROR } from '../actions/creators';
 export const FULL_GROUP = 'full_group';
 export const SNIPPET_GROUP = 'snippet_group';
 
@@ -50,16 +50,18 @@ export default function(state=INITIAL_STATE, action) {
         errorFetching: null
       };
     case CREATE_GROUP_SUCCESS:
-      debugger;
-      //TODO: how to let the NewGroup know that a group was created successfuly ?
-      return { ...state, [action.payload.id]: {
-        data: action.payload,
-        isLoading: true,
-        errorFetching: null,
-        mode: SNIPPET_GROUP
-      }}; // TODO maybe we should just return response instead of response.data as it could be an error
+      return {
+        data: { ...state.data, [action.payload.id]: {
+          data: action.payload,
+          isLoading: false,
+          errorFetching: null,
+          mode: SNIPPET_GROUP
+      }},
+      isLoading: false,
+      errorFetching: null
+      };
     case DELETE_GROUP:
-      return _.omit(state, action.response.data); // TODO change DELET GROUP endpoint to return id inside a body
+      return _.omit(state, action.response.data); // TODO change DELETE GROUP endpoint to return id inside a body
     default:
       return state;
   }

@@ -4,7 +4,6 @@ export const FETCH_GROUPS_ERROR = 'fetch_groups_errored';
 export const CREATE_GROUP_SUCCESS = 'create_group_success';
 export const CREATE_GROUP_ERROR = 'create_group_error';
 export const FETCH_GROUP_SUCCESS = 'fetch_group_success';
-export const FETCH_GROUP_ERROR = 'fetch_group_errored';
 
 export function groupDeleted(response) {
   return {
@@ -45,13 +44,5 @@ export function groupFetchSucceeded(groupData) {
   return {
      type: FETCH_GROUP_SUCCESS,
      payload: groupData
-  }
-}
-
-export function groupFetchErrored(errorWithId) {
-  //handle the error here
-  return {
-     type: FETCH_GROUP_ERROR,
-     payload: errorWithId
   }
 }

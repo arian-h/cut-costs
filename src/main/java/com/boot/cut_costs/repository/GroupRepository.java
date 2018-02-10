@@ -6,4 +6,5 @@ import com.boot.cut_costs.model.Group;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
 	public Group findById(long id);
+	public Long countByName(String name);
 }

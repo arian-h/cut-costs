@@ -144,6 +144,11 @@ public class GroupService {
 		return group;
 	}
 	
+	public boolean nameIsTaken(String groupName) {
+		return groupRepository.countByName(groupName) > 0;
+		
+	}
+	
 	public void validateAdminAccessToGroup(Group group, User user) {
 		if (!group.isAdmin(user)) {
 			throw new AccessDeniedException("User with id " + user.getId() + " does not have admin access to group with id " + group.getId()); 

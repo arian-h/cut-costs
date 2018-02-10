@@ -13,11 +13,23 @@ const validators = {
 
 class NewGroup extends Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      errorMessage: null
+    }
+  }
+
   _onSubmit(values) {
-    this.props.createGroup(values);
+    this.props.createGroup(values, () => this.props.history.push("/group"), errorMessage => this.setState({errorMessage: errorMessage}));
   }
 
   render() {
+    let error = null;
+    debugger;
+    if (this.state.errorMessage != null) {
+      error = <span>{this.state.errorMessage}</span>;
+    }
     const { handleSubmit } = this.props;
     return (
       <div>
@@ -27,9 +39,14 @@ class NewGroup extends Component {
           <button type="submit" className="btn btn-primary">Create</button>
           <button type="button" className="btn btn-primary" onClick={() => this.props.history.push('/group')}>Cancel</button>
         </form>
+        {error}
       </div>
     );
   }
+}
+
+function mapStateToProps(state) {
+  return { groups: state.groups.data };
 }
 
 export default reduxForm({
@@ -38,5 +55,5 @@ export default reduxForm({
   form:'NewGroup',
   validators
 })(
-  connect(null, { createGroup })(NewGroup)
+  connect(mapStateToProps, { createGroup })(NewGroup)
 );

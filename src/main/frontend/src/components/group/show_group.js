@@ -102,7 +102,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroup: (id, callback) => dispatch(fetchGroup(id, callback)),
+        fetchGroup: (id) => dispatch(fetchGroup(id)),
         updateGroup: (id) => dispatch(updateGroup(id))
     };
 };

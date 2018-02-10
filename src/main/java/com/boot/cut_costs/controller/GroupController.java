@@ -19,6 +19,7 @@ import com.boot.cut_costs.dto.group.GroupDtoConverter;
 import com.boot.cut_costs.dto.group.PostGroupDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.exception.DuplicateGroupNameException;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
@@ -54,6 +55,9 @@ public class GroupController {
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
 			throw new InputValidationException(result.getFieldError().getField());
+		}
+		if (groupService.nameIsTaken(groupDto.getName())) {
+			throw new DuplicateGroupNameException(groupDto.getName());
 		}
 		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), principal.getName());
 		return groupDtoConverter.convertToDto(group, loggedInUser);
