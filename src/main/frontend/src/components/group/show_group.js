@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
-
+//TODO fix the data table
+//TODO fix the form
 import { updateGroup, fetchGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
@@ -37,13 +38,12 @@ class ShowGroup extends Component {
     this.groupId = this.props.match.params.id;
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchGroup(this.groupId);
   }
 
   _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
     const { updateGroup } = this.props;
-    debugger;
     updateGroup({
       id: this.groupId,
       ...this.props.values
@@ -69,17 +69,13 @@ class ShowGroup extends Component {
   }
 
   render() {
-    //what is the best practice here ?
     let group = this.props.groups[this.groupId];
-    if (this.props.isLading) {
+    if (group.isLoading === undefined || group.mode === 'snippet_group') {
       return <div>Loading group ....</div>;
     }
-    if (this.props.errorFetching) {
-      return <div>Cannot fetch group with id {this.groupId} </div>;
+    if (group.errorFetching) {
+      return <div>{this.props.errorFetching}</div>;
     }
-    console.log(group);
-    console.log(this.props);
-    debugger;
     return (
       <div className="show-group">
         {/* <form>
@@ -92,14 +88,16 @@ class ShowGroup extends Component {
             validate={validateName}
           />
         </form> */}
-        <span>{group.name}</span>
+        <p>Name : {group.data.name}</p>
+        <p>Description : {group.data.description}</p>
+        <p>Admin Name: {group.data.admin.name}</p>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  return { groups: state.groups, isLoading: state.isLoading, errorFetching: state.errorFetching };
+  return { groups: state.groups.data };
 }
 
 const mapDispatchToProps = (dispatch) => {

@@ -1,40 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 
 import { createGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
-const FIELDS = {
-  name: {
-    label: 'Name',
-    validate: validateName,
-    fieldType: 'input',
-    props: {
-      type: 'text'
-    }
-  },
-  description: {
-    label: 'Description',
-    validate: validateDescription,
-    fieldType: 'input',
-    props: {
-      type: 'text'
-    }
-  }
+const validators = {
+  name: validateName,
+  description: validateDescription
 };
 
 class NewGroup extends Component {
 
   _onSubmit(values) {
-    const { history } = this.props;
-    this.props.createGroup(values, ({status}) => history.push('/group'));
-  }
-
-  _onCancel() {
-    const { history } = this.props;
-    history.push('/group');
+    this.props.createGroup(values);
   }
 
   render() {
@@ -42,9 +22,10 @@ class NewGroup extends Component {
     return (
       <div>
         <form onSubmit={handleSubmit(this._onSubmit.bind(this))}>
-          {_.map(FIELDS, renderField.bind(this))}
+          <Field name="name" label="Name" type="text" fieldType="input" component={renderField.bind(this)}/>
+          <Field name="description" label="Description" type="text" fieldType="input" component={renderField.bind(this)}/>
           <button type="submit" className="btn btn-primary">Create</button>
-          <button type="button" className="btn btn-primary" onClick={this._onCancel.bind(this)}>Cancel</button>
+          <button type="button" className="btn btn-primary" onClick={() => this.props.history.push('/group')}>Cancel</button>
         </form>
       </div>
     );
@@ -55,8 +36,7 @@ export default reduxForm({
   validate,
   //a unique id for this form
   form:'NewGroup',
-  fields: _.keys(FIELDS),
-  fields_def: FIELDS
+  validators
 })(
   connect(null, { createGroup })(NewGroup)
 );

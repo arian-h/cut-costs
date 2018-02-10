@@ -38,9 +38,7 @@ public class GroupDtoConverter {
 				target.setDescription(source.getDescription());
 				target.setNumberOfMembers(source.getMembers().size() + 1); //including the admin
 				target.setNumberOfExpenses(source.getExpenses().size());
-				if(source.isAdmin(loggedInUser)) {
-					target.setAdmin(true);
-				}
+				target.setIsAdmin(source.isAdmin(loggedInUser));
 				return target;
 			};
 			modelMapper.createTypeMap(Group.class, GetGroupDto.class).setConverter(converter);			
@@ -48,7 +46,7 @@ public class GroupDtoConverter {
 		return modelMapper.map(group, GetGroupDto.class);
     }
     
-    public ExtendedGetGroupDto convertToExtendedDto(Group group) {
+    public ExtendedGetGroupDto convertToExtendedDto(Group group, final User loggedInUser) {
     	if (modelMapper.getTypeMap(Group.class, ExtendedGetGroupDto.class) == null) {
     		Converter<Group, ExtendedGetGroupDto> converter = context -> {
     			Group source = context.getSource();
@@ -57,6 +55,7 @@ public class GroupDtoConverter {
     			target.setDescription(source.getDescription());
     			target.setName(source.getName());
     			target.setAdmin(userDtoConverter.convertToDto(source.getAdmin()));
+    			target.setIsAdmin(source.isAdmin(loggedInUser));
     			target.setExpenses(source.getExpenses().stream()
     					.map(expense -> expenseDtoConverter.convertToDto(expense))
     					.collect(Collectors.toList()));

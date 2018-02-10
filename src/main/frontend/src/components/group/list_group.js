@@ -5,27 +5,25 @@ import _ from 'lodash';
 
 import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../modal/modal';
-import GroupRow from './row_group';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 
 class GroupList extends Component {
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchGroups();
   }
 
   //returns modal if one exists in the props
-  _getModal = () => {
-    const {props} = this;
-    let modal = <noscript/>;
-    if (props.modal) {
-      const { modal: {content, className} } = props;
-      modal = <Modal content={content} className={className} {...props}/>;
+  _getNewGroupModal = () => {
+    const { props } = this;
+    if (!props.modal) {
+      return null;
     }
-    return modal;
+    const { modal: {content, className} } = props;
+    return <Modal content={content} className={className} {...props}/>;
   }
 
   _deleteActionEnabled = (id) => {
-    return this.props.groups[id].isAdmin;
+    return this.props.groups[id].data.isAdmin;
   };
 
   _onDelete = (groupId) => {
@@ -33,33 +31,40 @@ class GroupList extends Component {
   }
 
   render() {
-    debugger;
+    if (this.props.isLoading) {
+      return <div>Loading groups...</div>;
+    }
+    if (this.props.errorFetching) {
+      return <div>{this.props.errorFetching}</div>;
+    }
     const { groups } = this.props;
-    //TODO how to distinguish between the first time and no group ?
-    //table config
-    let configs = {
-      'name': {
+    let configs = [
+      {
+        name: 'name',
         label: 'Group',
         type: TEXT_CELL, // this can be either text, image
         href: group => '/group/' + group.id
       },
-      'description': {
+      {
+        name: 'description',
         label: 'Description',
         type: TEXT_CELL
       },
-      'numberOfExpenses': {
+      {
+        name: 'numberOfExpenses',
         label: 'Expenses',
         type: TEXT_CELL
       },
-      'numberOfMembers': {
+      {
+        name: 'numberOfMembers',
         label: 'Members',
         type: TEXT_CELL
       }
-    };
+    ];
     let actions = [{
       isEnabled: this._deleteActionEnabled,
       action: this._onDelete,
-      title: 'Delete'
+      label: 'Delete'
     }];
     return (
       <div>
@@ -68,10 +73,10 @@ class GroupList extends Component {
             New Group
           </Link>
         </div>
-        { this._getModal() }
+        { this._getNewGroupModal() }
         {
           _.isEmpty(groups) ? <div>No group listed !</div>
-          : <DataTable className="group-table" data={groups} configs={configs} actions={actions}/>
+          : <DataTable className="group-table" data={_.map(groups, group => group.data)} configs={configs} actions={actions}/>
         }
       </div>
     );
@@ -81,7 +86,7 @@ class GroupList extends Component {
 index.js (i.e. around the app)
 */
 function mapStateToProps(state) {
-  return { groups: state.groups };
+  return { groups: state.groups.data, isLoading: state.groups.isLoading, errorFetching: state.groups.errorFetching };
 }
 
 const mapDispatchToProps = (dispatch) => {

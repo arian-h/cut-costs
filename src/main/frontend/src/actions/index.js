@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { groupDeleted, groupsFetched, groupsFetchErrored, groupCreated, groupFetched, groupFetchErrored } from './creators';
+import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupCreateErrored, groupFetchSucceeded, groupFetchErrored } from './creators';
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
@@ -34,24 +34,27 @@ export function fetchGroups() {
   return (dispatch) => {
     axios.get(GROUP_ENDPOINT, AUTHORIZATION_HEADER)
       .then(response => {
-        if (response.status === 200) {
-          dispatch(groupsFetched(response));
-        } else {
-          dispatch(groupsFetchErrored());
-        }
+          dispatch(groupsFetchSucceeded(response.data));
+      })
+      .catch(({response}) => {
+        dispatch(groupsFetchErrored({
+          error: response.data.message
+        }));
       })
   };
 }
 
-export function fetchGroup(id, callback) {
+export function fetchGroup(id) {
   return (dispatch) => {
-    dispatch()
     axios.get(`${GROUP_ENDPOINT}${id}`, AUTHORIZATION_HEADER)
       .then(response => {
-        dispatch(groupFetched(response))
+        dispatch(groupFetchSucceeded(response.data))
       })
-      .catch(({response}) => {
-        dispatch(groupFetchErrored(response));
+      .catch(({response}) => { // TODO can we get rid of () ?
+        dispatch(groupFetchErrored({
+          error: response.data.message,
+          id: response.data.id
+        }));
       })
   };
 }
@@ -73,19 +76,18 @@ export function updateGroup(values, callback) {
   };
 }
 
-export function createGroup(values, callback) {
-  debugger;
+export function createGroup(values) {
   return (dispatch) => {
     axios.post(GROUP_ENDPOINT,
       {
         name: values.name,
         description: values.description
       }, AUTHORIZATION_HEADER)
-      .then((response) => {
-        if (response.status === 200) {
-          callback(response);
-          dispatch(groupCreated(response));
-        }
+      .then(({data}) => {
+        dispatch(groupCreateSucceeded(data));
+      })
+      .catch(response => {
+        dispatch(groupCreateErrored(response))
       });
     };
 }

@@ -200,17 +200,10 @@ public class User implements Serializable {
 	
 	@Override
 	public boolean equals(Object other) {
-		if (other == null) {
+		if (other == null || !(other instanceof User)) {
 			return false;
 		}
-		if (other == this) {
-			return true;
-		}
-		if (!(other instanceof User)) {
-			return false;
-		}
-		User otherUser = (User)other;
-		return otherUser.getId() == getId();
+		return ((User)other).getId() == getId();
 	}
 
 }

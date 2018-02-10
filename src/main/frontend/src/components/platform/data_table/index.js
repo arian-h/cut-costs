@@ -7,30 +7,23 @@ export const IMAGE_CELL = "image";
 class DataTable extends Component {
   render() {
     const { className, configs, data: entities, actions} = this.props;
-    let rows = [];
-    _.forOwn(entities, function(entity, id) {
-        let row = [];
-        _.forOwn(configs, function(config, key) {
-            let href;
-            if (config.href) { // if there is a function to create href
-              href = config.href(entity);
-            }
-            row.push({
-              type: config.type, // TEXT_CELL or IMAGE_CELL
-              value: entity[key],
-              href: href
-            });
-        });
-        rows.push({
-          id: id,
-          row: row
-        });
-    });
     return (
       <table className={className}>
-        <TableHeader data={configs}/>
+        <TableHeader data={configs} actions={actions}/>
         <tbody>
-          {_.map(rows, row => <TableRow data={row} actions={actions} />)}
+          {_.map(entities, entity =>
+            <TableRow id={entity.id} actions={actions}
+              data={_.map(configs, config =>
+                !_.isUndefined(entity[config.name]) &&
+                  {
+                    type: config.type, // TEXT_CELL or IMAGE_CELL
+                    value: entity[config.name],
+                    href: config.href && config.href(entity)
+                  }
+                )
+              }
+            />
+          )}
         </tbody>
       </table>
     );

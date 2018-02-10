@@ -18,7 +18,7 @@ public class GetGroupDto extends AbstractGroupDto {
 		return isAdmin;
 	}
 
-	public void setAdmin(boolean isAdmin) {
+	public void setIsAdmin(boolean isAdmin) {
 		this.isAdmin = isAdmin;
 	}
 

@@ -80,7 +80,8 @@ public class GroupController {
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.GET)
 	public ExtendedGetGroupDto get(@PathVariable String groupId, Principal principal) {
 		Group group = groupService.get(Long.valueOf(groupId), principal.getName());
-		return groupDtoConverter.convertToExtendedDto(group);
+		User loggedInUser = userService.loadByUsername(principal.getName());
+		return groupDtoConverter.convertToExtendedDto(group, loggedInUser);
 	}
 
 	/*

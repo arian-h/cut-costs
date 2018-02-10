@@ -1,38 +1,24 @@
 import React from 'react';
 import _ from 'lodash';
 
-export const renderField = function(fieldConfig, fieldName) {
-  //fieldHelper is provided by redux-form
-  const fieldHelper = this.props.fields[fieldName];
-  const {touched, invalid, error} = fieldHelper;
-  const className = `form-group ${touched && invalid ? 'has-danger':''}`;
-
-  let propKeys = _.keys(fieldConfig.props); //bind all callbacks passed in fieldConfig.props to 'this'
-  for (let i = 0; i < propKeys.length ;i++) {
-    if (fieldConfig.props[propKeys[i]].bind) { // if it is bindable, bind it to this
-      fieldConfig.props[propKeys[i]] = fieldConfig.props[propKeys[i]].bind(this);
-    }
-  }
-
+export const renderField = function({ input, fieldType, label, type, meta: { touched, error } }) {
+  //TODO how to use fieldType instead of input
   return (
-    <div className={className} key={fieldName}>
-      <label>{fieldConfig.label}</label>
-      <fieldConfig.fieldType
-        {...fieldHelper}
-        {...fieldConfig.props}
-      />
-      <div className="text-help">
-        {touched ? error[fieldName]:''}
+    <div>
+      <label>{label}</label>
+      <div>
+        <input {...input} placeholder={label} type={type} />
+        {touched && error && <span>{error}</span>}
       </div>
     </div>
   );
 }
 
 export const validate = (values, props) => {
-  const { fields_def } = props;
+  const { validators } = props;
   let errors = {};
-  _.each(fields_def, (val, key) => {
-    errors[key] = val.validate(values[key]);
+  _.each(validators, (validator, field) => {
+    errors[field] = validator(values[field]);
   });
   return errors;
 }
