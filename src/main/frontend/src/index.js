@@ -2,10 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
 
+import history from './history';
 import PrivateRoute from './routing/private_route';
 import GroupList from './components/group/list_group';
 import ExpenseList from './components/expense/list_expense';
@@ -17,11 +18,11 @@ import ShowGroup from './components/group/show_group';
 import { isAuthenticated } from './helpers/auth_utils';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-export const store = createStoreWithMiddleware(rootReducer);
+export const store = createStoreWithMiddleware(rootReducer); // TODO do we need to export ?
 
 ReactDOM.render(
   <Provider store={store}>
-      <BrowserRouter>
+      <Router history={history}>
         <div>
           <Switch>
             <Route exact path="/login" render={props =>
@@ -43,6 +44,6 @@ ReactDOM.render(
             <PrivateRoute component={Home}/>
           </Switch>
         </div>
-      </BrowserRouter>
+      </Router>
   </Provider>
   , document.querySelector('.container'));

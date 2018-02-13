@@ -49,3 +49,8 @@ export const validateName = (name) => {
 export const isAuthenticated = () => {
   return !!localStorage.getItem('jwt_token');
 };
+
+export const logout = () => {
+  localStorage.removeItem('jwt_token');
+  history.push('/login');
+}

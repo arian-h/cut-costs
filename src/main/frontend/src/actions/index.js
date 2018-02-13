@@ -1,5 +1,7 @@
 import axios from 'axios';
+import history from '../history';
 import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupFetchSucceeded, groupFetchErrored } from './creators';
+import { logout } from '../helpers/auth_utils'
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
@@ -37,9 +39,13 @@ export function fetchGroups() {
           dispatch(groupsFetchSucceeded(response.data));
       })
       .catch(({response}) => {
-        dispatch(groupsFetchErrored({
-          error: response.data.message
-        }));
+        if (response.status ===  401) { // Unauthorized
+          logout();
+        } else {
+          dispatch(groupsFetchErrored({
+            error: response.data.message
+          }));
+        }
       })
   };
 }
@@ -50,7 +56,7 @@ export function fetchGroup(id) {
       .then(response => {
         dispatch(groupFetchSucceeded(response.data))
       })
-      .catch(({response}) => { // TODO can we get rid of () ?
+      .catch(({response}) => {
         dispatch(groupFetchErrored({
           error: response.data.message,
           id: response.data.id
@@ -88,20 +94,18 @@ export function createGroup(values, successCallback, errorCallback) {
         dispatch(groupCreateSucceeded(data))
       })
       .catch(({response: {data}}) => {
-        debugger;
         errorCallback(data.message);
       });
     };
 }
 
-export function deleteGroup(groupID, callback) {
-  return (dispatch) => {
+export function deleteGroup(groupID) {
+  return dispatch => {
     let deleteEndpoint = `${GROUP_ENDPOINT}${groupID}`;
     axios.delete(deleteEndpoint, AUTHORIZATION_HEADER)
-      .then((response) => {
-        if (response.status === 200) {
-          dispatch(groupDeleted(response));
-        } // else do nothing or show an error
+      .then(response => {
+        debugger;
+        dispatch(groupDeleted(response));
       });
   };
 }
