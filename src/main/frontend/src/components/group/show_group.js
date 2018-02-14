@@ -8,30 +8,32 @@ import { updateGroup, fetchGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
-const FIELDS = {
-  name: {
-    validate: validateName,
-    fieldType: 'input',
-    props: {
-      className: 'name-field',
-      type: 'text'
-    }
-  },
-  description: {
-    validate: validateDescription,
-    fieldType: 'textarea',
-    props: {
-      className: 'desc-field',
-      rows: 2,
-      placeholder: 'Add Description To Your Group',
-      onBlur: function() {
-        this._updateGroupNameDesc();
-      }
-    }
-  }
-}
+// const FIELDS = {
+//   name: {
+//     validate: validateName,
+//     fieldType: 'input',
+//     props: {
+//       className: 'name-field',
+//       type: 'text'
+//     }
+//   },
+//   description: {
+//     validate: validateDescription,
+//     fieldType: 'textarea',
+//     props: {
+//       className: 'desc-field',
+//       rows: 2,
+//       placeholder: 'Add Description To Your Group',
+//       onBlur: function() {
+//         this._updateGroupNameDesc();
+//       }
+//     }
+//   }
+// }
 
 // onSubmit={handleSubmit(this._onUpdate.bind(this))}
+
+
 class ShowGroup extends Component {
   constructor(props) {
     super(props);
@@ -108,11 +110,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default reduxForm({
-  validate,
+  // validate,
   //a unique id for this form
-  form:'ShowGroup',
-  fields: _.keys(FIELDS),
-  fields_def: FIELDS
+  form:'ShowGroup'
 })(
   connect(mapStateToProps, mapDispatchToProps)(ShowGroup)
 );

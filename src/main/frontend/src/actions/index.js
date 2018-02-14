@@ -1,7 +1,7 @@
 import axios from 'axios';
 import history from '../history';
 import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupFetchSucceeded, groupFetchErrored } from './creators';
-import { logout } from '../helpers/auth_utils'
+import { login, logout } from '../helpers/auth_utils'
 
 export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
 export const REGISTER_USER = 'register_user';
@@ -19,15 +19,21 @@ const AUTHORIZATION_HEADER = {
   }
 };
 
-export function loginUser(values, callback) {
+export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
   return () => {
     axios.post(LOGIN_ENDPOINT,
       {
         username: values.username,
         password: values.password
       }
-    ).then((response) => {
-      callback(response);
+    ).then(response => {
+      const { headers: { authorization } } = response;
+      debugger;
+      login(authorization, redirected_from);
+    }).catch(({response}) => {
+      if (response.status === 401) {
+        unauthorizedLoginCallback();
+      }
     });
   };
 }
@@ -57,10 +63,14 @@ export function fetchGroup(id) {
         dispatch(groupFetchSucceeded(response.data))
       })
       .catch(({response}) => {
-        dispatch(groupFetchErrored({
-          error: response.data.message,
-          id: response.data.id
-        }));
+        if (response.status ===  401) { // Unauthorized
+          logout();
+        } else {
+          dispatch(groupFetchErrored({
+            error: response.data.message,
+            id: response.data.id
+          }));
+        }
       })
   };
 }
@@ -93,8 +103,12 @@ export function createGroup(values, successCallback, errorCallback) {
         successCallback();
         dispatch(groupCreateSucceeded(data))
       })
-      .catch(({response: {data}}) => {
-        errorCallback(data.message);
+      .catch(({response: {data}}) => { //TODO manually test it
+        if (response.status ===  401) { // Unauthorized
+          logout();
+        } else {
+          errorCallback(data.message);
+        }
       });
     };
 }
@@ -104,15 +118,18 @@ export function deleteGroup(groupID) {
     let deleteEndpoint = `${GROUP_ENDPOINT}${groupID}`;
     axios.delete(deleteEndpoint, AUTHORIZATION_HEADER)
       .then(response => {
-        debugger;
         dispatch(groupDeleted(response));
+      }).catch((response) => { //TODO manually test it
+        if (response.status ===  401) { // Unauthorized
+          logout();
+        }
       });
   };
 }
 
-export function logoutUser(callback) {
+export function logoutUser() {
     return () => {
-      callback();
+      logout();
     }
 }
 

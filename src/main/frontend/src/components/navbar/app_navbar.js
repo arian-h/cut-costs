@@ -6,8 +6,7 @@ import { logoutUser } from '../../actions';
 class AppNavBar extends Component {
 
   onLogoutClick() {
-    this.props.logoutUser(() => this.props.history.push('/login'));
-    localStorage.removeItem('jwt_token');
+    this.props.logoutUser();
   }
 
   render() {

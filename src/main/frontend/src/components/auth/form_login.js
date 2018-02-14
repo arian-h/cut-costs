@@ -1,47 +1,37 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
+import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { loginUser } from '../../actions';
-import {validatePassword, validateEmail} from '../../helpers/auth_utils';
+import { validatePassword, validateEmail } from '../../helpers/auth_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
-const FIELDS = {
-  username: {
-    label: 'Email',
-    validate: validateEmail,
-    fieldType: 'input',
-    props: {
-      type: 'text'
-    }
+//TODO: fix the signup page
+
+
+const validators = [
+  {
+    field: 'password',
+    validator: validatePassword
   },
-  password: {
-    label: 'Password',
-    validate: validatePassword,
-    fieldType: 'input',
-    props: {
-      type: 'password'
-    }
+  {
+    field: 'username',
+    validator: validateEmail
   }
-};
+];
 
 class LoginForm extends Component {
 
-  _login(response) {
-    const redirected_from = this.props.location.state ? this.props.location.state.from.pathname : '/';
-    const { history } = this.props;
-    const { status, headers } = response;
-    if (status === 200) {
-      const { authorization } = headers;
-      localStorage.setItem('jwt_token', authorization);
-      history.push(redirected_from);
-    } // TODO else, show error message
+  unauthorizedLoginCallback() {
+    debugger;
+    //TODO: set the state to show an error
   }
 
   onSubmit(values) {
-    this.props.loginUser(values, this._login.bind(this));
+    const redirected_from = this.props.location.state ? this.props.location.state.from.pathname : '/';
+    this.props.loginUser(values, redirected_from, this.unauthorizedLoginCallback);
   }
 
   render() {
@@ -49,7 +39,8 @@ class LoginForm extends Component {
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          {_.map(FIELDS, renderField.bind(this))}
+          <Field name="username" placeholder="Username" type="text" fieldType="input" component={renderField}/>
+          <Field name="password" placeholder="Password" type="password" fieldType="input" component={renderField}/>
           <button type="submit" className="btn btn-primary">Login</button>
           <Link className="auth-switch-link" to='/register'>Sign up</Link>
         </form>
@@ -60,10 +51,9 @@ class LoginForm extends Component {
 
 export default reduxForm({
   validate,
+  validators,
   //a unique id for this form
-  form:'LoginForm',
-  fields: _.keys(FIELDS),
-  fields_def: FIELDS
+  form:'LoginForm'
 })(
   connect(null, { loginUser })(LoginForm)
 );

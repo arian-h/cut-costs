@@ -7,7 +7,7 @@ export const renderField = function({ input, fieldType, label, type, meta: { tou
     <div>
       <label>{label}</label>
       <div>
-        <input {...input} placeholder={label} type={type} />
+        <input {...input} type={type} />
         {touched && error && <span>{error}</span>}
       </div>
     </div>
@@ -17,7 +17,7 @@ export const renderField = function({ input, fieldType, label, type, meta: { tou
 export const validate = (values, props) => {
   const { validators } = props;
   let errors = {};
-  _.each(validators, (validator, field) => {
+  _.each(validators, ({ validator, field }) => {
     errors[field] = validator(values[field]);
   });
   return errors;
