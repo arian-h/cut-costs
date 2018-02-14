@@ -3,11 +3,12 @@ import _ from 'lodash';
 
 export const renderField = function({ input, fieldType, label, type, meta: { touched, error } }) {
   //TODO how to use fieldType instead of input
+  let FieldType = fieldType;
   return (
     <div>
       <label>{label}</label>
       <div>
-        <input {...input} type={type} />
+        <FieldType {...input} type={type} />
         {touched && error && <span>{error}</span>}
       </div>
     </div>
