@@ -6,10 +6,15 @@ import { createGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
-const validators = {
-  name: validateName,
-  description: validateDescription
-};
+const validators = [{
+    field: 'name',
+    validator: validateName
+  },
+  {
+    field: 'description',
+    validator: validateDescription
+  }
+];
 
 class NewGroup extends Component {
 
@@ -26,7 +31,6 @@ class NewGroup extends Component {
 
   render() {
     let error = null;
-    debugger;
     if (this.state.errorMessage != null) {
       error = <span>{this.state.errorMessage}</span>;
     }

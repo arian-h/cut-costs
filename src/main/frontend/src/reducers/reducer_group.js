@@ -43,7 +43,7 @@ export default function(state=INITIAL_STATE, action) {
         errorFetching: null
       };
     case FETCH_GROUP_ERROR:
-      const stateWithoutId = _.omit(state, action.payload.id);
+      const stateWithoutId = _.omit(state.data, action.payload.id);
       return {
         data: {...stateWithoutId},
         isLoading: false,
@@ -61,7 +61,7 @@ export default function(state=INITIAL_STATE, action) {
       errorFetching: null
       };
     case DELETE_GROUP:
-      return _.omit(state, action.response.data); // TODO change DELETE GROUP endpoint to return id inside a body
+      return _.omit(state.data, action.response.data); // TODO change DELETE GROUP endpoint to return id inside a body
     default:
       return state;
   }

@@ -41,7 +41,6 @@ export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
 }
 
 export function fetchGroups() {
-  debugger;
   return (dispatch) => {
     axios.get(GROUP_ENDPOINT, getAuthorizationHeader())
       .then(response => {
