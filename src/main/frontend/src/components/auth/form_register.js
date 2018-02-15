@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { reduxForm } from 'redux-form';
+import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
@@ -8,44 +8,31 @@ import { registerUser } from '../../actions';
 import { validatePassword, validateEmail, validateName } from '../../helpers/auth_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 
-const FIELDS = {
-  name: {
-    label: 'Username',
-    validate: validateName,
-    fieldType: 'input',
-    props: {
-      type: 'text'
-    }
+const validators = [
+  {
+    field: 'password',
+    validator: validatePassword
   },
-  username: {
-    label: 'Email',
-    validate: validateEmail,
-    fieldType: 'input',
-    props: {
-      type: 'text'
-    }
+  {
+    field: 'username',
+    validator: validateEmail
   },
-  password: {
-    label: 'Password',
-    validate: validatePassword,
-    fieldType: 'input',
-    props: {
-      type: 'password'
-    }
+  {
+    field: 'name',
+    validator: validateName
   }
-};
+];
 
 class RegisterForm extends Component {
 
+  _failedSignupCallback() {
+    debugger;
+    //show up the message
+  }
+
   onSubmit(values) {
     const { history } = this.props;
-    this.props.registerUser(values, ({status, headers}) => {
-      if (status === 200) {
-        const { authorization } = headers;
-        localStorage.setItem('jwt_token', authorization);
-        history.push('/');
-      }
-    });
+    this.props.registerUser(values, this._failedSignupCallback);
   }
 
   render() {
@@ -53,7 +40,9 @@ class RegisterForm extends Component {
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          {_.map(FIELDS, renderField.bind(this))}
+          <Field name="name" placeholder="Name" type="text" fieldType="input" component={renderField}/>
+          <Field name="username" placeholder="Email" type="text" fieldType="input" component={renderField}/>
+          <Field name="password" placeholder="Password" type="password" fieldType="input" component={renderField}/>
           <button type="submit" className="btn btn-primary">Sign up</button>
           <Link className="auth-switch-link" to='/login'>Already Registered</Link>
         </form>
@@ -64,10 +53,9 @@ class RegisterForm extends Component {
 
 export default reduxForm({
   validate,
+  validators,
   //a unique id for this form
-  form:'RegisterForm',
-  fields: _.keys(FIELDS),
-  fields_def: FIELDS
+  form:'RegisterForm'
 })(
   connect(null, { registerUser })(RegisterForm)
 );

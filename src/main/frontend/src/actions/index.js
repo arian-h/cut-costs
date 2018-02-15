@@ -12,12 +12,14 @@ const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
 const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
 const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
 
-const AUTHORIZATION_HEADER = {
-  headers: {
-    'Authorization': localStorage.getItem('jwt_token'),
-    'Content-Type': 'application/json'
-  }
-};
+function getAuthorizationHeader() {
+  return {
+    headers: {
+      'Authorization': localStorage.getItem('jwt_token'),
+      'Content-Type': 'application/json'
+    }
+  };
+}
 
 export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
   return () => {
@@ -28,8 +30,8 @@ export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
       }
     ).then(response => {
       const { headers: { authorization } } = response;
-      debugger;
-      login(authorization, redirected_from);
+      localStorage.setItem('jwt_token', authorization);
+      history.push(redirected_from);
     }).catch(({response}) => {
       if (response.status === 401) {
         unauthorizedLoginCallback();
@@ -39,8 +41,9 @@ export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
 }
 
 export function fetchGroups() {
+  debugger;
   return (dispatch) => {
-    axios.get(GROUP_ENDPOINT, AUTHORIZATION_HEADER)
+    axios.get(GROUP_ENDPOINT, getAuthorizationHeader())
       .then(response => {
           dispatch(groupsFetchSucceeded(response.data));
       })
@@ -58,7 +61,7 @@ export function fetchGroups() {
 
 export function fetchGroup(id) {
   return (dispatch) => {
-    axios.get(`${GROUP_ENDPOINT}${id}`, AUTHORIZATION_HEADER)
+    axios.get(`${GROUP_ENDPOINT}${id}`, getAuthorizationHeader())
       .then(response => {
         dispatch(groupFetchSucceeded(response.data))
       })
@@ -98,7 +101,7 @@ export function createGroup(values, successCallback, errorCallback) {
       {
         name: values.name,
         description: values.description
-      }, AUTHORIZATION_HEADER)
+      }, getAuthorizationHeader())
       .then(({data}) => {
         successCallback();
         dispatch(groupCreateSucceeded(data))
@@ -116,7 +119,7 @@ export function createGroup(values, successCallback, errorCallback) {
 export function deleteGroup(groupID) {
   return dispatch => {
     let deleteEndpoint = `${GROUP_ENDPOINT}${groupID}`;
-    axios.delete(deleteEndpoint, AUTHORIZATION_HEADER)
+    axios.delete(deleteEndpoint, getAuthorizationHeader())
       .then(response => {
         dispatch(groupDeleted(response));
       }).catch((response) => { //TODO manually test it
@@ -133,7 +136,7 @@ export function logoutUser() {
     }
 }
 
-export function registerUser(values, callback) {
+export function registerUser(values, signupFailedCallback) {
   return () => {
     axios.post(REGISTER_ENDPOINT,
       {
@@ -141,6 +144,12 @@ export function registerUser(values, callback) {
         username: values.username,
         password: values.password
       }
-    ).then((response) => callback(response));
+    ).then(({status, headers}) => {
+      const { authorization } = headers;
+      localStorage.setItem('jwt_token', authorization);
+      history.push('/');
+    }).catch(response => {
+      debugger;
+    });
   }
 }

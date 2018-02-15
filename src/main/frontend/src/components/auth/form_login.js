@@ -24,14 +24,14 @@ const validators = [
 
 class LoginForm extends Component {
 
-  unauthorizedLoginCallback() {
+  _unauthorizedLoginCallback() {
     debugger;
     //TODO: set the state to show an error
   }
 
   onSubmit(values) {
     const redirected_from = this.props.location.state ? this.props.location.state.from.pathname : '/';
-    this.props.loginUser(values, redirected_from, this.unauthorizedLoginCallback);
+    this.props.loginUser(values, redirected_from, this._unauthorizedLoginCallback);
   }
 
   render() {
@@ -39,7 +39,7 @@ class LoginForm extends Component {
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          <Field name="username" placeholder="Username" type="text" fieldType="input" component={renderField}/>
+          <Field name="username" placeholder="Email" type="text" fieldType="input" component={renderField}/>
           <Field name="password" placeholder="Password" type="password" fieldType="input" component={renderField}/>
           <button type="submit" className="btn btn-primary">Login</button>
           <Link className="auth-switch-link" to='/register'>Sign up</Link>
