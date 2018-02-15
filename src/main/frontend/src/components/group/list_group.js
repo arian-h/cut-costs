@@ -31,7 +31,6 @@ class GroupList extends Component {
   }
 
   render() {
-    debugger;
     if (this.props.isLoading) {
       return <div>Loading groups...</div>;
     }

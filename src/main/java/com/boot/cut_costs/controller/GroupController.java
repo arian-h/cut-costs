@@ -56,7 +56,7 @@ public class GroupController {
 		if (result.hasErrors()) {
 			throw new InputValidationException(result.getFieldError().getField());
 		}
-		if (groupService.nameIsTaken(groupDto.getName())) {
+		if (groupService.nameIsTaken(groupDto.getName(), loggedInUser.getId())) {
 			throw new DuplicateGroupNameException(groupDto.getName());
 		}
 		Group group = groupService.create(groupDto.getName(), groupDto.getDescription(), principal.getName());

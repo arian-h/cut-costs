@@ -37,6 +37,7 @@ public class ExceptionHandlingAdvice {
         error_status_map.put(AccessDeniedException.class.getName(), HttpStatus.FORBIDDEN); // 403
         error_status_map.put(ResourceNotFoundException.class.getName(), HttpStatus.NOT_FOUND); // 404
         error_status_map.put(DuplicateUsernameException.class.getName(), HttpStatus.CONFLICT); // 409
+        error_status_map.put(DuplicateGroupNameException.class.getName(), HttpStatus.CONFLICT); // 409
         return error_status_map;
     }
     

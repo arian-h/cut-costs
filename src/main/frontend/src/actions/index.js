@@ -105,11 +105,11 @@ export function createGroup(values, successCallback, errorCallback) {
         successCallback();
         dispatch(groupCreateSucceeded(data))
       })
-      .catch(({response: {data}}) => { //TODO manually test it
+      .catch(({response}) => { //TODO manually test it
         if (response.status ===  401) { // Unauthorized
           logout();
         } else {
-          errorCallback(data.message);
+          errorCallback(response.data.message);
         }
       });
     };
@@ -130,9 +130,9 @@ export function deleteGroup(groupID) {
 }
 
 export function logoutUser() {
-    return () => {
-      logout();
-    }
+  return () => {
+    logout();
+  }
 }
 
 export function registerUser(values, signupFailedCallback) {
@@ -143,8 +143,7 @@ export function registerUser(values, signupFailedCallback) {
         username: values.username,
         password: values.password
       }
-    ).then(({status, headers}) => {
-      const { authorization } = headers;
+    ).then(({ status, headers: { authorization } }) => {
       localStorage.setItem('jwt_token', authorization);
       history.push('/');
     }).catch(response => {

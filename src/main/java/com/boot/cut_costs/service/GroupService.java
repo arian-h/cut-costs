@@ -144,9 +144,8 @@ public class GroupService {
 		return group;
 	}
 	
-	public boolean nameIsTaken(String groupName) {
-		return groupRepository.countByName(groupName) > 0;
-		
+	public boolean nameIsTaken(String groupName, long adminId) {
+		return groupRepository.countByName(groupName, adminId) != 0;
 	}
 	
 	public void validateAdminAccessToGroup(Group group, User user) {

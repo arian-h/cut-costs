@@ -56,12 +56,16 @@ export default function(state=INITIAL_STATE, action) {
           isLoading: false,
           errorFetching: null,
           mode: SNIPPET_GROUP
-      }},
-      isLoading: false,
-      errorFetching: null
+        }},
+        isLoading: false,
+        errorFetching: null
       };
     case DELETE_GROUP:
-      return _.omit(state.data, action.response.data); // TODO change DELETE GROUP endpoint to return id inside a body
+      return {
+        data: _.omit(state.data, action.response.data),
+        isLoading: false,
+        errorFetching: null
+      };
     default:
       return state;
   }
