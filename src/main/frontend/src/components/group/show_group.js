@@ -40,7 +40,7 @@ class ShowGroup extends Component {
     this.groupId = this.props.match.params.id;
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.props.fetchGroup(this.groupId);
   }
 
@@ -55,21 +55,6 @@ class ShowGroup extends Component {
     //update the form
   }
 
-  renderMyField = ({input, label, meta: {touched, error}, ...rest}) => {
-    const { fieldType } = rest;
-    const textareaType = <textarea {...input} {...rest} className={`form-control ${touched && error ? 'has-danger' : ''}`}/>;
-    const inputType = <input {...input} {...rest} className={`form-control ${touched && error ? 'has-danger' : ''}`}/>;
-    return (
-      <div>
-        <label>{label}</label>
-        <div>
-          {fieldType === 'textarea' ? textareaType : inputType}
-          {touched && error && <span>{error}</span>}
-        </div>
-      </div>
-    );
-  }
-
   render() {
     let group = this.props.groups[this.groupId];
     if (group.isLoading === undefined || group.mode === 'snippet_group') {
@@ -78,18 +63,20 @@ class ShowGroup extends Component {
     if (group.errorFetching) {
       return <div>{this.props.errorFetching}</div>;
     }
+    debugger;
     return (
       <div className="show-group">
-        {/* <form>
+        <form>
           <Field
             name="name"
             fieldType="input"
-            type="password"
-            component={this.renderMyField}
+            type="text"
+            component={renderField}
             label="Name"
             validate={validateName}
+            value={group.data.name}
           />
-        </form> */}
+        </form>
         <p>Name : {group.data.name}</p>
         <p>Description : {group.data.description}</p>
         <p>Admin Name: {group.data.admin.name}</p>
@@ -99,7 +86,9 @@ class ShowGroup extends Component {
 }
 
 function mapStateToProps(state) {
-  return { groups: state.groups.data };
+  return {
+    groups: state.groups.data
+  };
 }
 
 const mapDispatchToProps = (dispatch) => {
