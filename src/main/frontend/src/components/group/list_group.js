@@ -8,8 +8,20 @@ import Modal from '../modal/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 
 class GroupList extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      error: null
+    };
+  }
+
   componentDidMount() {
-    this.props.fetchGroups();
+    this.props.fetchGroups(
+      () => this.setState({loading: false}),
+      error => this.setState({loading:false, error: error})
+    );
   }
 
   //returns modal if one exists in the props
@@ -22,22 +34,22 @@ class GroupList extends Component {
     return <Modal content={content} className={className} {...props}/>;
   }
 
-  _deleteActionEnabled = (id) => {
-    return this.props.groups[id].data.isAdmin;
+  _deleteActionEnabled = id => {
+    return this.props.groups[id].isAdmin;
   };
 
-  _onDelete = (groupId) => {
+  _onDelete = groupId => {
     this.props.deleteGroup(groupId);
   }
 
   render() {
-    if (this.props.isLoading) {
+    if (this.state.loading) {
       return <div>Loading groups...</div>;
     }
-    if (this.props.errorFetching) {
-      return <div>{this.props.errorFetching}</div>;
+    if (this.state.error) {
+      return <div>{this.props.error}</div>;
     }
-    const { groups } = this.props;
+
     let configs = [
       {
         name: 'name',
@@ -66,6 +78,8 @@ class GroupList extends Component {
       action: this._onDelete,
       label: 'Delete'
     }];
+
+    const { groups } = this.props;
     return (
       <div>
         <div className="text-xs-right">
@@ -76,7 +90,7 @@ class GroupList extends Component {
         { this._getNewGroupModal() }
         {
           _.isEmpty(groups) ? <div>No group listed !</div>
-          : <DataTable className="group-table" data={_.map(groups, group => group.data)} configs={configs} actions={actions}/>
+          : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>
         }
       </div>
     );
@@ -86,13 +100,14 @@ class GroupList extends Component {
 index.js (i.e. around the app)
 */
 function mapStateToProps(state) {
-  return { groups: state.groups.data, isLoading: state.groups.isLoading, errorFetching: state.groups.errorFetching };
+  debugger;
+  return { groups: state.groups };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroups: () => dispatch(fetchGroups()),
-        deleteGroup: (id) => dispatch(deleteGroup(id))
+        fetchGroups: (successfulCallback, unsuccessfulCallback) => dispatch(fetchGroups(successfulCallback, unsuccessfulCallback)),
+        deleteGroup: id => dispatch(deleteGroup(id))
     };
 };
 /* This is where action creator is connected to the component and

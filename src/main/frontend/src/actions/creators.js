@@ -1,9 +1,7 @@
-export const FETCH_GROUPS_SUCCESS = 'fetch_groups_success';
+export const FETCH_GROUPS = 'fetch_groups_success';
 export const DELETE_GROUP = 'delete_group';
-export const FETCH_GROUPS_ERROR = 'fetch_groups_errored';
-export const CREATE_GROUP_SUCCESS = 'create_group_success';
-export const CREATE_GROUP_ERROR = 'create_group_error';
-export const FETCH_GROUP_SUCCESS = 'fetch_group_success';
+export const CREATE_GROUP = 'create_group_success';
+export const FETCH_GROUP = 'fetch_group_success';
 
 export function groupDeleted(response) {
   return {
@@ -12,37 +10,23 @@ export function groupDeleted(response) {
   }
 }
 
-export function groupsFetchSucceeded(response) {
+export function groupsFetched(response) {
   return {
-     type: FETCH_GROUPS_SUCCESS,
+     type: FETCH_GROUPS,
      payload: response
   }
 }
 
-export function groupsFetchErrored(errorWithId) {
+export function groupCreated(group) {
   return {
-     type: FETCH_GROUPS_ERROR,
-     payload: errorWithId
-  }
-}
-
-export function groupCreateSucceeded(group) {
-  return {
-    type: CREATE_GROUP_SUCCESS,
+    type: CREATE_GROUP,
     payload: group
   }
 }
 
-export function groupCreateErrored(errorWithId) {
+export function groupFetched(group) {
   return {
-    type: CREATE_GROUP_ERROR,
-    payload: response
-  }
-}
-
-export function groupFetchSucceeded(groupData) {
-  return {
-     type: FETCH_GROUP_SUCCESS,
-     payload: groupData
+     type: FETCH_GROUP,
+     payload: group
   }
 }

@@ -1,10 +1,7 @@
 import axios from 'axios';
 import history from '../history';
-import { groupDeleted, groupsFetchSucceeded, groupsFetchErrored, groupCreateSucceeded, groupFetchSucceeded, groupFetchErrored } from './creators';
-import { login, logout } from '../helpers/auth_utils'
-
-export const COMPONENTS_NAVBAR_NAVIGATE = 'components_navbar_navigate';
-export const REGISTER_USER = 'register_user';
+import { groupDeleted, groupsFetched, groupCreated, groupFetched } from './creators';
+import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
@@ -40,38 +37,45 @@ export function loginUser(values, redirected_from, unauthorizedLoginCallback) {
   };
 }
 
-export function fetchGroups() {
-  return (dispatch) => {
+export function fetchGroups(successCallback, errorCallback) {
+  return dispatch => {
     axios.get(GROUP_ENDPOINT, getAuthorizationHeader())
       .then(response => {
-          dispatch(groupsFetchSucceeded(response.data));
+          dispatch(groupsFetched(response.data));
       })
+      .then(() => successCallback())
       .catch(({response}) => {
-        if (response.status ===  401) { // Unauthorized
-          logout();
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
         } else {
-          dispatch(groupsFetchErrored({
-            error: response.data.message
-          }));
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
         }
       })
   };
 }
 
-export function fetchGroup(id) {
+export function fetchGroup(id, successCallback, errorCallback) {
   return (dispatch) => {
     axios.get(`${GROUP_ENDPOINT}${id}`, getAuthorizationHeader())
       .then(response => {
-        dispatch(groupFetchSucceeded(response.data))
+        dispatch(groupFetched(response.data))
       })
+      .then(() => successCallback())
       .catch(({response}) => {
-        if (response.status ===  401) { // Unauthorized
-          logout();
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
         } else {
-          dispatch(groupFetchErrored({
-            error: response.data.message,
-            id: response.data.id
-          }));
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
         }
       })
   };
@@ -103,13 +107,18 @@ export function createGroup(values, successCallback, errorCallback) {
       }, getAuthorizationHeader())
       .then(({data}) => {
         successCallback();
-        dispatch(groupCreateSucceeded(data))
+        dispatch(groupCreated(data))
       })
       .catch(({response}) => { //TODO manually test it
-        if (response.status ===  401) { // Unauthorized
-          logout();
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
         } else {
-          errorCallback(response.data.message);
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
         }
       });
     };
@@ -121,9 +130,14 @@ export function deleteGroup(groupID) {
     axios.delete(deleteEndpoint, getAuthorizationHeader())
       .then(response => {
         dispatch(groupDeleted(response));
-      }).catch((response) => { //TODO manually test it
-        if (response.status ===  401) { // Unauthorized
-          logout();
+      }).catch(response => { //TODO manually test it
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          }
         }
       });
   };

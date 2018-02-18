@@ -35,13 +35,21 @@ import { renderField, validate } from '../../helpers/form_utils';
 
 
 class ShowGroup extends Component {
+
   constructor(props) {
     super(props);
     this.groupId = this.props.match.params.id;
+    this.state = {
+      loading: true,
+      error: null
+    };
   }
 
   componentWillMount() {
-    this.props.fetchGroup(this.groupId);
+    this.props.fetchGroup(this.groupId,
+      () => this.setState({loading: false}),
+      error => this.setState({loading:false, error: error})
+    );
   }
 
   _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
@@ -56,13 +64,13 @@ class ShowGroup extends Component {
   }
 
   render() {
-    let group = this.props.groups[this.groupId];
-    if (group.isLoading === undefined || group.mode === 'snippet_group') {
+    if (this.state.loading) {
       return <div>Loading group ....</div>;
     }
-    if (group.errorFetching) {
-      return <div>{this.props.errorFetching}</div>;
+    if (this.state.error) {
+      return <div>{this.state.error}</div>;
     }
+    let group = this.pro ps.groups[this.groupId];
     debugger;
     return (
       <div className="show-group">
@@ -74,27 +82,28 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             validate={validateName}
-            value={group.data.name}
+            value={group.name}
           />
         </form>
-        <p>Name : {group.data.name}</p>
-        <p>Description : {group.data.description}</p>
-        <p>Admin Name: {group.data.admin.name}</p>
+        <p>Name : {group.name}</p>
+        <p>Description : {group.description}</p>
+        <p>Admin Name: {group.admin.name}</p>
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
+  debugger;
   return {
-    groups: state.groups.data
+    groups: state.groups
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroup: (id) => dispatch(fetchGroup(id)),
-        updateGroup: (id) => dispatch(updateGroup(id))
+        fetchGroup: (id, successfulCallback, unsuccessfulCallback) => dispatch(fetchGroup(id, successfulCallback, unsuccessfulCallback)),
+        updateGroup: (id, successfulCallback, unsuccessfulCallback) => dispatch(updateGroup(id, successfulCallback, unsuccessfulCallback))
     };
 };
 
