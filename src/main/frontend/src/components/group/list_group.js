@@ -100,7 +100,6 @@ class GroupList extends Component {
 index.js (i.e. around the app)
 */
 function mapStateToProps(state) {
-  debugger;
   return { groups: state.groups };
 }
 

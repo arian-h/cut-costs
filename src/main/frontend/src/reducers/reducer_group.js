@@ -6,9 +6,9 @@ export default function(state={}, action) {
     case FETCH_GROUPS:
       return _.mapKeys(action.payload, 'id');
     case FETCH_GROUP:
-      return {...state.data, [action.payload.id]: action.payload};
+      return {...state, [action.payload.id]: action.payload};
     case CREATE_GROUP:
-      return { ...state.data, [action.payload.id]: action.payload};
+      return { ...state, [action.payload.id]: action.payload};
     case DELETE_GROUP:
       return _.omit(state, action.response.data);
     default:

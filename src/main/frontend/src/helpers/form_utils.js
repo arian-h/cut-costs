@@ -1,14 +1,13 @@
 import React from 'react';
 import _ from 'lodash';
 
-export const renderField = function({ input, fieldType, label, type, meta: { touched, error }, ...rest }) {
-  //TODO how to use fieldType instead of input
+export const renderField = function({ input, fieldType, label, type, meta: { touched, error }}) {
   let FieldType = fieldType;
   return (
     <div>
       <label>{label}</label>
       <div>
-        <FieldType {...input} {...rest} type={type} />
+        <FieldType {...input} type={type} />
         {touched && error && <span>{error}</span>}
       </div>
     </div>

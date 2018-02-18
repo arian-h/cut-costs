@@ -21,18 +21,18 @@ class NewGroup extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      errorMessage: null
+      error: null
     }
   }
 
   _onSubmit(values) {
-    this.props.createGroup(values, () => this.props.history.push("/group"), errorMessage => this.setState({errorMessage: errorMessage}));
+    this.props.createGroup(values, () => this.props.history.push("/group"), error => this.setState({error: error}));
   }
 
   render() {
     let error = null;
-    if (this.state.errorMessage != null) {
-      error = <span>{this.state.errorMessage}</span>;
+    if (this.state.error) {
+      error = <span>{this.state.error}</span>;
     }
     const { handleSubmit } = this.props;
     return (
@@ -49,15 +49,9 @@ class NewGroup extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return { groups: state.groups.data };
-}
-
-export default reduxForm({
+export default connect(null, { createGroup })(reduxForm({
   validate,
   //a unique id for this form
   form:'NewGroup',
   validators
-})(
-  connect(mapStateToProps, { createGroup })(NewGroup)
-);
+})(NewGroup));

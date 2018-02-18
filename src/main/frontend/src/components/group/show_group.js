@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
-//TODO fix the data table
 //TODO fix the form
+//TODO fix the data table
 import { updateGroup, fetchGroup } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
@@ -30,10 +30,6 @@ import { renderField, validate } from '../../helpers/form_utils';
 //     }
 //   }
 // }
-
-// onSubmit={handleSubmit(this._onUpdate.bind(this))}
-
-
 class ShowGroup extends Component {
 
   constructor(props) {
@@ -70,8 +66,7 @@ class ShowGroup extends Component {
     if (this.state.error) {
       return <div>{this.state.error}</div>;
     }
-    let group = this.pro ps.groups[this.groupId];
-    debugger;
+    let group = this.props.groups[this.groupId];
     return (
       <div className="show-group">
         <form>
@@ -82,7 +77,6 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             validate={validateName}
-            value={group.name}
           />
         </form>
         <p>Name : {group.name}</p>
@@ -94,9 +88,11 @@ class ShowGroup extends Component {
 }
 
 function mapStateToProps(state) {
-  debugger;
   return {
-    groups: state.groups
+    groups: state.groups,
+    initialValues: {
+      name: 'salam'
+    }
   };
 }
 
@@ -107,10 +103,8 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default reduxForm({
+export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   // validate,
   //a unique id for this form
   form:'ShowGroup'
-})(
-  connect(mapStateToProps, mapDispatchToProps)(ShowGroup)
-);
+})(ShowGroup));
