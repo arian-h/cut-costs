@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.group.ExtendedGetGroupDto;
-import com.boot.cut_costs.dto.group.GetGroupDto;
-import com.boot.cut_costs.dto.group.GroupDtoConverter;
-import com.boot.cut_costs.dto.group.PostGroupDto;
+import com.boot.cut_costs.dto.group.get.FullGroupGetDto;
+import com.boot.cut_costs.dto.group.get.SnippetGetGroupDto;
+import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
+import com.boot.cut_costs.dto.group.post.GroupPostDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.exception.DuplicateGroupNameException;
@@ -41,7 +41,7 @@ public class GroupController {
 	private GroupDtoValidator groupDtoValidator;
 	
 	@Autowired
-	private GroupDtoConverter groupDtoConverter;
+	private GroupGetDtoConverter groupDtoConverter;
 	
 	@Autowired
 	private UserDtoConverter userDtoConverter;
@@ -50,7 +50,7 @@ public class GroupController {
 	 * Create a group
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public GetGroupDto create(@RequestBody PostGroupDto groupDto, Principal principal, BindingResult result) throws IOException {
+	public SnippetGetGroupDto create(@RequestBody GroupPostDto groupDto, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
@@ -68,7 +68,7 @@ public class GroupController {
 	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
-	public GetGroupDto update(@RequestBody PostGroupDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public SnippetGetGroupDto update(@RequestBody GroupPostDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
@@ -82,7 +82,7 @@ public class GroupController {
 	 * Get information of a specific group
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.GET)
-	public ExtendedGetGroupDto get(@PathVariable String groupId, Principal principal) {
+	public FullGroupGetDto get(@PathVariable String groupId, Principal principal) {
 		Group group = groupService.get(Long.valueOf(groupId), principal.getName());
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		return groupDtoConverter.convertToExtendedDto(group, loggedInUser);
@@ -101,9 +101,9 @@ public class GroupController {
 	 * Get a list of all groups a user is a member of
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<GetGroupDto> list(Principal principal) {
+	public List<SnippetGetGroupDto> list(Principal principal) {
 		List<Group> groups = groupService.list(principal.getName());
-		List<GetGroupDto> result = new ArrayList<GetGroupDto>();
+		List<SnippetGetGroupDto> result = new ArrayList<SnippetGetGroupDto>();
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		for (Group group: groups) {
 			result.add(groupDtoConverter.convertToDto(group, loggedInUser));

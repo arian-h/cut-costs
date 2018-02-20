@@ -1,4 +1,4 @@
-package com.boot.cut_costs.dto.group;
+package com.boot.cut_costs.dto.group.get;
 
 import java.util.stream.Collectors;
 
@@ -14,59 +14,55 @@ import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
 
 @Service
-public class GroupDtoConverter {
+public class GroupGetDtoConverter {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private UserDtoConverter userDtoConverter;
-	
+
 	@Autowired
 	private ExpenseDtoConverter expenseDtoConverter;
-	
+
 	@Autowired
 	private InvitationDtoConverter invitationDtoConverter;
-	
-	public GetGroupDto convertToDto(Group group, User loggedInUser) {
-		if (modelMapper.getTypeMap(Group.class, GetGroupDto.class) == null) {
-			Converter<Group, GetGroupDto> converter = context -> {
+
+	public SnippetGetGroupDto convertToDto(Group group, User loggedInUser) {
+		if (modelMapper.getTypeMap(Group.class, SnippetGetGroupDto.class) == null) {
+			Converter<Group, SnippetGetGroupDto> converter = context -> {
 				Group source = context.getSource();
-				GetGroupDto target = new GetGroupDto();
+				SnippetGetGroupDto target = new SnippetGetGroupDto();
 				target.setId(source.getId());
 				target.setName(source.getName());
-				target.setDescription(source.getDescription());
 				target.setNumberOfMembers(source.getMembers().size() + 1); //including the admin
 				target.setNumberOfExpenses(source.getExpenses().size());
 				target.setIsAdmin(source.isAdmin(loggedInUser));
 				return target;
 			};
-			modelMapper.createTypeMap(Group.class, GetGroupDto.class).setConverter(converter);			
+			modelMapper.createTypeMap(Group.class, SnippetGetGroupDto.class).setConverter(converter);			
 		}
-		return modelMapper.map(group, GetGroupDto.class);
+		return modelMapper.map(group, SnippetGetGroupDto.class);
     }
-    
-    public ExtendedGetGroupDto convertToExtendedDto(Group group, User loggedInUser) {
-    	if (modelMapper.getTypeMap(Group.class, ExtendedGetGroupDto.class) == null) {
-    		Converter<Group, ExtendedGetGroupDto> converter = context -> {
+
+    public FullGroupGetDto convertToExtendedDto(Group group, User loggedInUser) {
+    	if (modelMapper.getTypeMap(Group.class, FullGroupGetDto.class) == null) {
+    		Converter<Group, FullGroupGetDto> converter = context -> {
     			Group source = context.getSource();
-    			ExtendedGetGroupDto target = new ExtendedGetGroupDto();
+    			FullGroupGetDto target = new FullGroupGetDto();
     			target.setId(source.getId());
-    			target.setDescription(source.getDescription());
     			target.setName(source.getName());
+    			target.setDescription(source.getDescription());
     			target.setAdmin(userDtoConverter.convertToDto(source.getAdmin()));
     			target.setIsAdmin(source.isAdmin(loggedInUser));
     			target.setExpenses(source.getExpenses().stream()
     					.map(expense -> expenseDtoConverter.convertToDto(expense))
     					.collect(Collectors.toList()));
-    			target.setMembers(source.getMembers().stream()
-    					.map(member -> userDtoConverter.convertToDto(member))
-    					.collect(Collectors.toList()));
     			return target;
     		};
-    		modelMapper.createTypeMap(Group.class, ExtendedGetGroupDto.class).setConverter(converter);    		
+    		modelMapper.createTypeMap(Group.class, FullGroupGetDto.class).setConverter(converter);    		
     	}
-		return modelMapper.map(group, ExtendedGetGroupDto.class);
+		return modelMapper.map(group, FullGroupGetDto.class);
     }
-	
+
 }

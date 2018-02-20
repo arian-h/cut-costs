@@ -7,7 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.boot.cut_costs.dto.group.GroupDtoConverter;
+import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
 import com.boot.cut_costs.dto.user.UserDtoConverter;
 import com.boot.cut_costs.model.Expense;
 import com.boot.cut_costs.model.User;
@@ -19,7 +19,7 @@ public class ExpenseDtoConverter {
 	private ModelMapper modelMapper;
 	
 	@Autowired
-	private GroupDtoConverter groupDtoConverter;
+	private GroupGetDtoConverter groupDtoConverter;
 	
 	@Autowired
 	private UserDtoConverter userDtoConverter;

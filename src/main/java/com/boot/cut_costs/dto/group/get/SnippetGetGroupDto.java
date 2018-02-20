@@ -1,26 +1,14 @@
-package com.boot.cut_costs.dto.group;
+package com.boot.cut_costs.dto.group.get;
 
-public class GetGroupDto extends AbstractGroupDto {
+public class SnippetGetGroupDto extends BaseGroupGetDto {
 
 	private static final long serialVersionUID = 1L;
-
-	private long id;
 
 	private String imageId = null;
 
 	private int numberOfMembers = 0;
 	
 	private int numberOfExpenses = 0;
-	
-	private boolean isAdmin = false;
-	
-	public boolean getIsAdmin() {
-		return isAdmin;
-	}
-
-	public void setIsAdmin(boolean isAdmin) {
-		this.isAdmin = isAdmin;
-	}
 
 	public int getNumberOfExpenses() {
 		return numberOfExpenses;
@@ -37,14 +25,6 @@ public class GetGroupDto extends AbstractGroupDto {
 	public void setImageId(String imageId) {
 		this.imageId = imageId;
 	}
-
-	public long getId() {
-		return id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
 	
 	public void setNumberOfMembers(int numberOfMembers) {
 		this.numberOfMembers = numberOfMembers;
@@ -53,6 +33,5 @@ public class GetGroupDto extends AbstractGroupDto {
 	public int getNumberOfMembers() {
 		return this.numberOfMembers;
 	}
-	
 	
 }

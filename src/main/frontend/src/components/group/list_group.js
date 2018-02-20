@@ -24,16 +24,6 @@ class GroupList extends Component {
     );
   }
 
-  //returns modal if one exists in the props
-  _getNewGroupModal = () => {
-    const { props } = this;
-    if (!props.modal) {
-      return null;
-    }
-    const { modal: {content, className} } = props;
-    return <Modal content={content} className={className} {...props}/>;
-  }
-
   _deleteActionEnabled = id => {
     return this.props.groups[id].isAdmin;
   };
@@ -43,10 +33,12 @@ class GroupList extends Component {
   }
 
   render() {
-    if (this.state.loading) {
+    const { props, state } = this;
+
+    if (state.loading) {
       return <div>Loading groups...</div>;
     }
-    if (this.state.error) {
+    if (state.error) {
       return <div>{this.props.error}</div>;
     }
 
@@ -78,16 +70,20 @@ class GroupList extends Component {
       action: this._onDelete,
       label: 'Delete'
     }];
-
-    const { groups } = this.props;
+    debugger;
+    const { groups } = props;
     return (
       <div>
+        {
+          props.modal ?
+            <Modal content={props.modal.content} className={props.modal.className} {...props}/>
+            : <noscript/>
+        }
         <div className="text-xs-right">
           <Link className="btn btn-primary" to="/group/new">
             New Group
           </Link>
         </div>
-        { this._getNewGroupModal() }
         {
           _.isEmpty(groups) ? <div>No group listed !</div>
           : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>

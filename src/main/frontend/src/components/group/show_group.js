@@ -41,7 +41,7 @@ class ShowGroup extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchGroup(this.groupId,
       () => this.setState({loading: false}),
       error => this.setState({loading:false, error: error})
@@ -60,15 +60,21 @@ class ShowGroup extends Component {
   }
 
   render() {
-    if (this.state.loading) {
+    let {props, state} = this;
+    if (state.loading) {
       return <div>Loading group ....</div>;
     }
-    if (this.state.error) {
-      return <div>{this.state.error}</div>;
+    if (state.error) {
+      return <div>{state.error}</div>;
     }
-    let group = this.props.groups[this.groupId];
+    let group = props.groups[this.groupId];
     return (
       <div className="show-group">
+        {
+          props.modal ?
+            <Modal content={props.modal.content} className={props.modal.className} {...props}/>
+            : <noscript/>
+        }
         <form>
           <Field
             name="name"
@@ -77,6 +83,7 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             validate={validateName}
+            value="helloooo"
           />
         </form>
         <p>Name : {group.name}</p>
@@ -89,17 +96,14 @@ class ShowGroup extends Component {
 
 function mapStateToProps(state) {
   return {
-    groups: state.groups,
-    initialValues: {
-      name: 'salam'
-    }
+    groups: state.groups
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroup: (id, successfulCallback, unsuccessfulCallback) => dispatch(fetchGroup(id, successfulCallback, unsuccessfulCallback)),
-        updateGroup: (id, successfulCallback, unsuccessfulCallback) => dispatch(updateGroup(id, successfulCallback, unsuccessfulCallback))
+        fetchGroup: (id, successCallback, errorCallback) => dispatch(fetchGroup(id, successCallback, errorCallback)),
+        updateGroup: (id, successCallback, errorCallback) => dispatch(updateGroup(id, successCallback, errorCallback))
     };
 };
 

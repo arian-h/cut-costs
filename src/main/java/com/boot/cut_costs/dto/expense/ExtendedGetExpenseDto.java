@@ -2,14 +2,14 @@ package com.boot.cut_costs.dto.expense;
 
 import java.util.List;
 
-import com.boot.cut_costs.dto.group.GetGroupDto;
+import com.boot.cut_costs.dto.group.get.SnippetGetGroupDto;
 import com.boot.cut_costs.dto.user.GetUserDto;
 
 public class ExtendedGetExpenseDto extends GetExpenseDto {
 
 	private static final long serialVersionUID = 1L;
 
-	private GetGroupDto groupDto;
+	private SnippetGetGroupDto groupDto;
 	
 	private List<GetUserDto> sharers;
 	
@@ -25,11 +25,11 @@ public class ExtendedGetExpenseDto extends GetExpenseDto {
 		this.imageId = imageId;
 	}
 
-	public GetGroupDto getGroup() {
+	public SnippetGetGroupDto getGroup() {
 		return groupDto;
 	}
 
-	public void setGroup(GetGroupDto group) {
+	public void setGroup(SnippetGetGroupDto group) {
 		this.groupDto = group;
 	}
 
