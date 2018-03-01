@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.group.get.FullGroupGetDto;
-import com.boot.cut_costs.dto.group.get.SnippetGetGroupDto;
+import com.boot.cut_costs.dto.group.get.GroupExtendedGetDto;
+import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
 import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
 import com.boot.cut_costs.dto.group.post.GroupPostDto;
-import com.boot.cut_costs.dto.user.GetUserDto;
-import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 import com.boot.cut_costs.exception.DuplicateGroupNameException;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Group;
@@ -44,13 +44,13 @@ public class GroupController {
 	private GroupGetDtoConverter groupDtoConverter;
 	
 	@Autowired
-	private UserDtoConverter userDtoConverter;
+	private UserGetDtoConverter userDtoConverter;
 
 	/*
 	 * Create a group
 	 */
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public SnippetGetGroupDto create(@RequestBody GroupPostDto groupDto, Principal principal, BindingResult result) throws IOException {
+	public GroupSnippetGetDto create(@RequestBody GroupPostDto groupDto, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
@@ -68,7 +68,7 @@ public class GroupController {
 	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
-	public SnippetGetGroupDto update(@RequestBody GroupPostDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public GroupSnippetGetDto update(@RequestBody GroupPostDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
@@ -82,7 +82,7 @@ public class GroupController {
 	 * Get information of a specific group
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.GET)
-	public FullGroupGetDto get(@PathVariable String groupId, Principal principal) {
+	public GroupExtendedGetDto get(@PathVariable String groupId, Principal principal) {
 		Group group = groupService.get(Long.valueOf(groupId), principal.getName());
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		return groupDtoConverter.convertToExtendedDto(group, loggedInUser);
@@ -101,9 +101,9 @@ public class GroupController {
 	 * Get a list of all groups a user is a member of
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<SnippetGetGroupDto> list(Principal principal) {
+	public List<GroupSnippetGetDto> list(Principal principal) {
 		List<Group> groups = groupService.list(principal.getName());
-		List<SnippetGetGroupDto> result = new ArrayList<SnippetGetGroupDto>();
+		List<GroupSnippetGetDto> result = new ArrayList<GroupSnippetGetDto>();
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		for (Group group: groups) {
 			result.add(groupDtoConverter.convertToDto(group, loggedInUser));
@@ -114,12 +114,11 @@ public class GroupController {
 	/*
 	 * Get all members of a group
 	 * If user is a group member
-	 * TODO: we may not need this endpoint
 	 */
 	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
-	public List<GetUserDto> listMembers(@PathVariable long groupId, Principal principal) {
+	public List<UserSnippetGetDto> listMembers(@PathVariable long groupId, Principal principal) {
 		List<User> members = groupService.listMembers(groupId, principal.getName());
-		List<GetUserDto> result = new ArrayList<GetUserDto>();
+		List<UserSnippetGetDto> result = new ArrayList<UserSnippetGetDto>();
 		for (User member: members) {
 			result.add(userDtoConverter.convertToDto(member));
 		}
@@ -131,8 +130,8 @@ public class GroupController {
 	 * Only enabled for admins
 	 */
 	@RequestMapping(path = "/{groupId}/user/{userId}", method = RequestMethod.DELETE)
-	public void removeMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
-		groupService.removeMember(groupId, userId, principal.getName());
+	public long removeMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
+		return groupService.removeMember(groupId, userId, principal.getName());
 	}
-	
+
 }

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { fetchGroups, deleteGroup } from '../../actions';
-import Modal from '../modal/modal';
+import Modal from '../platform/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 
 class GroupList extends Component {
@@ -70,7 +70,7 @@ class GroupList extends Component {
       action: this._onDelete,
       label: 'Delete'
     }];
-    debugger;
+
     const { groups } = props;
     return (
       <div>

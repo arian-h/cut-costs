@@ -3,32 +3,39 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import DataTable, { TEXT_CELL } from '../platform/data_table';
+import { fetchMembers, removeMember } from '../../actions';
+import { getUserId } from '../../helpers/user_utils';
+
 class MemberList extends Component {
 
   constructor(props) {
     super(props);
-    this.groupId = this.props.match.params.id;
     this.state = {
       loading: true,
-      error: null
+      error: null,
+      removeError: null
     };
   }
 
   componentDidMount() {
     this.props.fetchMembers(
-      this.groupId,
+      this.props.groupId,
       () => this.setState({loading: false}),
       error => this.setState({loading:false, error: error})
     );
   }
 
-  _deleteActionEnabled = groupId => {
-    // TODO if current user is admin of group with groupId
+  _removeActionEnabled = memberId => {
+    return (getUserId() != memberId.toString()) && this.props.isAdmin;
   }
 
-  _onDelete = (groupId, memberId) => {
-    //TODO do we need groupId here or we can get it from this.groupId
-    this.props.removeMember(groupId, memberId);
+  _onRemove = memberId => {
+    this.props.removeMember(this.props.groupId, memberId, this._removeErrorCallback);
+  }
+
+  _removeErrorCallback = error => {
+    this.setState({removeError: error});
   }
 
   render() {
@@ -37,8 +44,9 @@ class MemberList extends Component {
     if (state.loading) {
       return <div>Loading members...</div>;
     }
+
     if (state.error) {
-      return <div>{this.props.error}</div>;
+      return <div>{props.error}</div>;
     }
 
     let configs = [
@@ -49,36 +57,46 @@ class MemberList extends Component {
       }
     ];
     let actions = [{
-      isEnabled: this._removeMemberEnabled,
-      action: this._onRemove,
+      isEnabled: this._removeActionEnabled.bind(this),
+      action: this._onRemove.bind(this),
       label: 'Remove'
     }];
 
-    let members = { props };
+    let members = props.members[props.groupId];
 
     return (
-      {
-        _.isEmpty(groups) ? <div>No member listed !</div>
-        : <DataTable className="member-table" data={_.values(members)} configs={configs} actions={actions}/>
-      }
+      <div>
+        {
+          _.isEmpty(members) ? <div>No member listed !</div>
+          :
+          <div>
+              <DataTable className="member-table" data={_.values(members)} configs={configs} actions={actions}/>
+              {
+                state.removeError ? <span>{state.removeError}</span>:<noscript/>
+              }
+              <button onClick={props.onClose}>Close</button>
+          </div>
+        }
+      </div>
     );
   }
 
-  /*this function works directly with the <Provider> placed inside
-  index.js (i.e. around the app)
-  */
-  function mapStateToProps(state) {
-    debugger;
-    return { groups: state.groups };
-  }
-
-  const mapDispatchToProps = (dispatch) => {
-      return {
-          fetchMembers: (groupId, successfulCallback, unsuccessfulCallback) => dispatch(fetchMembers(groupId, successfulCallback, unsuccessfulCallback)),
-          removeMember: (groupId, memberId) => dispatch(removeMember(groupId, memberId))
-      };
-  }
-  /* This is where action creator is connected to the component and
-  the redux store through mapStateToProps */
-  export default connect(mapStateToProps, mapDispatchToProps)(MemberList);
 }
+
+/*this function works directly with the <Provider> placed inside
+index.js (i.e. around the app)
+*/
+function mapStateToProps(state) {
+  return { members: state.members };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchMembers: (groupId, successCallback, errorCallback) => dispatch(fetchMembers(groupId, successCallback, errorCallback)),
+        removeMember: (groupId, memberId, successCallback, errorCallback) => dispatch(removeMember(groupId, memberId, successCallback, errorCallback))
+    }
+}
+/* This is where action creator is connected to the component and
+the redux store through mapStateToProps */
+
+export default connect(mapStateToProps, mapDispatchToProps)(MemberList);

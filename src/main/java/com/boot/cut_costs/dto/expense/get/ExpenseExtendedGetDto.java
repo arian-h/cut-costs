@@ -1,17 +1,17 @@
-package com.boot.cut_costs.dto.expense;
+package com.boot.cut_costs.dto.expense.get;
 
 import java.util.List;
 
-import com.boot.cut_costs.dto.group.get.SnippetGetGroupDto;
-import com.boot.cut_costs.dto.user.GetUserDto;
+import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
+import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 
-public class ExtendedGetExpenseDto extends GetExpenseDto {
+public class ExpenseExtendedGetDto extends ExpenseSnippetGetDto {
 
 	private static final long serialVersionUID = 1L;
 
-	private SnippetGetGroupDto groupDto;
+	private GroupSnippetGetDto groupDto;
 	
-	private List<GetUserDto> sharers;
+	private List<UserSnippetGetDto> sharers;
 	
 	private String imageId;
 	
@@ -25,19 +25,19 @@ public class ExtendedGetExpenseDto extends GetExpenseDto {
 		this.imageId = imageId;
 	}
 
-	public SnippetGetGroupDto getGroup() {
+	public GroupSnippetGetDto getGroup() {
 		return groupDto;
 	}
 
-	public void setGroup(SnippetGetGroupDto group) {
+	public void setGroup(GroupSnippetGetDto group) {
 		this.groupDto = group;
 	}
 
-	public List<GetUserDto> getSharers() {
+	public List<UserSnippetGetDto> getSharers() {
 		return sharers;
 	}
 
-	public void setSharers(List<GetUserDto> sharers) {
+	public void setSharers(List<UserSnippetGetDto> sharers) {
 		this.sharers = sharers;
 	}
 	

@@ -1,10 +1,8 @@
 package com.boot.cut_costs.dto.group.get;
 
-public class SnippetGetGroupDto extends BaseGroupGetDto {
+public class GroupSnippetGetDto extends GroupBaseGetDto {
 
-	private static final long serialVersionUID = 1L;
-
-	private String imageId = null;
+	private static final long serialVersionUID = 6006211962066876153L;
 
 	private int numberOfMembers = 0;
 	
@@ -18,20 +16,12 @@ public class SnippetGetGroupDto extends BaseGroupGetDto {
 		this.numberOfExpenses = numberOfExpenses;
 	}
 
-	public String getImageId() {
-		return imageId;
-	}
-
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
-	
 	public void setNumberOfMembers(int numberOfMembers) {
 		this.numberOfMembers = numberOfMembers;
 	}
-	
+
 	public int getNumberOfMembers() {
 		return this.numberOfMembers;
 	}
-	
+
 }

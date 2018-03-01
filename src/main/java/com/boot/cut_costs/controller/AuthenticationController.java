@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.cut_costs.dto.UserDetailsDto;
 import com.boot.cut_costs.exception.InputValidationException;
+import com.boot.cut_costs.model.CustomUserDetails;
 import com.boot.cut_costs.service.AuthenticationService;
 import com.boot.cut_costs.service.CustomUserDetailsService;
 import com.boot.cut_costs.validator.UserDetailsDtoValidator;
@@ -44,9 +45,9 @@ public class AuthenticationController {
 	private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public void login(@RequestBody UserDetailsDto userDetailsDTO, HttpServletResponse response) throws IOException {
+	public long login(@RequestBody UserDetailsDto userDetailsDTO, HttpServletResponse response) throws IOException {
 		logger.debug("Authenticating login attemp from user " + userDetailsDTO.getUsername());
-		authenticateUserAndSetSession(userDetailsDTO.getUsername(), userDetailsDTO.getPassword(), response);
+		return authenticateUserAndSetSession(userDetailsDTO.getUsername(), userDetailsDTO.getPassword(), response);
 	}
 
 	@RequestMapping(value = "/signup", method = RequestMethod.POST)
@@ -64,12 +65,13 @@ public class AuthenticationController {
 		logger.debug("New UserDetails with username " + username + " was created");
 	}
 
-	private void authenticateUserAndSetSession(String username, String password, HttpServletResponse response) throws BadCredentialsException {
+	private long authenticateUserAndSetSession(String username, String password, HttpServletResponse response) throws BadCredentialsException {
         logger.debug("Authentication user " + username);
         Authentication authenticatedUser = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 		if (authenticatedUser != null) {
-	        AuthenticationService.addAuthentication(response, authenticatedUser.getName());
+			AuthenticationService.addAuthentication(response, authenticatedUser.getName());
 	        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+	        return ((CustomUserDetails)(authenticatedUser.getPrincipal())).getId();
 		} else {
 			logger.debug("Authentication failed for user " + username);
 			throw new BadCredentialsException("Bad credentials provided");

@@ -1,7 +1,7 @@
 package com.boot.cut_costs.dto.invitation;
 
-import com.boot.cut_costs.dto.group.get.SnippetGetGroupDto;
-import com.boot.cut_costs.dto.user.GetUserDto;
+import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
+import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 
 public class GetInvitationDto extends AbstractInvitationDto {
 
@@ -9,15 +9,15 @@ public class GetInvitationDto extends AbstractInvitationDto {
 	
 	private long id;
 
-	private GetUserDto inviter;
+	private UserSnippetGetDto inviter;
 
-	private SnippetGetGroupDto group;
+	private GroupSnippetGetDto group;
 
-	public GetUserDto getInviter() {
+	public UserSnippetGetDto getInviter() {
 		return inviter;
 	}
 
-	public void setInviter(GetUserDto inviter) {
+	public void setInviter(UserSnippetGetDto inviter) {
 		this.inviter = inviter;
 	}
 	
@@ -29,11 +29,11 @@ public class GetInvitationDto extends AbstractInvitationDto {
 		this.id = id;
 	}
 	
-	public SnippetGetGroupDto getGroup() {
+	public GroupSnippetGetDto getGroup() {
 		return group;
 	}
 
-	public void setGroup(SnippetGetGroupDto group) {
+	public void setGroup(GroupSnippetGetDto group) {
 		this.group = group;
 	}
 }

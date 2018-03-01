@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
-import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
 import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
 
@@ -20,7 +20,7 @@ public class InvitationDtoConverter {
 	private GroupGetDtoConverter groupDtoConverter;
 	
 	@Autowired
-	private UserDtoConverter userDtoConverter;
+	private UserGetDtoConverter userDtoConverter;
 	
     public GetInvitationDto convertToDto(Invitation invitation, User loggedInUser) {
     	if (modelMapper.getTypeMap(Invitation.class, GetInvitationDto.class) == null) {

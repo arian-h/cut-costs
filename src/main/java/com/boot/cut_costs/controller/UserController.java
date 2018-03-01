@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.user.GetUserDto;
-import com.boot.cut_costs.dto.user.PostUserDto;
-import com.boot.cut_costs.dto.user.UserDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
+import com.boot.cut_costs.dto.user.post.PostUserDto;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.UserService;
@@ -31,23 +31,23 @@ public class UserController {
 	private UserDtoValidator updateUserDtoValidator;
 
 	@Autowired
-	private UserDtoConverter userDtoConverter;
+	private UserGetDtoConverter userDtoConverter;
 
 	/*
 	 * Get a specific user
 	 */
 	@RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-	public GetUserDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
+	public UserSnippetGetDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
 		return userDtoConverter.convertToDto(userService.loadById(userId));
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public GetUserDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
+	public UserSnippetGetDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
 		return userDtoConverter.convertToDto(userService.loadByUsername(principal.getName()));
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public GetUserDto update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
+	public UserSnippetGetDto update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
 		updateUserDtoValidator.validate(userDto, result);
 		if (result.hasErrors()) {
 			throw new InputValidationException(result.getFieldError().getField());

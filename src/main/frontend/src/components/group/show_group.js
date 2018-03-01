@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
-//TODO fix the form
-//TODO fix the data table
-import { updateGroup, fetchGroup } from '../../actions';
+//TODO FIX THE FORM!!!
+import DataTable, { TEXT_CELL } from '../platform/data_table';
+import Modal from '../platform/modal';
+import { updateGroup, fetchGroup, deleteExpense } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
+import { getUserId } from '../../helpers/user_utils';
+import MemberList from './list_member';
+import NewExpense from '../expense/new_expense';
 
 // const FIELDS = {
 //   name: {
@@ -31,13 +35,15 @@ import { renderField, validate } from '../../helpers/form_utils';
 //   }
 // }
 class ShowGroup extends Component {
-
+  //TODO: work on the list_member component
   constructor(props) {
     super(props);
     this.groupId = this.props.match.params.id;
     this.state = {
       loading: true,
-      error: null
+      error: null,
+      showMemberListModal: false,
+      showNewExpenseModal: false
     };
   }
 
@@ -59,20 +65,87 @@ class ShowGroup extends Component {
     //update the form
   }
 
+  _showMembers = () => {
+    this.setState({showMemberListModal: true});
+  }
+
+  _closeMemberListModal = () => { //add th
+    this.setState({showMemberListModal: false});
+  }
+
+  _addExpense = () => {
+    this.setState({showNewExpenseModal: true});
+  }
+
+  _closeExpenseListModal = () => {
+    this.setState({showNewExpenseModal: false});
+  }
+
+  _onExpenseDelete = expenseId => {
+    this.props.deleteExpense(expenseId, this.groupId, this._deleteExpenseErrorCallback);
+  }
+
+  _expenseDeleteActionEnabled = userId => {
+    return (getUserId() === userId.toString() || this.props.groups[this.groupId].isAdmin);
+  }
+
+  _deleteExpenseErrorCallback = () => {
+    //TODO to be complete
+  }
+
   render() {
     let {props, state} = this;
+
     if (state.loading) {
       return <div>Loading group ....</div>;
     }
     if (state.error) {
       return <div>{state.error}</div>;
     }
+
     let group = props.groups[this.groupId];
+    let expenses = group.expenses;
+
+    let expenseConfigs = [
+      {
+        name: 'title',
+        label: 'Title',
+        type: TEXT_CELL
+      },
+      {
+        name: 'amount',
+        label: 'Amount',
+        type: TEXT_CELL
+      }
+    ];
+    let expenseActions = [{
+      isEnabled: this._expenseDeleteActionEnabled.bind(this),
+      action: this._onExpenseDelete.bind(this),
+      label: 'Delete'
+    }];
+
     return (
       <div className="show-group">
         {
-          props.modal ?
-            <Modal content={props.modal.content} className={props.modal.className} {...props}/>
+          state.showMemberListModal ?
+            <Modal
+              content={MemberList}
+              className="member-list-modal"
+              onClose={this._closeMemberListModal}
+              groupId={this.groupId}
+              isAdmin={group.isAdmin}
+            />
+            : <noscript/>
+        }
+        {
+          state.showNewExpenseModal ?
+            <Modal
+              content={NewExpense}
+              className="new-expense-modal"
+              onClose={this._closeExpenseListModal}
+              isAdmin={group.isAdmin}
+              groupId={this.groupId}
+            />
             : <noscript/>
         }
         <form>
@@ -89,6 +162,13 @@ class ShowGroup extends Component {
         <p>Name : {group.name}</p>
         <p>Description : {group.description}</p>
         <p>Admin Name: {group.admin.name}</p>
+        {
+          expenses.length > 0 ?
+          <DataTable className="member-table" data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>
+          : <noscript/>
+        }
+        <button onClick={this._showMembers}>Show Members</button>
+        <button onClick={this._addExpense}>Add Expense</button>
       </div>
     );
   }
@@ -102,8 +182,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroup: (id, successCallback, errorCallback) => dispatch(fetchGroup(id, successCallback, errorCallback)),
-        updateGroup: (id, successCallback, errorCallback) => dispatch(updateGroup(id, successCallback, errorCallback))
+        fetchGroup: (groupId, successCallback, errorCallback) => dispatch(fetchGroup(groupId, successCallback, errorCallback)),
+        updateGroup: (groupId, successCallback, errorCallback) => dispatch(updateGroup(groupId, successCallback, errorCallback)),
+        deleteExpense: (expenseId, groupId, errorCallback) => dispatch(deleteExpense(expenseId, groupId, errorCallback))
     };
 };
 

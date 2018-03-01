@@ -83,7 +83,11 @@ public class CustomValidationUtils {
 			return false;
 		}
 		int length = title.trim().length();
-		return length > 0 && length <= 20;
+		return length >= 5 && length <= 30;
+	}
+
+	public static boolean validateExpenseDescription(String description) {
+		return description == null || description.trim().length() <= 200;
 	}
 
 	public static boolean validateExpenseAmount(long amount) {

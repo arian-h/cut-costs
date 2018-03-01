@@ -30,10 +30,6 @@ class NewGroup extends Component {
   }
 
   render() {
-    let error = null;
-    if (this.state.error) {
-      error = <span>{this.state.error}</span>;
-    }
     const { handleSubmit } = this.props;
     return (
       <div>
@@ -43,7 +39,7 @@ class NewGroup extends Component {
           <button type="submit" className="btn btn-primary">Create</button>
           <button type="button" className="btn btn-primary" onClick={() => this.props.history.push('/group')}>Cancel</button>
         </form>
-        {error}
+        { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
       </div>
     );
   }

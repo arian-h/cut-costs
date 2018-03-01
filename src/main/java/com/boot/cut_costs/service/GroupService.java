@@ -112,7 +112,7 @@ public class GroupService {
 		return result;
 	}
 	
-	public void removeMember(long groupId, long userId, String username) {
+	public long removeMember(long groupId, long userId, String username) {
 		Group group = this.loadById(groupId);
 		User user = userService.loadByUsername(username);
 		validateAdminAccessToGroup(group, user);
@@ -124,6 +124,8 @@ public class GroupService {
 		group.removeMember(target);
 		user.removeMemberGroup(group);
 		groupRepository.save(group);
+		logger.debug("User with id " + userId + " was deleted from group with id" + groupId);
+		return userId;
 	}
 
 	public void addMember(long groupId, long userId) {

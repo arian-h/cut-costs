@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import com.boot.cut_costs.dto.user.PostUserDto;
+import com.boot.cut_costs.dto.user.post.PostUserDto;
 import com.boot.cut_costs.utils.CustomValidationUtils;
 
 @Component

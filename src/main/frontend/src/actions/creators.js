@@ -1,12 +1,16 @@
-export const FETCH_GROUPS = 'fetch_groups_success';
+export const FETCH_GROUPS = 'fetch_groups';
 export const DELETE_GROUP = 'delete_group';
-export const CREATE_GROUP = 'create_group_success';
-export const FETCH_GROUP = 'fetch_group_success';
+export const CREATE_GROUP = 'create_group';
+export const FETCH_GROUP = 'fetch_group';
+export const FETCH_MEMBERS = 'fetch_members';
+export const REMOVE_MEMBER = 'remove_member';
+export const CREATE_EXPENSE = 'create_expense';
+export const DELETE_EXPENSE = 'delete_expense';
 
 export function groupDeleted(response) {
   return {
      type: DELETE_GROUP,
-     response
+     payload: response
   }
 }
 
@@ -28,5 +32,36 @@ export function groupFetched(group) {
   return {
      type: FETCH_GROUP,
      payload: group
+  }
+}
+
+export function membersFetched(response, groupId) {
+  return {
+     type: FETCH_MEMBERS,
+     payload: response,
+     groupId: groupId
+  }
+}
+
+export function memberRemoved(response) {
+  return {
+     type: REMOVE_MEMBER,
+     payload: response
+  }
+}
+
+export function expenseCreated(response, groupId) {
+  return {
+     type: CREATE_EXPENSE,
+     payload: response,
+     groupId: groupId
+  }
+}
+
+export function expenseDeleted(expenseId, groupId) {
+  return {
+     type: DELETE_EXPENSE,
+     expenseId: expenseId,
+     groupId: groupId
   }
 }

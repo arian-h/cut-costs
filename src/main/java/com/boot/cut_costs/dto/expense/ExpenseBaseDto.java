@@ -2,12 +2,12 @@ package com.boot.cut_costs.dto.expense;
 
 import java.io.Serializable;
 
-public class AbstractExpenseDto implements Serializable {
+public class ExpenseBaseDto implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	
+	private static final long serialVersionUID = -7417251455801169323L;
+
 	private String title;
-	
+
 	private long amount;
 
 	public String getTitle() {
@@ -25,4 +25,5 @@ public class AbstractExpenseDto implements Serializable {
 	public void setAmount(long amount) {
 		this.amount = amount;
 	}
+
 }

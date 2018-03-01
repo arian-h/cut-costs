@@ -1,16 +1,16 @@
-package com.boot.cut_costs.dto.expense;
+package com.boot.cut_costs.dto.expense.post;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.boot.cut_costs.dto.expense.ExpenseBaseDto;
 import com.boot.cut_costs.exception.BadRequestException;
 
-public class PostExpenseDto extends AbstractExpenseDto {
+public class ExpensePostDto extends ExpenseBaseDto {
 
-	private static final long serialVersionUID = 1L;
-	/*
-	 * Base64 image data
-	 */
+	private static final long serialVersionUID = -9041216867439951403L;
+
+	/*Base64 image data*/
 	private String image;
 
 	private String description;

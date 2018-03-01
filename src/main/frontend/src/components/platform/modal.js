@@ -26,7 +26,7 @@ class Modal extends Component {
   }
 
   _render() {
-    const {content: Content, className: customClassName} = this.props;
+    const {content: Content, className: customClassName, onClose} = this.props;
     let className = `${customClassName} modal-container`;
     ReactDOM.render(
       <Provider store={store}>
