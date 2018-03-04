@@ -116,4 +116,20 @@ public class ExpenseController {
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		return expenseDtoConverter.convertToDto(expense, loggedInUser);
 	}
+
+	/*
+	 * Remove a sharer from an expense
+	 */
+	@RequestMapping(path = "/{expenseId}/sharer/{sharerId}", method = RequestMethod.DELETE)
+	public long removeSharer(@PathVariable long expenseId, @PathVariable long sharerId, Principal principal) throws IOException {
+		return expenseService.removeSharer(expenseId, sharerId, principal.getName());
+	}
+
+	/*
+	 * Remove a sharer from an expense
+	 */
+	@RequestMapping(path = "/{expenseId}/sharer/{sharerId}", method = RequestMethod.PATCH)
+	public long addSharer(@PathVariable long expenseId, @PathVariable long newSharerId, Principal principal) throws IOException {
+		return expenseService.addSharer(expenseId, newSharerId, principal.getName());
+	}
 }

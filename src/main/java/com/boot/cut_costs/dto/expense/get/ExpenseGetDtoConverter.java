@@ -29,10 +29,14 @@ public class ExpenseGetDtoConverter {
         	Converter<Expense, ExpenseSnippetGetDto> converter = context -> {
         		Expense source = context.getSource();
         		ExpenseSnippetGetDto target = new ExpenseSnippetGetDto();
-        		target.setAmount(source.getAmount());
-        		target.setTitle(source.getTitle());
         		target.setId(source.getId());
-        		target.setOwner(userDtoConverter.convertToDto(loggedInUser));
+        		target.setTitle(source.getTitle());
+        		target.setAmount(source.getAmount());
+        		target.setOwnerId(source.getOwner().getId());
+        		target.setGroupId(source.getGroup().getId());
+        		target.setOwnerName(source.getOwner().getName());
+        		target.setGroupName(source.getGroup().getName());
+        		target.setIsOwner(source.getOwner().getId() == loggedInUser.getId());
         		return target;
         	};
         	modelMapper.createTypeMap(Expense.class, ExpenseSnippetGetDto.class).setConverter(converter);    		

@@ -7,30 +7,20 @@ import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 
 public class ExpenseExtendedGetDto extends ExpenseSnippetGetDto {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5503884659737300392L;
 
-	private GroupSnippetGetDto groupDto;
-	
 	private List<UserSnippetGetDto> sharers;
-	
 	private String imageId;
-	
 	private String description;
-	
+	private GroupSnippetGetDto groupDto;
+	private UserSnippetGetDto owner;
+
 	public String getImageId() {
 		return imageId;
 	}
 
 	public void setImageId(String imageId) {
 		this.imageId = imageId;
-	}
-
-	public GroupSnippetGetDto getGroup() {
-		return groupDto;
-	}
-
-	public void setGroup(GroupSnippetGetDto group) {
-		this.groupDto = group;
 	}
 
 	public List<UserSnippetGetDto> getSharers() {
@@ -48,5 +38,21 @@ public class ExpenseExtendedGetDto extends ExpenseSnippetGetDto {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
+	public UserSnippetGetDto getOwner() {
+		return owner;
+	}
+
+	public void setOwner(UserSnippetGetDto owner) {
+		this.owner = owner;
+	}
+
+	public GroupSnippetGetDto getGroup() {
+		return groupDto;
+	}
+
+	public void setGroup(GroupSnippetGetDto group) {
+		this.groupDto = group;
+	}
+
 }

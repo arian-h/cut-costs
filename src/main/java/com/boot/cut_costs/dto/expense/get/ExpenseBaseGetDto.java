@@ -1,15 +1,13 @@
 package com.boot.cut_costs.dto.expense.get;
 
 import com.boot.cut_costs.dto.expense.ExpenseBaseDto;
-import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 
 public class ExpenseBaseGetDto extends ExpenseBaseDto {
 
 	private static final long serialVersionUID = 4342554135210225790L;
 
 	private long id;
-
-	private UserSnippetGetDto owner;
+	private boolean isOwner;
 
 	public long getId() {
 		return id;
@@ -19,12 +17,12 @@ public class ExpenseBaseGetDto extends ExpenseBaseDto {
 		this.id = id;
 	}
 
-	public UserSnippetGetDto getOwner() {
-		return owner;
+	public boolean getIsOwner() {
+		return isOwner;
 	}
 
-	public void setOwner(UserSnippetGetDto owner) {
-		this.owner = owner;
+	public void setIsOwner(boolean isOwner) {
+		this.isOwner = isOwner;
 	}
 
 }

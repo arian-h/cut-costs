@@ -16,6 +16,7 @@ import LoginForm from './components/auth/form_login';
 import NewGroup from './components/group/new_group';
 import ShowGroup from './components/group/show_group';
 import { isAuthenticated } from './helpers/auth_utils';
+import ShowExpense from './components/expense/show_expense';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 export const store = createStoreWithMiddleware(rootReducer); // TODO do we need to export ?
@@ -41,6 +42,8 @@ ReactDOM.render(
               }}}
             />
             <PrivateRoute exact path="/group/:id" component={ShowGroup} />
+            <PrivateRoute exact path="/expense" component={ExpenseList}/>
+            <PrivateRoute exact path="/expense/:id" component={ShowExpense}/>
             <PrivateRoute component={Home}/>
           </Switch>
         </div>

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.exception.BadRequestException;
@@ -161,5 +162,41 @@ public class ExpenseService {
 			throw new ResourceNotFoundException("Expense with id " + expenseId + " was not found");
 		}
 		return expense;
+	}
+
+	public long removeSharer(long expenseId, long sharerId, String username) {
+		Expense expense = this.loadById(expenseId);
+		User user = userService.loadByUsername(username);
+		validateOwnerAccessToExpense(expense, user);
+		User sharer = userService.loadById(sharerId);
+		if (!expense.hasSharer(sharer)) {
+			throw new BadRequestException("Expense with id " + expense.getId() + " is not shared with user with id " + sharer.getId());
+		}
+		expense.removeSharer(sharer);
+		expenseRepository.save(expense);
+		logger.debug("User with id " + sharerId + " was deleted from expense with id" + expenseId);
+		return sharerId;
+	}
+
+	public long addSharer(long expenseId, long sharerId, String username) {
+		Expense expense = this.loadById(expenseId);
+		User user = userService.loadByUsername(username);
+		validateOwnerAccessToExpense(expense, user);
+		User newSharer = userService.loadById(sharerId);
+		Group group = groupService.loadById(expense.getGroup().getId());
+		groupService.validateMemberAccessToGroup(group, newSharer);
+		if (expense.hasSharer(newSharer)) {
+			throw new BadRequestException("Expense with id " + expense.getId() + " is already shared with user with id " + newSharer.getId());
+		}
+		expense.addSharer(newSharer);
+		expenseRepository.save(expense);
+		logger.debug("User with id " + sharerId + " was added to the expense with id" + expenseId);
+		return sharerId;
+	}
+
+	public void validateOwnerAccessToExpense(Expense expense, User user) {
+		if (expense.getOwner().getId() != user.getId()) {
+			throw new AccessDeniedException("User with id " + user.getId() + " is not owner of the expense with id " + expense.getId()); 
+		}
 	}
 }

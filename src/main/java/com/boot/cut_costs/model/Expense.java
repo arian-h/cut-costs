@@ -124,11 +124,19 @@ public class Expense implements Serializable {
 		this.sharers.add(user);
 	}
 
+	public void removeSharer(User user) {
+		this.sharers.remove(user);
+	}
+
 	public void addShareres(List<User> users) { 
 		this.sharers.addAll(users);
 	}
 
 	public void setShareres(List<User> users) {
 		this.sharers = users;
+	}
+
+	public boolean hasSharer(User sharer) {
+		return this.sharers.contains(sharer);
 	}
 }

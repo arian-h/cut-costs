@@ -5,7 +5,11 @@ export const FETCH_GROUP = 'fetch_group';
 export const FETCH_MEMBERS = 'fetch_members';
 export const REMOVE_MEMBER = 'remove_member';
 export const CREATE_EXPENSE = 'create_expense';
+export const DELETE_EXPENSE_FROM_GROUP = 'delete_expense_from_group';
+export const FETCH_EXPENSES = 'fetch_expenses';
 export const DELETE_EXPENSE = 'delete_expense';
+export const FETCH_EXPENSE = 'fetch_expense';
+export const REMOVE_SHARER = 'remove_sharer';
 
 export function groupDeleted(response) {
   return {
@@ -14,10 +18,10 @@ export function groupDeleted(response) {
   }
 }
 
-export function groupsFetched(response) {
+export function groupsFetched(groups) {
   return {
      type: FETCH_GROUPS,
-     payload: response
+     payload: groups
   }
 }
 
@@ -39,7 +43,7 @@ export function membersFetched(response, groupId) {
   return {
      type: FETCH_MEMBERS,
      payload: response,
-     groupId: groupId
+     groupId
   }
 }
 
@@ -54,14 +58,44 @@ export function expenseCreated(response, groupId) {
   return {
      type: CREATE_EXPENSE,
      payload: response,
-     groupId: groupId
+     groupId
   }
 }
 
-export function expenseDeleted(expenseId, groupId) {
+export function expenseDeletedFromGroup(expenseId, groupId) {
+  return {
+     type: DELETE_EXPENSE_FROM_GROUP,
+     expenseId,
+     groupId
+  }
+}
+
+export function expenseDeleted(expenseId) {
+  debugger;
   return {
      type: DELETE_EXPENSE,
-     expenseId: expenseId,
-     groupId: groupId
+     expenseId
+  }
+}
+
+export function expensesFetched(expenses) {
+  return {
+    type: FETCH_EXPENSES,
+    expenses
+  }
+}
+
+export function expenseFetched(expense) {
+  return {
+    type: FETCH_EXPENSE,
+    expense
+  }
+}
+
+export function sharerRemoved(sharerId, expenseId) {
+  return {
+    type: REMOVE_SHARER,
+    expenseId,
+    sharerId
   }
 }

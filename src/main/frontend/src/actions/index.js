@@ -1,6 +1,6 @@
 import axios from 'axios';
 import history from '../history';
-import { groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseCreated, expenseDeleted } from './creators';
+import { groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved } from './creators';
 import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
@@ -114,13 +114,80 @@ export function createExpense(values, groupId, successCallback, errorCallback) {
     };
 }
 
+export function fetchExpense(expenseId, successCallback, errorCallback) {
+  return dispatch => {
+    axios.get(`${EXPENSE_ENDPOINT}${expenseId}`, getAuthorizationHeader())
+      .then(({data}) => {
+        dispatch(expenseFetched(data))
+      })
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      });
+    };
+}
+
+export function removeSharer(sharerId, expenseId, errorCallback) {
+  return dispatch => {
+    axios.get(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, getAuthorizationHeader())
+      .then(({data}) => {
+        dispatch(sharerRemoved(data))
+      })
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      });
+    };
+}
+
+export function fetchExpenses(successCallback, errorCallback) {
+  return dispatch => {
+    axios.get(`${EXPENSE_ENDPOINT}`, getAuthorizationHeader())
+      .then(({data}) => dispatch(expensesFetched(data)))
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      });
+    };
+}
+
 export function deleteExpense(expenseId, groupId, errorCallback) {
   return dispatch => {
     axios.delete(`${EXPENSE_ENDPOINT}${expenseId}`, getAuthorizationHeader())
       .then(() => {
-        dispatch(expenseDeleted(expenseId, groupId));
-      })
-      .catch(({response}) => {
+        if (groupId) {
+          dispatch(expenseDeletedFromGroup(expenseId, groupId)); // in case expense is being deleted from a group
+          // changing the state differs from simply deleting an expense
+        } else {
+          dispatch(expenseDeleted(expenseId));
+        }
+      }).catch(({response}) => {
         if (!response) {
           //Network error
           //show a sticky message with offline message
@@ -138,9 +205,7 @@ export function deleteExpense(expenseId, groupId, errorCallback) {
 export function fetchGroups(successCallback, errorCallback) {
   return dispatch => {
     axios.get(GROUP_ENDPOINT, getAuthorizationHeader())
-      .then(response => {
-          dispatch(groupsFetched(response.data));
-      })
+      .then(response => dispatch(groupsFetched(response.data)))
       .then(() => successCallback())
       .catch(({response}) => {
         if (!response) {
@@ -160,9 +225,7 @@ export function fetchGroups(successCallback, errorCallback) {
 export function fetchGroup(id, successCallback, errorCallback) {
   return (dispatch) => {
     axios.get(`${GROUP_ENDPOINT}${id}`, getAuthorizationHeader())
-      .then(response => {
-        dispatch(groupFetched(response.data))
-      })
+      .then(response => dispatch(groupFetched(response.data)))
       .then(() => successCallback())
       .catch(({response}) => {
         if (!response) {
@@ -203,10 +266,8 @@ export function createGroup(values, successCallback, errorCallback) {
         name: values.name,
         description: values.description
       }, getAuthorizationHeader())
-      .then(({data}) => {
-        successCallback();
-        dispatch(groupCreated(data))
-      })
+      .then(({data}) => dispatch(groupCreated(data)))
+      .then(() => successCallback())
       .catch(({response}) => { //TODO manually test it
         if (!response) {
           //Network error

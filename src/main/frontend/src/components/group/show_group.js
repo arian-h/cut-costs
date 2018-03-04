@@ -95,7 +95,7 @@ class ShowGroup extends Component {
 
   render() {
     let {props, state} = this;
-
+    debugger;
     if (state.loading) {
       return <div>Loading group ....</div>;
     }
