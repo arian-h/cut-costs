@@ -1,6 +1,8 @@
-package com.boot.cut_costs.dto.invitation;
+package com.boot.cut_costs.dto.invitation.post;
 
-public class PostInvitationDto extends AbstractInvitationDto {
+import com.boot.cut_costs.dto.invitation.InvitationBaseDto;
+
+public class InvitationPostDto extends InvitationBaseDto {
 	
 	private static final long serialVersionUID = 1L;
 	

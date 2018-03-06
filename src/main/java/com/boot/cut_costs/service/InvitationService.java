@@ -44,9 +44,16 @@ public class InvitationService {
 		User inviter = userService.loadByUsername(inviterUsername);
 		Group group = groupService.loadById(groupId);
 		groupService.validateMemberAccessToGroup(group, inviter);
+		long inviterId = inviter.getId();
+		if (inviterId == inviteeId) {
+			throw new BadRequestException("User with id " + inviterId + " cannot invite themself to the group");
+		}
 		User invitee = userService.loadById(inviteeId);
 		if (groupService.isMemberOrAdmin(group, invitee)) {
 			throw new BadRequestException("User with id " + inviteeId + " is already a member of group with id " + groupId);
+		}
+		if (alreadyInvited(inviterId, inviteeId, groupId)) {
+			throw new BadRequestException("User with id " + inviterId + " already invited user with id " + inviteeId + " to the group with id " + groupId);
 		}
 		Invitation invitation = new Invitation();
 		invitation.setGroup(group);
@@ -55,7 +62,7 @@ public class InvitationService {
 		invitee.addReceivedInvitation(invitation);
 		inviter.addOwnedInvitation(invitation);
 		invitationRepository.save(invitation);
-		logger.debug("invitation ");
+		logger.debug("invitation was created");
 		return invitation;
 	}
 	
@@ -125,4 +132,9 @@ public class InvitationService {
 		invitationRepository.delete(invitation);
 		logger.debug("Invitation with id " + invitationId + "was deleted");
 	}
+
+	private boolean alreadyInvited(long inviterId, long inviteeId, long groupId) {
+		return invitationRepository.countInvitation(inviterId, inviteeId, groupId) > 0;
+	}
+
 }

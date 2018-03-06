@@ -5,12 +5,13 @@ import _ from 'lodash';
 //TODO FIX THE FORM!!!
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
-import { updateGroup, fetchGroup, deleteExpense } from '../../actions';
+import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
+import NewInvitation from './new_invitation';
 
 // const FIELDS = {
 //   name: {
@@ -43,7 +44,8 @@ class ShowGroup extends Component {
       loading: true,
       error: null,
       showMemberListModal: false,
-      showNewExpenseModal: false
+      showNewExpenseModal: false,
+      showNewInvitationModal: false
     };
   }
 
@@ -93,9 +95,17 @@ class ShowGroup extends Component {
     //TODO to be complete
   }
 
+  _inviteUser = () => {
+      this.setState({showNewInvitationModal: true})
+  }
+
+  _closeNewInvitationModal = () => {
+    this.setState({showNewInvitationModal: false})
+  }
+
   render() {
     let {props, state} = this;
-    debugger;
+
     if (state.loading) {
       return <div>Loading group ....</div>;
     }
@@ -148,6 +158,16 @@ class ShowGroup extends Component {
             />
             : <noscript/>
         }
+        {
+          state.showNewInvitationModal ?
+            <Modal
+              content={NewInvitation}
+              className="new-invitation-modal"
+              onClose={this._closeNewInvitationModal}
+              groupId={this.groupId}
+            />
+            : <noscript/>
+        }
         <form>
           <Field
             name="name"
@@ -169,6 +189,7 @@ class ShowGroup extends Component {
         }
         <button onClick={this._showMembers}>Show Members</button>
         <button onClick={this._addExpense}>Add Expense</button>
+        <button onClick={this._inviteUser}>Invite User</button>
       </div>
     );
   }

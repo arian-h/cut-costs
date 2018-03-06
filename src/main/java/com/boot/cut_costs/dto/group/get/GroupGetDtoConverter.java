@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.dto.expense.get.ExpenseGetDtoConverter;
-import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
+import com.boot.cut_costs.dto.invitation.get.InvitationGetDtoConverter;
 import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
 import com.boot.cut_costs.model.Group;
 import com.boot.cut_costs.model.User;
@@ -26,7 +26,7 @@ public class GroupGetDtoConverter {
 	private ExpenseGetDtoConverter expenseDtoConverter;
 
 	@Autowired
-	private InvitationDtoConverter invitationDtoConverter;
+	private InvitationGetDtoConverter invitationDtoConverter;
 
 	public GroupSnippetGetDto convertToDto(Group group, User loggedInUser) {
 		if (modelMapper.getTypeMap(Group.class, GroupSnippetGetDto.class) == null) {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.boot.cut_costs.dto.expense.get.ExpenseGetDtoConverter;
 import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
-import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
+import com.boot.cut_costs.dto.invitation.get.InvitationGetDtoConverter;
 import com.boot.cut_costs.model.User;
 
 @Service
@@ -20,7 +20,7 @@ public class UserGetDtoConverter {
 	private ExpenseGetDtoConverter expenseDtoConverter;
 
 	@Autowired
-	private InvitationDtoConverter invitationDtoConverter;
+	private InvitationGetDtoConverter invitationDtoConverter;
 
 	@Autowired
 	private GroupGetDtoConverter groupDtoConverter;

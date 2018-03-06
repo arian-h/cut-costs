@@ -1,4 +1,4 @@
-package com.boot.cut_costs.dto.invitation;
+package com.boot.cut_costs.dto.invitation.get;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -11,7 +11,7 @@ import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
 
 @Service
-public class InvitationDtoConverter {
+public class InvitationGetDtoConverter {
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -22,19 +22,19 @@ public class InvitationDtoConverter {
 	@Autowired
 	private UserGetDtoConverter userDtoConverter;
 	
-    public GetInvitationDto convertToDto(Invitation invitation, User loggedInUser) {
-    	if (modelMapper.getTypeMap(Invitation.class, GetInvitationDto.class) == null) {
-        	Converter<Invitation, GetInvitationDto> converter = context -> {
-        		GetInvitationDto target = new GetInvitationDto();
+    public InvitationSnippetGetDto convertToDto(Invitation invitation, User loggedInUser) {
+    	if (modelMapper.getTypeMap(Invitation.class, InvitationSnippetGetDto.class) == null) {
+        	Converter<Invitation, InvitationSnippetGetDto> converter = context -> {
+        		InvitationSnippetGetDto target = new InvitationSnippetGetDto();
         		Invitation source = context.getSource();
         		target.setId(source.getId());
     			target.setGroup(groupDtoConverter.convertToDto(source.getGroup(), loggedInUser));
     			target.setInviter(userDtoConverter.convertToDto(source.getInviter())); 
         		return target;
         	};
-        	modelMapper.createTypeMap(Invitation.class, GetInvitationDto.class).setConverter(converter);    		
+        	modelMapper.createTypeMap(Invitation.class, InvitationSnippetGetDto.class).setConverter(converter);    		
     	}
-    	return modelMapper.map(invitation, GetInvitationDto.class);
+    	return modelMapper.map(invitation, InvitationSnippetGetDto.class);
     }
     
 }

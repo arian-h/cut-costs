@@ -8,7 +8,8 @@ const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
 const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
 const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
 const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
-const EXPENSE_ENDPOINT = `${ROOT_URL}/expense/`
+const EXPENSE_ENDPOINT = `${ROOT_URL}/expense/`;
+const INVITATION_ENDPOINT = `${ROOT_URL}/invitation/`;
 
 function getAuthorizationHeader() {
   return {
@@ -43,6 +44,51 @@ export function loginUser(values, redirected_from, errorCallback) {
     });
   };
 }
+
+export function inviteUser(inviterId, inviteeId, groupId, successCallback, errorCallback) {
+  return () => {
+    axios.post(`${INVITATION_ENDPOINT}`, {
+      inviteeId: inviteeId,
+      groupId: groupId,
+      inviterId: inviterId
+    }, getAuthorizationHeader())
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
+export function rejectInvitation(invitationId, errorCallback) {
+  return dispatch => {
+    axios.post(`${INVITATION_ENDPOINT}${invitationId}/reject`, getAuthorizationHeader())
+      .then(response => {
+          dispatch(invitationRejected(invitationId));
+      })
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
 
 export function fetchMembers(groupId, successCallback, errorCallback) {
   return dispatch => {

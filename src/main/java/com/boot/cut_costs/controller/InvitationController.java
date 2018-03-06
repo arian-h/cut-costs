@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.invitation.GetInvitationDto;
-import com.boot.cut_costs.dto.invitation.InvitationDtoConverter;
-import com.boot.cut_costs.dto.invitation.PostInvitationDto;
+import com.boot.cut_costs.dto.invitation.get.InvitationSnippetGetDto;
+import com.boot.cut_costs.dto.invitation.get.InvitationGetDtoConverter;
+import com.boot.cut_costs.dto.invitation.post.InvitationPostDto;
 import com.boot.cut_costs.model.Invitation;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.service.InvitationService;
@@ -32,10 +32,10 @@ public class InvitationController {
 	private UserService userService;
 
 	@Autowired
-	private InvitationDtoConverter invitationDtoConverter;
+	private InvitationGetDtoConverter invitationDtoConverter;
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
-	public GetInvitationDto create(@RequestBody PostInvitationDto invitationDto, Principal principal, BindingResult result) throws IOException {
+	public InvitationSnippetGetDto create(@RequestBody InvitationPostDto invitationDto, Principal principal, BindingResult result) throws IOException {
 		Invitation invitation = invitationService.create(invitationDto.getGroupId(), invitationDto.getInviteeId(), principal.getName());
 		User currentLoggedInUser = userService.loadByUsername(principal.getName());
 		return invitationDtoConverter.convertToDto(invitation, currentLoggedInUser);
@@ -45,7 +45,7 @@ public class InvitationController {
 	 * List all invitations a user received
 	 */
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public List<GetInvitationDto> list(Principal principal) throws IOException {
+	public List<InvitationSnippetGetDto> list(Principal principal) throws IOException {
 		User currentLoggedInUser = userService.loadByUsername(principal.getName());
 		return invitationService
 				.list(principal.getName())
@@ -54,12 +54,12 @@ public class InvitationController {
 						.collect(Collectors.toList());
 	}
 	
-	@RequestMapping(path = "/{invitationId}/accept", method = RequestMethod.GET)
+	@RequestMapping(path = "/{invitationId}/accept", method = RequestMethod.POST)
 	public void accept(@PathVariable long invitationId, Principal principal) throws IOException {
 		invitationService.accept(invitationId, principal.getName());
 	}
 
-	@RequestMapping(path = "/{invitationId}/reject", method = RequestMethod.GET)
+	@RequestMapping(path = "/{invitationId}/reject", method = RequestMethod.POST)
 	public void reject(@PathVariable long invitationId, Principal principal) throws IOException {
 		invitationService.reject(invitationId, principal.getName());
 	}

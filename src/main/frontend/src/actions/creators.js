@@ -10,6 +10,7 @@ export const FETCH_EXPENSES = 'fetch_expenses';
 export const DELETE_EXPENSE = 'delete_expense';
 export const FETCH_EXPENSE = 'fetch_expense';
 export const REMOVE_SHARER = 'remove_sharer';
+export const REJECT_INVITATION = 'reject_invitation';
 
 export function groupDeleted(response) {
   return {
@@ -97,5 +98,12 @@ export function sharerRemoved(sharerId, expenseId) {
     type: REMOVE_SHARER,
     expenseId,
     sharerId
+  }
+}
+
+export function invitationRejected(invitationId) {
+  return {
+    type: REJECT_INVITATION,
+    invitationId
   }
 }

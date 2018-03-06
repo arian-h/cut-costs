@@ -1,9 +1,10 @@
-package com.boot.cut_costs.dto.invitation;
+package com.boot.cut_costs.dto.invitation.get;
 
 import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
+import com.boot.cut_costs.dto.invitation.InvitationBaseDto;
 import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 
-public class GetInvitationDto extends AbstractInvitationDto {
+public class InvitationSnippetGetDto extends InvitationBaseDto {
 
 	private static final long serialVersionUID = 1L;
 	
