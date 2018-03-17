@@ -11,7 +11,7 @@ import { renderField, validate } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
-import NewInvitation from './new_invitation';
+import NewInvitation from '../invitation/new_invitation';
 
 // const FIELDS = {
 //   name: {

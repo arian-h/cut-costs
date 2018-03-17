@@ -8,6 +8,7 @@ export default function(state={}, action) {
     case FETCH_GROUP:
       return {...state, [action.payload.id]: action.payload};
     case CREATE_GROUP:
+      debugger;
       return { ...state, [action.payload.id]: action.payload};
     case DELETE_GROUP:
       return _.omit(state, action.payload.data);

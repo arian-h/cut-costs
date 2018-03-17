@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
+import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
 import com.boot.cut_costs.dto.invitation.get.InvitationSnippetGetDto;
 import com.boot.cut_costs.dto.invitation.get.InvitationGetDtoConverter;
 import com.boot.cut_costs.dto.invitation.post.InvitationPostDto;
@@ -33,6 +35,9 @@ public class InvitationController {
 
 	@Autowired
 	private InvitationGetDtoConverter invitationDtoConverter;
+
+	@Autowired
+	private GroupGetDtoConverter groupDtoConverter;
 
 	@RequestMapping(path = "", method = RequestMethod.POST)
 	public InvitationSnippetGetDto create(@RequestBody InvitationPostDto invitationDto, Principal principal, BindingResult result) throws IOException {
@@ -55,8 +60,9 @@ public class InvitationController {
 	}
 	
 	@RequestMapping(path = "/{invitationId}/accept", method = RequestMethod.POST)
-	public void accept(@PathVariable long invitationId, Principal principal) throws IOException {
-		invitationService.accept(invitationId, principal.getName());
+	public GroupSnippetGetDto accept(@PathVariable long invitationId, Principal principal) throws IOException {
+		User currentLoggedInUser = userService.loadByUsername(principal.getName());
+		return groupDtoConverter.convertToDto(invitationService.accept(invitationId, principal.getName()), currentLoggedInUser);
 	}
 
 	@RequestMapping(path = "/{invitationId}/reject", method = RequestMethod.POST)

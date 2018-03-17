@@ -10,6 +10,10 @@ const ComponentsList = [
   {
     'path': '/home',
     'title': 'Home'
+  },
+  {
+    'path': '/invitation',
+    'title': 'Invitation'
   }
 ];
 

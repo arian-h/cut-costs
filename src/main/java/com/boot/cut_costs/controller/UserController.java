@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boot.cut_costs.dto.user.get.UserExtendedGetDto;
 import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
-import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 import com.boot.cut_costs.dto.user.post.PostUserDto;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.User;
@@ -33,26 +33,18 @@ public class UserController {
 	@Autowired
 	private UserGetDtoConverter userDtoConverter;
 
-	/*
-	 * Get a specific user
-	 */
 	@RequestMapping(path = "/{userId}", method = RequestMethod.GET)
-	public UserSnippetGetDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
-		return userDtoConverter.convertToDto(userService.loadById(userId));
-	}
-
-	@RequestMapping(path = "", method = RequestMethod.GET)
-	public UserSnippetGetDto getCurrentUser(Principal principal) throws IllegalAccessException, InvocationTargetException {
-		return userDtoConverter.convertToDto(userService.loadByUsername(principal.getName()));
+	public UserExtendedGetDto get(@PathVariable long userId) throws IllegalAccessException, InvocationTargetException {
+		return userDtoConverter.convertToExtendedDto(userService.loadById(userId));
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.PUT)
-	public UserSnippetGetDto update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
+	public UserExtendedGetDto update(@RequestBody PostUserDto userDto, Principal principal, BindingResult result) throws IOException {
 		updateUserDtoValidator.validate(userDto, result);
 		if (result.hasErrors()) {
 			throw new InputValidationException(result.getFieldError().getField());
 		}
 		User user = userService.update(userDto.getName(), userDto.getDescription(), userDto.getImage(), principal.getName());
-		return userDtoConverter.convertToDto(user);
+		return userDtoConverter.convertToExtendedDto(user);
 	}
 }

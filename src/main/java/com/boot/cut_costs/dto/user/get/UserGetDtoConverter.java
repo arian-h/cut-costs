@@ -30,9 +30,9 @@ public class UserGetDtoConverter {
 			Converter<User, UserExtendedGetDto> converter = context -> {
 				User source = context.getSource();
 				UserExtendedGetDto target = new UserExtendedGetDto();
-				target.setDescription(source.getDescription());
 				target.setId(source.getId());
 				target.setName(source.getName());
+				target.setDescription(source.getDescription());
 				target.setImageId(source.getImageId());
 				return target;
 			};

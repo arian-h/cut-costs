@@ -79,7 +79,7 @@ public class InvitationService {
 		return invitation;
 	}
 	
-	public void accept(long invitationId, String username) {
+	public Group accept(long invitationId, String username) {
 		Invitation invitation = this.loadById(invitationId);
 		User invitee = userService.loadByUsername(username);
 		validateAccessToInvitation(invitation, invitee);
@@ -90,6 +90,7 @@ public class InvitationService {
 		User inviter = userService.loadById(invitation.getInviter().getId());
 		inviter.removeOwnedInvitation(invitation);
 		invitationRepository.delete(invitation);
+		return group;
 	}
 	
 	public void reject(long invitationId, String username) {

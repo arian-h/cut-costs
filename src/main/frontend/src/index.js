@@ -8,6 +8,8 @@ import rootReducer from './reducers';
 
 import history from './history';
 import PrivateRoute from './routing/private_route';
+import { isAuthenticated } from './helpers/auth_utils';
+
 import GroupList from './components/group/list_group';
 import ExpenseList from './components/expense/list_expense';
 import Home from './components/home';
@@ -15,8 +17,9 @@ import RegisterForm from './components/auth/form_register';
 import LoginForm from './components/auth/form_login';
 import NewGroup from './components/group/new_group';
 import ShowGroup from './components/group/show_group';
-import { isAuthenticated } from './helpers/auth_utils';
 import ShowExpense from './components/expense/show_expense';
+import InvitationList from './components/invitation/list_invitation';
+import ShowUser from './components/user/show_user';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 export const store = createStoreWithMiddleware(rootReducer); // TODO do we need to export ?
@@ -44,6 +47,8 @@ ReactDOM.render(
             <PrivateRoute exact path="/group/:id" component={ShowGroup} />
             <PrivateRoute exact path="/expense" component={ExpenseList}/>
             <PrivateRoute exact path="/expense/:id" component={ShowExpense}/>
+            <PrivateRoute exact path="/invitation" component={InvitationList}/>
+            <PrivateRoute exact path="/user/:id?" component={ShowUser}/>
             <PrivateRoute component={Home}/>
           </Switch>
         </div>

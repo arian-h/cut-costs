@@ -11,11 +11,21 @@ export const DELETE_EXPENSE = 'delete_expense';
 export const FETCH_EXPENSE = 'fetch_expense';
 export const REMOVE_SHARER = 'remove_sharer';
 export const REJECT_INVITATION = 'reject_invitation';
+export const FETCH_INVITATIONS = 'fetch_invitations';
+export const ACCEPT_INVITATION = 'accept_invitation';
+export const FETCH_USER = 'fetch_user';
 
 export function groupDeleted(response) {
   return {
      type: DELETE_GROUP,
      payload: response
+  }
+}
+
+export function userFetched(user) {
+  return {
+     type: FETCH_USER,
+     user
   }
 }
 
@@ -105,5 +115,19 @@ export function invitationRejected(invitationId) {
   return {
     type: REJECT_INVITATION,
     invitationId
+  }
+}
+
+export function invitationAccepted(invitationId) {
+  return {
+    type: ACCEPT_INVITATION,
+    invitationId
+  }
+}
+
+export function invitationsFetched(invitations) {
+  return {
+    type: FETCH_INVITATIONS,
+    invitations
   }
 }

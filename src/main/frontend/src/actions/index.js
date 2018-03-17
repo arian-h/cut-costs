@@ -1,6 +1,6 @@
 import axios from 'axios';
 import history from '../history';
-import { groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved } from './creators';
+import { userFetched, invitationAccepted, invitationRejected, groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved, invitationsFetched } from './creators';
 import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
@@ -10,6 +10,7 @@ const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
 const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
 const EXPENSE_ENDPOINT = `${ROOT_URL}/expense/`;
 const INVITATION_ENDPOINT = `${ROOT_URL}/invitation/`;
+const USER_ENDPOINT = `${ROOT_URL}/user/`;
 
 function getAuthorizationHeader() {
   return {
@@ -45,6 +46,74 @@ export function loginUser(values, redirected_from, errorCallback) {
   };
 }
 
+export function logoutUser() {
+  return () => {
+    logout();
+  }
+}
+
+export function registerUser(values, signupFailedCallback) {
+  return () => {
+    axios.post(REGISTER_ENDPOINT,
+      {
+        name: values.name,
+        username: values.username,
+        password: values.password
+      }
+    ).then(({ status, headers: { authorization } }) => {
+      localStorage.setItem('jwt_token', authorization);
+      history.push('/');
+    }).catch(response => {
+      debugger;
+    });
+  }
+}
+
+export function updateUser(values, errorCallback) {
+  return () => {
+    debugger;
+    axios.put(USER_ENDPOINT, {
+      name: values.name,
+      description: values.description,
+      image: image
+    }, getAuthorizationHeader())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
+export function fetchUser(userId, successCallback, errorCallback) {
+  return dispatch => {
+    axios.get(`${USER_ENDPOINT}${userId}`, getAuthorizationHeader())
+      .then(response => {
+        dispatch(userFetched(response.data));
+      })
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
 export function inviteUser(inviterId, inviteeId, groupId, successCallback, errorCallback) {
   return () => {
     axios.post(`${INVITATION_ENDPOINT}`, {
@@ -70,9 +139,9 @@ export function inviteUser(inviterId, inviteeId, groupId, successCallback, error
 
 export function rejectInvitation(invitationId, errorCallback) {
   return dispatch => {
-    axios.post(`${INVITATION_ENDPOINT}${invitationId}/reject`, getAuthorizationHeader())
+    axios.post(`${INVITATION_ENDPOINT}${invitationId}/reject`, {}, getAuthorizationHeader())
       .then(response => {
-          dispatch(invitationRejected(invitationId));
+        dispatch(invitationRejected(invitationId));
       })
       .catch(({response}) => {
         if (!response) {
@@ -89,6 +158,51 @@ export function rejectInvitation(invitationId, errorCallback) {
   };
 }
 
+export function acceptInvitation(invitationId, errorCallback) {
+  return dispatch => {
+    axios.post(`${INVITATION_ENDPOINT}${invitationId}/accept`, {}, getAuthorizationHeader())
+      .then(({data: group}) => {
+        dispatch(groupCreated(group))
+      })
+      .then(() => {
+        dispatch(invitationAccepted(invitationId)); // TODO change it remove invitation both for accept and reject
+      })
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
+export function fetchInvitations(successCallback, errorCallback) {
+  return dispatch => {
+    axios.get(`${INVITATION_ENDPOINT}`, getAuthorizationHeader())
+      .then(response => {
+        dispatch(invitationsFetched(response.data));
+      })
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
 
 export function fetchMembers(groupId, successCallback, errorCallback) {
   return dispatch => {
@@ -345,27 +459,4 @@ export function deleteGroup(groupID) {
         }
       });
   };
-}
-
-export function logoutUser() {
-  return () => {
-    logout();
-  }
-}
-
-export function registerUser(values, signupFailedCallback) {
-  return () => {
-    axios.post(REGISTER_ENDPOINT,
-      {
-        name: values.name,
-        username: values.username,
-        password: values.password
-      }
-    ).then(({ status, headers: { authorization } }) => {
-      localStorage.setItem('jwt_token', authorization);
-      history.push('/');
-    }).catch(response => {
-      debugger;
-    });
-  }
 }

@@ -20,7 +20,6 @@ import javax.validation.constraints.Size;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -49,18 +48,6 @@ public class User implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy="owner")
 	private List<Expense> ownedExpenses;
 
-	public List<Expense> getOwnedExpenses() {
-		return ownedExpenses;
-	}
-
-	public void addOwnedExpense(Expense expense) {
-		this.ownedExpenses.add(expense);
-	}
-
-	public void removeOwnedExpense(Expense expense) {
-		this.ownedExpenses.remove(expense);
-	}
-
 	@OneToMany(cascade=CascadeType.ALL)
 	private List<Invitation> ownedInvitations;
 
@@ -74,6 +61,18 @@ public class User implements Serializable {
 		this.receivedInvitations = new ArrayList<Invitation>();
 		this.receivedExpenses = new ArrayList<Expense>();
 		this.ownedExpenses = new ArrayList<Expense>();
+	}
+
+	public List<Expense> getOwnedExpenses() {
+		return ownedExpenses;
+	}
+
+	public void addOwnedExpense(Expense expense) {
+		this.ownedExpenses.add(expense);
+	}
+
+	public void removeOwnedExpense(Expense expense) {
+		this.ownedExpenses.remove(expense);
 	}
 
 	public String getName() {

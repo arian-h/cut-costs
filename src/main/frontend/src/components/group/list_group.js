@@ -46,7 +46,7 @@ class GroupList extends Component {
       {
         name: 'name',
         label: 'Group',
-        type: TEXT_CELL, // this can be either text, image
+        type: TEXT_CELL,
         href: group => '/group/' + group.id
       },
       {
@@ -72,6 +72,7 @@ class GroupList extends Component {
     }];
 
     const { groups } = props;
+
     return (
       <div>
         {
@@ -101,7 +102,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchGroups: (successfulCallback, unsuccessfulCallback) => dispatch(fetchGroups(successfulCallback, unsuccessfulCallback)),
+        fetchGroups: (successCallback, errorCallback) => dispatch(fetchGroups(successCallback, errorCallback)),
         deleteGroup: id => dispatch(deleteGroup(id))
     };
 };
