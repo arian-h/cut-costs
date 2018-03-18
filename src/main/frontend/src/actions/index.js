@@ -404,7 +404,6 @@ export function fetchGroup(id, successCallback, errorCallback) {
 
 export function updateGroup(values, callback) {
   return (dispatch) => {
-    console.log(values);
     // axios.put(`${GROUP_ENDPOINT}values.id`,
     //   {
     //

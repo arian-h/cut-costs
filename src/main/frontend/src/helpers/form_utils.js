@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 
-export const renderField = function({ input, fieldType, label, type, meta: { touched, error }}) {
+export const renderField = function({ input, fieldType, label, value, type, meta: { touched, error }}) {
   let FieldType = fieldType;
   return (
     <div>

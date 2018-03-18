@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import _ from 'lodash';
-//TODO FIX THE FORM!!!
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
 import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
@@ -13,28 +12,6 @@ import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
 
-// const FIELDS = {
-//   name: {
-//     validate: validateName,
-//     fieldType: 'input',
-//     props: {
-//       className: 'name-field',
-//       type: 'text'
-//     }
-//   },
-//   description: {
-//     validate: validateDescription,
-//     fieldType: 'textarea',
-//     props: {
-//       className: 'desc-field',
-//       rows: 2,
-//       placeholder: 'Add Description To Your Group',
-//       onBlur: function() {
-//         this._updateGroupNameDesc();
-//       }
-//     }
-//   }
-// }
 class ShowGroup extends Component {
   //TODO: work on the list_member component
   constructor(props) {
@@ -50,13 +27,20 @@ class ShowGroup extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchGroup(this.groupId,
+    this.props.fetchGroup(
       () => this.setState({loading: false}),
       error => this.setState({loading:false, error: error})
     );
   }
 
-  _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
+  // componentWillReceiveProps(nextProps) {
+  //   let group = props.groups[this.groupId];
+  //   if (state.loading && !state.error) {
+  //
+  //   }
+  // }
+
+  _updateGroupDesc = () => {
     const { updateGroup } = this.props;
     updateGroup({
       id: this.groupId,
@@ -84,11 +68,11 @@ class ShowGroup extends Component {
   }
 
   _onExpenseDelete = expenseId => {
-    this.props.deleteExpense(expenseId, this.groupId, this._deleteExpenseErrorCallback);
+    this.props.deleteExpense(expenseId, this._deleteExpenseErrorCallback);
   }
 
   _expenseDeleteActionEnabled = userId => {
-    return (getUserId() === userId.toString() || this.props.groups[this.groupId].isAdmin);
+    return (getUserId() === userId.toString() || this.props.group.isAdmin);
   }
 
   _deleteExpenseErrorCallback = () => {
@@ -113,7 +97,7 @@ class ShowGroup extends Component {
       return <div>{state.error}</div>;
     }
 
-    let group = props.groups[this.groupId];
+    let group = props.group;
     let expenses = group.expenses;
 
     let expenseConfigs = [
@@ -176,7 +160,15 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             validate={validateName}
-            value="helloooo"
+          />
+          <Field
+            name="description"
+            fieldType="textarea"
+            component={renderField}
+            label="Name"
+            rows="2"
+            validate={validateName}
+            onBlur={this._updateGroupDesc}
           />
         </form>
         <p>Name : {group.name}</p>
@@ -195,22 +187,29 @@ class ShowGroup extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  let group = state.groups ? state.groups[ownProps.match.params.id] : undefined;
   return {
-    groups: state.groups
+    group: group,
+    initialValues: {
+      name: group ? group.name : '',
+      description: group ? group.description : ''
+    }
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        fetchGroup: (groupId, successCallback, errorCallback) => dispatch(fetchGroup(groupId, successCallback, errorCallback)),
-        updateGroup: (groupId, successCallback, errorCallback) => dispatch(updateGroup(groupId, successCallback, errorCallback)),
-        deleteExpense: (expenseId, groupId, errorCallback) => dispatch(deleteExpense(expenseId, groupId, errorCallback))
-    };
+const mapDispatchToProps = (dispatch, ownProps) => {
+  let groupId = ownProps.match.params.id;
+  return {
+      fetchGroup: (successCallback, errorCallback) => dispatch(fetchGroup(groupId, successCallback, errorCallback)),
+      updateGroup: (group, successCallback, errorCallback) => dispatch(updateGroup(group, successCallback, errorCallback)),
+      deleteExpense: (expenseId, errorCallback) => dispatch(deleteExpense(expenseId, groupId, errorCallback))
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  // validate,
+  validate,
+  enableReinitialize: true,
   //a unique id for this form
   form:'ShowGroup'
 })(ShowGroup));
