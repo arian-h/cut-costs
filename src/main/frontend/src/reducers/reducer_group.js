@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { FETCH_GROUPS, CREATE_GROUP, DELETE_GROUP, FETCH_GROUP, CREATE_EXPENSE, DELETE_EXPENSE_FROM_GROUP } from '../actions/creators';
+import { FETCH_GROUPS, CREATE_GROUP, DELETE_GROUP, FETCH_GROUP, CREATE_EXPENSE, DELETE_EXPENSE_FROM_GROUP, UPDATE_GROUP } from '../actions/creators';
 
 export default function(state={}, action) {
   switch(action.type) {
@@ -11,6 +11,8 @@ export default function(state={}, action) {
       return { ...state, [action.payload.id]: action.payload};
     case DELETE_GROUP:
       return _.omit(state, action.payload.data);
+    case UPDATE_GROUP:
+      return {...state, [action.group.id]: action.group};
     case CREATE_EXPENSE:
       return { ...state, [action.groupId]: { ...state[action.groupId], expenses: [...state[action.groupId].expenses.slice(0), action.payload]}};
     case DELETE_EXPENSE_FROM_GROUP:

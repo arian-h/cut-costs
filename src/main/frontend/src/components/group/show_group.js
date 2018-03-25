@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
@@ -11,6 +11,16 @@ import { getUserId } from '../../helpers/user_utils';
 import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
+
+const validators = [{
+    field: 'name',
+    validator: validateName
+  },
+  {
+    field: 'description',
+    validator: validateDescription
+  }
+];
 
 class ShowGroup extends Component {
   constructor(props) {
@@ -33,13 +43,16 @@ class ShowGroup extends Component {
   }
 
   _updateGroup = () => {
-    const { updateGroup } = this.props;
-    updateGroup({
-      ...this.props.values
-    }, () => {
-
-    });
-    //update the form
+    const { updateGroup, valid, name, description, group } = this.props;
+    if (valid && group.isAdmin) {
+      updateGroup({
+        name,
+        description
+      }, () => {
+          //TODO errorCallback
+        }
+      );
+    }
   }
 
   _showMembers = () => {
@@ -150,7 +163,6 @@ class ShowGroup extends Component {
             type="text"
             component={renderField}
             label="Name"
-            validate={validateName}
             onBlur={this._updateGroup}
           />
           <Field
@@ -159,7 +171,6 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             rows="2"
-            validate={validateDescription}
             onBlur={this._updateGroup}
           />
         </form>
@@ -179,12 +190,15 @@ class ShowGroup extends Component {
 
 function mapStateToProps(state, ownProps) {
   let group = state.groups ? state.groups[ownProps.match.params.id] : undefined;
+  let selector = formValueSelector('ShowGroup');
   return {
     group: group,
     initialValues: {
       name: group ? group.name : '',
       description: group ? group.description : ''
-    }
+    },
+    name: selector(state, 'name'),
+    description: selector(state, 'description')
   };
 }
 
@@ -192,7 +206,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   let groupId = ownProps.match.params.id;
   return {
       fetchGroup: (successCallback, errorCallback) => dispatch(fetchGroup(groupId, successCallback, errorCallback)),
-      updateGroup: (group, successCallback, errorCallback) => dispatch(updateGroup(group, successCallback, errorCallback)),
+      updateGroup: (values, errorCallback) => dispatch(updateGroup(values, groupId, errorCallback)),
       deleteExpense: (expenseId, errorCallback) => dispatch(deleteExpense(expenseId, groupId, errorCallback))
   };
 };

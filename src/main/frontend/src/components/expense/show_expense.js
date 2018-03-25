@@ -46,18 +46,14 @@ class ShowExpense extends Component {
 
   _updateExpense = () => {
     const { updateExpense, valid, title, amount, description, expense } = this.props;
-    let r = expense.isOwner;
-    debugger;
     if (valid && expense.isOwner) {
       updateExpense({
         title,
         amount,
         description
-      }, this.props.expenseId,
-        () => {
-            //TODO errorCallback
-        }
-      );
+      }, () => {
+        //TODO errorCallback
+      });
     }
   }
 
@@ -177,7 +173,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
   validate,
-  //a unique id for this form
   validators,
   enableReinitialize: true,
   form:'ShowExpense'

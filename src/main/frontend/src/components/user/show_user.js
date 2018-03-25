@@ -1,42 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
-//TODO FIX THE FORM!!!
 import { updateUser, fetchUser } from '../../actions';
-import { validateName, validateDescription } from '../../helpers/group_utils';
+import { validateName, validateDescription } from '../../helpers/group_utils'; //TODO fix this
 import { renderField, validate } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 
-// const FIELDS = {
-//   name: {
-//     validate: validateName,
-//     fieldType: 'input',
-//     props: {
-//       className: 'name-field',
-//       type: 'text'
-//     }
-//   },
-//   description: {
-//     validate: validateDescription,
-//     fieldType: 'textarea',
-//     props: {
-//       className: 'desc-field',
-//       rows: 2,
-//       placeholder: 'Add Description To Your Group',
-//       onBlur: function() {
-//         this._updateGroupNameDesc();
-//       }
-//     }
-//   }
-// }
+const validators = [{
+    field: 'name',
+    validator: validateName
+  },
+  {
+    field: 'description',
+    validator: validateDescription
+  }
+];
+
 class ShowUser extends Component {
   constructor(props) {
     super(props);
-    this.userId = this.props.match.params.id;
-    if (this.userId === undefined) {
-      this.userId = getUserId();
-    }
+    this.userId = this.props.match.params.id || getUserId();
     this.state = {
       loading: true,
       error: null
@@ -45,20 +29,21 @@ class ShowUser extends Component {
 
   componentDidMount() {
     this.props.fetchUser(
-      this.userId,
       () => this.setState({loading: false}),
       error => this.setState({loading:false, error: error})
     );
   }
 
   _updateUser = () => {
-    const { updateUser } = this.props;
-    updateUser({
-      ...this.props.values
-    }, () => {
-      // TODO error case in updating the user info, what should be done ?
-    });
-    //TODO update the form
+    const { updateUser, valid, name, description, user } = this.props;
+    if (valid && getUserId() === (user.id + '') ) { //TODO update id's on the backend to be String 
+      updateUser({
+        name,
+        description
+      }, () => {
+        //TODO errorCallback
+      });
+    }
   }
 
   render() {
@@ -71,43 +56,59 @@ class ShowUser extends Component {
       return <div>{state.error}</div>;
     }
 
-    let user = props.users[this.userId];
+    let user = props.user;
 
     return (
       <div className="show-user-info">
-        {/* <form>
+        <form>
           <Field
             name="name"
             fieldType="input"
             type="text"
             component={renderField}
             label="Name"
-            validate={validateName}
-            value="helloooo"
+            onBlur={this._updateUser}
           />
-        </form> */}
-        <p>Name : {user.name}</p>
-        <p>Description : {user.description}</p>
+          <Field
+            name="description"
+            fieldType="textarea"
+            component={renderField}
+            label="Description"
+            rows="2"
+            onBlur={this._updateUser}
+          />
+        </form>
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  let userId = ownProps.match.params.id || getUserId();
+  let user = state.users ? state.users[userId] : undefined;
+  let selector = formValueSelector('ShowUser');
   return {
-    users: state.users
+    user: user,
+    initialValues: {
+      name: user ? user.name : '',
+      description: user ? user.description : ''
+    },
+    name: selector(state, 'name'),
+    description: selector(state, 'description')
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        updateUser: errorCallback => dispatch(updateUser(errorCallback)),
-        fetchUser: (userId, successCallback, errorCallback) => dispatch(fetchUser(userId, successCallback, errorCallback))
-    };
+const mapDispatchToProps = (dispatch, ownProps) => {
+  let userId = ownProps.match.params.id || getUserId();
+  return {
+      updateUser: errorCallback => dispatch(updateUser(errorCallback)),
+      fetchUser: (successCallback, errorCallback) => dispatch(fetchUser(userId, successCallback, errorCallback))
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  // validate,
-  //a unique id for this form
+  validate,
+  validators,
+  enableReinitialize: true,
   form:'ShowUser'
 })(ShowUser));

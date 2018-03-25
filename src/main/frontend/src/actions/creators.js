@@ -15,6 +15,7 @@ export const FETCH_INVITATIONS = 'fetch_invitations';
 export const ACCEPT_INVITATION = 'accept_invitation';
 export const FETCH_USER = 'fetch_user';
 export const UPDATE_EXPENSE = 'update_expense';
+export const UPDATE_GROUP = 'update_group';
 
 export function groupDeleted(response) {
   return {
@@ -137,5 +138,19 @@ export function expenseUpdated(expense) {
   return {
     type: UPDATE_EXPENSE,
     expense
+  }
+}
+
+export function groupUpdated(group) {
+  return {
+    type: UPDATE_GROUP,
+    group
+  }
+}
+
+export function userUpdated(user) {
+  return {
+    type: UPDATE_USER,
+    user
   }
 }

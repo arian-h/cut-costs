@@ -12,7 +12,7 @@ export default function(state={}, action) {
     case REMOVE_SHARER:
       return state;
     case UPDATE_EXPENSE:
-    return {...state, [action.expense.id]: action.expense};
+      return {...state, [action.expense.id]: action.expense};
     default:
       return state;
   }

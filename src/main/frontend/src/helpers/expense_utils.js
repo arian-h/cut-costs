@@ -1,4 +1,5 @@
 import history from '../history';
+import { isNumeric } from './common_utils';
 
 const AT_LEAST_ONE_SMALL_LETTER_PATTERN = /^(?=.*[a-z]).+$/;
 const AT_LEAST_ONE_CAPTIAL_LETTER_PATTERN = /^(?=.*[A-Z]).+$/;
@@ -27,7 +28,3 @@ export const validateDescription = description => {
     return "Expense description must be shorter than 200 characters";
   }
 };
-
-const inNumeric = value => {
-  return !isNaN(parseFloat(value)) && isFinite(value);
-}
