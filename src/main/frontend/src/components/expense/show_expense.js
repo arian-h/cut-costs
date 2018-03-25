@@ -1,38 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
-//TODO FIX THE FORM!!!
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
-import { fetchExpense} from '../../actions';
-// import { validateName, validateDescription } from '../../helpers/group_utils';
-// import { renderField, validate } from '../../helpers/form_utils';
+import { fetchExpense, updateExpense } from '../../actions';
+import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
+import { renderField, validate } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import NewSharer from '../expense/new_sharer';
 
-// const FIELDS = {
-//   name: {
-//     validate: validateName,
-//     fieldType: 'input',
-//     props: {
-//       className: 'name-field',
-//       type: 'text'
-//     }
-//   },
-//   description: {
-//     validate: validateDescription,
-//     fieldType: 'textarea',
-//     props: {
-//       className: 'desc-field',
-//       rows: 2,
-//       placeholder: 'Add Description To Your Group',
-//       onBlur: function() {
-//         this._updateGroupNameDesc();
-//       }
-//     }
-//   }
-// }
+const validators = [{
+    field: 'title',
+    validator: validateName
+  },
+  {
+    field: 'description',
+    validator: validateDescription
+  },
+  {
+    field: 'amount',
+    validator: validateAmount
+  }
+];
+
 class ShowExpense extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +36,7 @@ class ShowExpense extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchExpense(this.expenseId,
+    this.props.fetchExpense(
       () => {
         this.setState({ loading: false });
       },
@@ -53,27 +44,33 @@ class ShowExpense extends Component {
     );
   }
 
-  // _updateGroupNameDesc = () => { // only updates group name or description on the event of onBlur
-  //   const { updateGroup } = this.props;
-  //   updateGroup({
-  //     id: this.groupId,
-  //     ...this.props.values
-  //   }, () => {
-  //
-  //   });
-  //   //update the form
-  // }
+  _updateExpense = () => {
+    const { updateExpense, valid, title, amount, description, expense } = this.props;
+    let r = expense.isOwner;
+    debugger;
+    if (valid && expense.isOwner) {
+      updateExpense({
+        title,
+        amount,
+        description
+      }, this.props.expenseId,
+        () => {
+            //TODO errorCallback
+        }
+      );
+    }
+  }
 
   _addSharer = () => {
     this.setState({ showNewSharerModal: true });
   }
 
   _onRemoveSharer = sharerId => {
-    this.props.removeSharer(sharerId, this.expenseId, this._removeSharerErrorCallback);
+    this.props.removeSharer(sharerId, this._removeSharerErrorCallback);
   }
 
   _sharerRemoveActionEnabled = sharerId => {
-    return this.props.expenses[this.expenseId].isOwner;
+    return this.props.expense.isOwner;
   }
 
   _removeSharerErrorCallback = () => {
@@ -93,8 +90,7 @@ class ShowExpense extends Component {
     if (state.error) {
       return <div>{state.error}</div>;
     }
-
-    let expense = props.expenses[this.expenseId];
+    let expense = props.expense;
     let sharers = expense.sharers;
 
     let sharersTableConfig = [
@@ -109,7 +105,6 @@ class ShowExpense extends Component {
       action: this._onRemoveSharer.bind(this),
       label: 'Remove'
     }];
-
     return (
       <div className="show-expense">
         {
@@ -122,20 +117,32 @@ class ShowExpense extends Component {
             />
             : <noscript/>
         }
-        {/* <form>
+        <form>
           <Field
-            name="name"
+            name="title"
             fieldType="input"
             type="text"
             component={renderField}
-            label="Name"
-            validate={validateName}
-            value="helloooo"
+            label="Title"
+            onBlur={this._updateExpense}
           />
-        </form> */}
-        <p>Name : {expense.title}</p>
-        <p>Description : {expense.description}</p>
-        <p>Admin Name: {expense.owner.name}</p>
+          <Field
+            name="description"
+            fieldType="textarea"
+            component={renderField}
+            label="Description"
+            rows="2"
+            onBlur={this._updateExpense}
+          />
+          <Field
+            name="amount"
+            fieldType="input"
+            component={renderField}
+            label="Amount"
+            onBlur={this._updateExpense}
+          />
+        </form>
+        <p>Owner Name: {expense.owner.name}</p>
         <DataTable className="sharer-table" data={_.values(sharers)} configs={sharersTableConfig} actions={sharersTableAction}/>
         <button onClick={this._addSharer}>Add Sharer</button>
       </div>
@@ -143,21 +150,35 @@ class ShowExpense extends Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  let expense = state.expenses ? state.expenses[ownProps.match.params.id] : undefined;
+  let selector = formValueSelector('ShowExpense');
   return {
-    expenses: state.expenses
+    expense: expense,
+    initialValues: {
+      title: expense ? expense.title : '',
+      description: expense ? expense.description : '',
+      amount: expense ? expense.amount : 0
+    },
+    title: selector(state, 'title'),
+    description: selector(state, 'description'),
+    amount: selector(state, 'amount')
   };
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchExpense: (expenseId, successCallback, errorCallback) => dispatch(fetchExpense(expenseId, successCallback, errorCallback)),
-        removeSharer: (sharerId, expenseId, errorCallback) => dispatch(removeSharer(sharerId, expenseId, errorCallback))
-    };
+const mapDispatchToProps = (dispatch, ownProps) => {
+  let expenseId = ownProps.match.params.id;
+  return {
+      fetchExpense: (successCallback, errorCallback) => dispatch(fetchExpense(expenseId, successCallback, errorCallback)),
+      removeSharer: (sharerId, errorCallback) => dispatch(removeSharer(sharerId, expenseId, errorCallback)),
+      updateExpense: (values, errorCallback) => dispatch(updateExpense(values, expenseId, errorCallback))
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  // validate,
+  validate,
   //a unique id for this form
+  validators,
+  enableReinitialize: true,
   form:'ShowExpense'
 })(ShowExpense));

@@ -84,7 +84,7 @@ public class ExpenseController {
 		}
 		Expense expense = expenseService.update(expenseId, expenseDto.getTitle(), expenseDto.getAmount(), expenseDto.getDescription(), expenseDto.getSharers(), expenseDto.getImage(), principal.getName());
 		User loggedInUser = userService.loadByUsername(principal.getName());
-		return expenseDtoConverter.convertToDto(expense, loggedInUser);
+		return expenseDtoConverter.convertToExtendedDto(expense, loggedInUser);
 	}
 
 	/*

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { FETCH_EXPENSES, DELETE_EXPENSE, FETCH_EXPENSE, REMOVE_SHARER } from '../actions/creators';
+import { FETCH_EXPENSES, DELETE_EXPENSE, FETCH_EXPENSE, REMOVE_SHARER, UPDATE_EXPENSE } from '../actions/creators';
 
 export default function(state={}, action) {
   switch(action.type) {
@@ -10,8 +10,9 @@ export default function(state={}, action) {
     case FETCH_EXPENSE:
       return {...state, [action.expense.id]: action.expense};
     case REMOVE_SHARER:
-      debugger;
       return state;
+    case UPDATE_EXPENSE:
+    return {...state, [action.expense.id]: action.expense};
     default:
       return state;
   }

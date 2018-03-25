@@ -1,6 +1,6 @@
 import axios from 'axios';
 import history from '../history';
-import { userFetched, invitationAccepted, invitationRejected, groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved, invitationsFetched } from './creators';
+import { userFetched, invitationAccepted, invitationRejected, groupDeleted, groupsFetched, groupCreated, groupFetched, membersFetched, memberRemoved, expenseUpdated, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved, invitationsFetched } from './creators';
 import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
@@ -272,6 +272,30 @@ export function createExpense(values, groupId, successCallback, errorCallback) {
         }
       });
     };
+}
+
+export function updateExpense(values, expenseId, errorCallback) {
+  return dispatch => {
+    axios.put(`${EXPENSE_ENDPOINT}${expenseId}`,
+      {
+        ...values
+      }, getAuthorizationHeader())
+      .then(({data}) => {
+        dispatch(expenseUpdated(data))
+      })
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      });
+  };
 }
 
 export function fetchExpense(expenseId, successCallback, errorCallback) {

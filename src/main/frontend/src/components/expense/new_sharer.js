@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 export default class NewSharer extends Component {
+  //TODO: work on this component
   render() {
     return (
       <div>

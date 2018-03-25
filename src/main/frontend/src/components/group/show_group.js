@@ -13,7 +13,6 @@ import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
 
 class ShowGroup extends Component {
-  //TODO: work on the list_member component
   constructor(props) {
     super(props);
     this.groupId = this.props.match.params.id;
@@ -33,17 +32,9 @@ class ShowGroup extends Component {
     );
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   let group = props.groups[this.groupId];
-  //   if (state.loading && !state.error) {
-  //
-  //   }
-  // }
-
-  _updateGroupDesc = () => {
+  _updateGroup = () => {
     const { updateGroup } = this.props;
     updateGroup({
-      id: this.groupId,
       ...this.props.values
     }, () => {
 
@@ -160,6 +151,7 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             validate={validateName}
+            onBlur={this._updateGroup}
           />
           <Field
             name="description"
@@ -167,13 +159,11 @@ class ShowGroup extends Component {
             component={renderField}
             label="Name"
             rows="2"
-            validate={validateName}
-            onBlur={this._updateGroupDesc}
+            validate={validateDescription}
+            onBlur={this._updateGroup}
           />
         </form>
-        <p>Name : {group.name}</p>
-        <p>Description : {group.description}</p>
-        <p>Admin Name: {group.admin.name}</p>
+        <p>Group Admin: {group.admin.name}</p>
         {
           expenses.length > 0 ?
           <DataTable className="member-table" data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>

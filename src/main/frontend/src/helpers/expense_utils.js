@@ -1,4 +1,3 @@
-import validator from 'validator';
 import history from '../history';
 
 const AT_LEAST_ONE_SMALL_LETTER_PATTERN = /^(?=.*[a-z]).+$/;
@@ -10,8 +9,8 @@ const AT_MOST_ONE_DOT = /^([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)$/;
 
 export const validateAmount = amount => {
   amount = amount || '';
-  if (!validator.isNumeric(amount)) {
-    return "Amount must be a numeric value";
+  if ( !inNumeric(amount) || amount <= 0) {
+    return "Expense amount must be a positive number";
   }
 };
 
@@ -28,3 +27,7 @@ export const validateDescription = description => {
     return "Expense description must be shorter than 200 characters";
   }
 };
+
+const inNumeric = value => {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
