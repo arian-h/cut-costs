@@ -178,7 +178,7 @@ public class ExpenseService {
 		return sharerId;
 	}
 
-	public long addSharer(long expenseId, long sharerId, String username) {
+	public User addSharer(long expenseId, long sharerId, String username) {
 		Expense expense = this.loadById(expenseId);
 		User user = userService.loadByUsername(username);
 		validateOwnerAccessToExpense(expense, user);
@@ -191,7 +191,7 @@ public class ExpenseService {
 		expense.addSharer(newSharer);
 		expenseRepository.save(expense);
 		logger.debug("User with id " + sharerId + " was added to the expense with id" + expenseId);
-		return sharerId;
+		return newSharer;
 	}
 
 	public void validateOwnerAccessToExpense(Expense expense, User user) {

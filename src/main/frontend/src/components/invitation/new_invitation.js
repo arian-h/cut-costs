@@ -16,7 +16,7 @@ class NewInvitation extends Component {
   }
 
   _onInviteUser() {
-    this.props.inviteUser(getUserId(), this.state.inputValue, this.props.groupId, () => this.props.onClose(), error => this.setState({error: error}));
+    this.props.inviteUser(this.state.inputValue, () => this.props.onClose(), error => this.setState({error: error}));
   }
 
   _updateInputValue(evt) {
@@ -35,10 +35,10 @@ class NewInvitation extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        inviteUser: (inviterId, inviteeId, groupId, successCallback, errorCallback) => dispatch(inviteUser(inviterId, inviteeId, groupId, successCallback, errorCallback))
-    };
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+      inviteUser: (inviteeId, successCallback, errorCallback) => dispatch(inviteUser(getUserId(), inviteeId, ownProps.groupId, successCallback, errorCallback))
+  };
 };
 
 export default connect(null, mapDispatchToProps)(NewInvitation);

@@ -10,7 +10,7 @@ const AT_MOST_ONE_DOT = /^([a-zA-Z0-9]+(\.[a-zA-Z0-9]+)?)$/;
 
 export const validateAmount = amount => {
   amount = amount || '';
-  if ( !inNumeric(amount) || amount <= 0) {
+  if ( !isNumeric(amount) || amount <= 0) {
     return "Expense amount must be a positive number";
   }
 };

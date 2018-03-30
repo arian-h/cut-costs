@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.cut_costs.dto.expense.get.ExpenseGetDtoConverter;
 import com.boot.cut_costs.dto.expense.get.ExpenseExtendedGetDto;
+import com.boot.cut_costs.dto.expense.get.ExpenseGetDtoConverter;
 import com.boot.cut_costs.dto.expense.get.ExpenseSnippetGetDto;
 import com.boot.cut_costs.dto.expense.post.ExpensePostDto;
+import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
+import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 import com.boot.cut_costs.exception.BadRequestException;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Expense;
@@ -31,7 +33,10 @@ public class ExpenseController {
 	
 	@Autowired
 	private ExpenseGetDtoConverter expenseDtoConverter;
-	
+
+	@Autowired
+	private UserGetDtoConverter userDtoConverter;
+
 	@Autowired
 	private ExpenseService expenseService;
 
@@ -128,8 +133,8 @@ public class ExpenseController {
 	/*
 	 * Remove a sharer from an expense
 	 */
-	@RequestMapping(path = "/{expenseId}/sharer/{sharerId}", method = RequestMethod.PATCH)
-	public long addSharer(@PathVariable long expenseId, @PathVariable long newSharerId, Principal principal) throws IOException {
-		return expenseService.addSharer(expenseId, newSharerId, principal.getName());
+	@RequestMapping(path = "/{expenseId}/sharer/{newSharerId}", method = RequestMethod.PATCH)
+	public UserSnippetGetDto addSharer(@PathVariable long expenseId, @PathVariable long newSharerId, Principal principal) throws IOException {
+		return userDtoConverter.convertToDto(expenseService.addSharer(expenseId, newSharerId, principal.getName()));
 	}
 }

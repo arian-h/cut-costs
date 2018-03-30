@@ -1,6 +1,6 @@
 import axios from 'axios';
 import history from '../history';
-import { userFetched, invitationAccepted, invitationRejected, userUpdated, groupDeleted, groupsFetched, groupCreated, groupFetched, groupUpdated, membersFetched, memberRemoved, expenseUpdated, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerRemoved, invitationsFetched } from './creators';
+import { userFetched, invitationAccepted, invitationRejected, userUpdated, groupDeleted, groupsFetched, groupCreated, groupFetched, groupUpdated, membersFetched, memberRemoved, expenseUpdated, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerAdded, sharerRemoved, invitationsFetched } from './creators';
 import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
@@ -117,7 +117,7 @@ export function fetchUser(userId, successCallback, errorCallback) {
 
 export function inviteUser(inviterId, inviteeId, groupId, successCallback, errorCallback) {
   return () => {
-    axios.post(`${INVITATION_ENDPOINT}`, {
+    axios.post(INVITATION_ENDPOINT, {
       inviteeId: inviteeId,
       groupId: groupId,
       inviterId: inviterId
@@ -275,6 +275,27 @@ export function createExpense(values, groupId, successCallback, errorCallback) {
     };
 }
 
+export function removeSharer(sharerId, expenseId, errorCallback) {
+  return dispatch => {
+    axios.delete(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, getAuthorizationHeader())
+      .then(() => {
+        dispatch(sharerRemoved(sharerId, expenseId));
+      })
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
+}
+
 export function updateExpense(values, expenseId, errorCallback) {
   return dispatch => {
     axios.put(`${EXPENSE_ENDPOINT}${expenseId}`,
@@ -306,27 +327,6 @@ export function fetchExpense(expenseId, successCallback, errorCallback) {
         dispatch(expenseFetched(data))
       })
       .then(() => successCallback())
-      .catch(({response}) => {
-        if (!response) {
-          //Network error
-          //show a sticky message with offline message
-        } else {
-          if (response.status ===  401) { // Unauthorized
-            logout();
-          } else {
-            errorCallback(response.data.message);
-          }
-        }
-      });
-    };
-}
-
-export function removeSharer(sharerId, expenseId, errorCallback) {
-  return dispatch => {
-    axios.get(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, getAuthorizationHeader())
-      .then(({data}) => {
-        dispatch(sharerRemoved(data))
-      })
       .catch(({response}) => {
         if (!response) {
           //Network error
@@ -385,6 +385,29 @@ export function deleteExpense(expenseId, groupId, errorCallback) {
         }
       });
     };
+}
+
+export function addSharer(sharerId, expenseId, successCallback, errorCallback) {
+  return dispatch => {
+    axios.patch(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, {},
+        getAuthorizationHeader())
+      .then(({data}) => {
+        dispatch(sharerAdded(expenseId, data));
+      })
+      .then(() => successCallback())
+      .catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          } else {
+            errorCallback(response.data.message);
+          }
+        }
+      })
+  };
 }
 
 export function fetchGroups(successCallback, errorCallback) {

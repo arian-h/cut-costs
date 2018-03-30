@@ -16,6 +16,7 @@ export const ACCEPT_INVITATION = 'accept_invitation';
 export const FETCH_USER = 'fetch_user';
 export const UPDATE_EXPENSE = 'update_expense';
 export const UPDATE_GROUP = 'update_group';
+export const ADD_SHARER = 'add_sharer';
 
 export function groupDeleted(response) {
   return {
@@ -152,5 +153,13 @@ export function userUpdated(user) {
   return {
     type: UPDATE_USER,
     user
+  }
+}
+
+export function sharerAdded(expenseId, sharer) {
+  return {
+    type: ADD_SHARER,
+    sharer,
+    expenseId
   }
 }

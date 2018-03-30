@@ -4,7 +4,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
-import { fetchExpense, updateExpense } from '../../actions';
+import { fetchExpense, updateExpense, removeSharer } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
 import { renderField, validate } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
@@ -65,7 +65,7 @@ class ShowExpense extends Component {
     this.props.removeSharer(sharerId, this._removeSharerErrorCallback);
   }
 
-  _sharerRemoveActionEnabled = sharerId => {
+  _sharerRemoveActionEnabled = () => {
     return this.props.expense.isOwner;
   }
 

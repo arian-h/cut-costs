@@ -36,7 +36,7 @@ public class ExpenseGetDtoConverter {
         		target.setGroupId(source.getGroup().getId());
         		target.setOwnerName(source.getOwner().getName());
         		target.setGroupName(source.getGroup().getName());
-        		target.setIsOwner(source.getOwner().getId() == loggedInUser.getId());
+        		target.setIsOwner(source.getOwner().equals(loggedInUser));
         		return target;
         	};
         	modelMapper.createTypeMap(Expense.class, ExpenseSnippetGetDto.class).setConverter(converter);    		
@@ -59,6 +59,7 @@ public class ExpenseGetDtoConverter {
     			target.setSharers(source.getSharers().stream()
     					.map(user -> userDtoConverter.convertToDto(user))
     					.collect(Collectors.toList()));
+        		target.setIsOwner(source.getOwner().equals(loggedInUser));
         		return target;
         	};
         	modelMapper.createTypeMap(Expense.class, ExpenseExtendedGetDto.class).setConverter(converter);
