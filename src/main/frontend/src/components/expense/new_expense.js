@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { createExpense } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
 import { renderField, validate } from '../../helpers/form_utils';
+import ImageUpload from '../platform/imageUpload';
 
 const validators = [{
     field: 'title',
@@ -42,6 +43,7 @@ class NewExpense extends Component {
           <Field name="title" label="Name" type="text" fieldType="input" component={renderField.bind(this)}/>
           <Field name="description" label="Description" type="text" fieldType="input" component={renderField.bind(this)}/>
           <Field name="amount" label="Amount" type="text" fieldType="input" component={renderField.bind(this)}/>
+          <ImageUpload noPreviewClassName="" previewClassName="expensePreviewClassname"/>
           <button type="submit" className="btn btn-primary">Create</button>
           <button type="button" className="btn btn-primary" onClick={this.props.onClose}>Cancel</button>
         </form>

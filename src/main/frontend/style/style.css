@@ -54,3 +54,8 @@
 	padding: none;
 	width: 40%;
 }
+
+.expensePreviewClassname {
+	width: 500px;
+	height: 500px;
+}
