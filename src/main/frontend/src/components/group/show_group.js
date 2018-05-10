@@ -6,7 +6,7 @@ import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
 import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
-import { renderField, validate } from '../../helpers/form_utils';
+import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
@@ -159,16 +159,14 @@ class ShowGroup extends Component {
         <form>
           <Field
             name="name"
-            fieldType="input"
             type="text"
-            component={renderField}
+            component={renderInputField}
             label="Name"
             onBlur={this._updateGroup}
           />
           <Field
             name="description"
-            fieldType="textarea"
-            component={renderField}
+            component={renderTextAreaField}
             label="Name"
             rows="2"
             onBlur={this._updateGroup}

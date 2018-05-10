@@ -4,7 +4,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import { updateUser, fetchUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils'; //TODO fix this
-import { renderField, validate } from '../../helpers/form_utils';
+import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 
 const validators = [{
@@ -36,7 +36,7 @@ class ShowUser extends Component {
 
   _updateUser = () => {
     const { updateUser, valid, name, description, user } = this.props;
-    if (valid && getUserId() === (user.id + '') ) { //TODO update id's on the backend to be String 
+    if (valid && getUserId() === (user.id + '') ) { //TODO update id's on the backend to be String
       updateUser({
         name,
         description
@@ -63,16 +63,14 @@ class ShowUser extends Component {
         <form>
           <Field
             name="name"
-            fieldType="input"
             type="text"
-            component={renderField}
+            component={renderInputField}
             label="Name"
             onBlur={this._updateUser}
           />
           <Field
             name="description"
-            fieldType="textarea"
-            component={renderField}
+            component={renderTextAreaField}
             label="Description"
             rows="2"
             onBlur={this._updateUser}

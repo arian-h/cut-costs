@@ -16,7 +16,7 @@ function getAuthorizationHeader() {
   return {
     headers: {
       'Authorization': localStorage.getItem('jwt_token'),
-      'Content-Type': 'application/json'
+      'Content-Type': undefined
     }
   };
 }
@@ -248,14 +248,11 @@ export function removeMember(groupId, memberId, errorCallback) {
   };
 }
 
-export function createExpense(values, groupId, successCallback, errorCallback) {
+export function createExpense(formData, groupId, successCallback, errorCallback) {
   return dispatch => {
     axios.post(`${EXPENSE_ENDPOINT}${groupId}`,
-      {
-        title: values.title,
-        description: values.description,
-        amount: values.amount
-      }, getAuthorizationHeader())
+      formData
+    , getAuthorizationHeader())
       .then(({data}) => {
         successCallback();
         dispatch(expenseCreated(data, groupId))

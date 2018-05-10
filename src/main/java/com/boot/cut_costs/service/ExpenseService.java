@@ -1,5 +1,6 @@
 package com.boot.cut_costs.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.cut_costs.exception.BadRequestException;
 import com.boot.cut_costs.model.Expense;
@@ -21,6 +23,8 @@ import com.boot.cut_costs.repository.ExpenseRepository;
 import com.boot.cut_costs.repository.GroupRepository;
 import com.boot.cut_costs.repository.UserRepository;
 import com.boot.cut_costs.utils.CommonUtils;
+import com.boot.cut_costs.utils.AWS.FILE_TYPE;
+import com.boot.cut_costs.utils.AWS.S3Services;
 
 @Service
 @Transactional
@@ -40,6 +44,9 @@ public class ExpenseService {
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private S3Services s3Services;
 
 	private static Logger logger = LoggerFactory.getLogger(ExpenseService.class);
 
@@ -84,7 +91,7 @@ public class ExpenseService {
 	/*
 	 * Owner of the expense and admin of the group can change it
 	 */
-	public Expense update(long expenseId, String title, long amount, String description, List<Long> sharersIds, String image, String username) throws BadRequestException, IOException {
+	public Expense update(long expenseId, String title, long amount, String description, List<Long> sharersIds, MultipartFile image, String username) throws BadRequestException, IOException {
 		Expense expense = loadById(expenseId);
 		User user = userService.loadByUsername(username);
 		if (expense.getOwner().getId() != user.getId() && !expense.getGroup().isAdmin(user)) {
@@ -105,8 +112,10 @@ public class ExpenseService {
 		expense.setDescription(description);
 		expense.setTitle(title);
 		expense.setShareres(sharers);
-		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		File convFile = CommonUtils.convertToFile(FILE_TYPE.EXPENSE_PHOTO, image);
+		String imageId = s3Services.uploadFile(FILE_TYPE.EXPENSE_PHOTO, convFile);
 		if (imageId != null) {
+			s3Services.deleteFile(FILE_TYPE.EXPENSE_PHOTO, expense.getImageId());
 			expense.setImageId(imageId);
 		}
 		expenseRepository.save(expense);
@@ -114,7 +123,7 @@ public class ExpenseService {
 		return expense;
 	}
 
-	public Expense create(String title, long amount, String description, List<Long> sharersIds, String image, long groupId, String username) throws IOException {
+	public Expense create(String title, long amount, String description, List<Long> sharersIds, MultipartFile image, long groupId, String username) throws IOException {
 		Group group = groupService.loadById(groupId);
 		User owner = userService.loadByUsername(username);
 		groupService.validateMemberAccessToGroup(group, owner);
@@ -138,9 +147,10 @@ public class ExpenseService {
 		expense.setGroup(group);
 		expense.setOwner(owner);
 		expense.setShareres(sharers);
-		String imageId = CommonUtils.decodeBase64AndSaveImage(image);
+		File convFile = CommonUtils.convertToFile(FILE_TYPE.EXPENSE_PHOTO, image);
+		String imageId = s3Services.uploadFile(FILE_TYPE.EXPENSE_PHOTO, convFile);
 		if (imageId != null) {
-			expense.setImageId(imageId);			
+			expense.setImageId(imageId);
 		}
 		group.addExpense(expense);
 		owner.addOwnedExpense(expense);

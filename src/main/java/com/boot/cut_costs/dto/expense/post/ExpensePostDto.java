@@ -3,6 +3,8 @@ package com.boot.cut_costs.dto.expense.post;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.boot.cut_costs.dto.expense.ExpenseBaseDto;
 import com.boot.cut_costs.exception.BadRequestException;
 
@@ -10,18 +12,17 @@ public class ExpensePostDto extends ExpenseBaseDto {
 
 	private static final long serialVersionUID = -9041216867439951403L;
 
-	/*Base64 image data*/
-	private String image;
+	private MultipartFile image;
 
 	private String description;
 
 	private List<Long> sharers;
 
-	public void setImage(String image) {
+	public void setImage(MultipartFile image) {
 		this.image = image;
 	}
 
-	public String getImage() {
+	public MultipartFile getImage() {
 		return image;
 	}
 	

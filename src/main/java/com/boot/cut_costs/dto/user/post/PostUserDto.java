@@ -1,19 +1,21 @@
 package com.boot.cut_costs.dto.user.post;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.boot.cut_costs.dto.user.UserBaseDto;
 
 public class PostUserDto extends UserBaseDto {
 
 	private static final long serialVersionUID = 1L;
 	/* Base64 image data*/
-	private String image;
+	private MultipartFile image;
 	private String description;
 
-	public void setImage(String image) {
+	public void setImage(MultipartFile image) {
 		this.image = image;
 	}
 
-	public String getImage() {
+	public MultipartFile getImage() {
 		return image;
 	}
 

@@ -28,3 +28,18 @@ export const validateDescription = description => {
     return "Expense description must be shorter than 200 characters";
   }
 };
+
+export const validateImage = imageList => {
+  if (imageList) {
+    if (imageList.length > 1) {
+      return "You can upload one image at a time";
+    } else if (imageList.length === 1) {
+      let selectedImage = imageList[0];
+      if (!selectedImage.type.match('image.*')) {
+        return "Only image files are allowed";
+      } else if (selectedImage.size > 1048576) {
+        return "Maximum file size exceeded";
+      }
+    }
+  }
+};

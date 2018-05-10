@@ -2,23 +2,20 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logoutUser } from '../../actions';
+import { Menu, Icon } from 'semantic-ui-react'
 
 class AppNavBar extends Component {
 
-  onLogoutClick() {
+  handleLogout() {
     this.props.logoutUser();
   }
 
   render() {
     return (
-      <div>
-        <button
-          className="btn btn-danger pull-xs-right"
-          onClick={this.onLogoutClick.bind(this)}
-        >
-          Logout
-        </button>
-      </div>
+      <Menu.Item name='logout' onClick={ this.handleLogout.bind(this) }>
+        <Icon name='sign out' />
+        Log out
+      </Menu.Item>
     );
   }
 }

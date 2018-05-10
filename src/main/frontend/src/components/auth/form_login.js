@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { loginUser } from '../../actions';
 import { validatePassword, validateEmail } from '../../helpers/auth_utils';
-import { renderField, validate } from '../../helpers/form_utils';
+import { renderInputField, validate } from '../../helpers/form_utils';
 
 //TODO: fix the signup page
 
@@ -39,8 +39,8 @@ class LoginForm extends Component {
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          <Field name="username" placeholder="Email" type="text" fieldType="input" component={renderField}/>
-          <Field name="password" placeholder="Password" type="password" fieldType="input" component={renderField}/>
+          <Field name="username" placeholder="Email" type="text" component={renderInputField}/>
+          <Field name="password" placeholder="Password" type="password" component={renderInputField}/>
           <button type="submit" className="btn btn-primary">Login</button>
           <Link className="auth-switch-link" to='/register'>Sign up</Link>
         </form>

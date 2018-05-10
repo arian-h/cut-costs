@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 import { registerUser } from '../../actions';
 import { validatePassword, validateEmail, validateName } from '../../helpers/auth_utils';
-import { renderField, validate } from '../../helpers/form_utils';
+import { renderInputField, validate } from '../../helpers/form_utils';
 
 const validators = [
   {
@@ -40,9 +40,9 @@ class RegisterForm extends Component {
     return (
       <div className="auth-form-container">
         <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          <Field name="name" placeholder="Name" type="text" fieldType="input" component={renderField}/>
-          <Field name="username" placeholder="Email" type="text" fieldType="input" component={renderField}/>
-          <Field name="password" placeholder="Password" type="password" fieldType="input" component={renderField}/>
+          <Field name="name" placeholder="Name" type="text" component={renderInputField}/>
+          <Field name="username" placeholder="Email" type="text" component={renderInputField}/>
+          <Field name="password" placeholder="Password" type="password" component={renderInputField}/>
           <button type="submit" className="btn btn-primary">Sign up</button>
           <Link className="auth-switch-link" to='/login'>Already Registered</Link>
         </form>

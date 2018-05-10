@@ -6,7 +6,7 @@ import DataTable, { TEXT_CELL } from '../platform/data_table';
 import Modal from '../platform/modal';
 import { fetchExpense, updateExpense, removeSharer } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
-import { renderField, validate } from '../../helpers/form_utils';
+import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import NewSharer from '../expense/new_sharer';
 
@@ -116,24 +116,22 @@ class ShowExpense extends Component {
         <form>
           <Field
             name="title"
-            fieldType="input"
             type="text"
-            component={renderField}
+            component={renderInputField}
             label="Title"
             onBlur={this._updateExpense}
           />
           <Field
             name="description"
-            fieldType="textarea"
-            component={renderField}
+            component={renderTextAreaField}
             label="Description"
             rows="2"
             onBlur={this._updateExpense}
           />
           <Field
             name="amount"
-            fieldType="input"
-            component={renderField}
+            type="text"
+            component={renderInputField}
             label="Amount"
             onBlur={this._updateExpense}
           />

@@ -1,14 +1,14 @@
 package com.boot.cut_costs.utils;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.validator.routines.EmailValidator;
+import org.apache.tika.Tika;
+import org.springframework.web.multipart.MultipartFile;
 
 public class CustomValidationUtils {
 
-	private final static String IMAGE_BASE64_HEADER_PATTERN = "^data:image/png;base64,";
-	private final static String IMAGE_BASE64_TRAIL_PATTERN = "=*$";
-	private final static String IMAGE_BASE64_PATTERN = IMAGE_BASE64_HEADER_PATTERN + ".*" + IMAGE_BASE64_TRAIL_PATTERN;
 	/* 
 	 * all alphanumeric character (starts with alphabet), with at most one period (dot) allowed in the middle
 	 * and size between 8 and 15
@@ -40,19 +40,25 @@ public class CustomValidationUtils {
 	}
 	
 	/**
-	 * Validates if the image string matches the expected pattern
-	 * and the image size is less than passed in mbSize
+	 * Validates if the file is image and its size is less than mbSize
 	 * @param image
 	 * @param mbSize
 	 * @return true if the image is valid
 	 */
-	public static boolean validateImage(String image, int mbSize) {
-		if (image != null && !image.matches(IMAGE_BASE64_PATTERN)) {
-			return false;
-		}
-		return getImageSize(image) < Math.pow(2, 20) * mbSize;
+	public static boolean validateImage(MultipartFile image, int mbSize) {
+		return image == null || (getFileType(image).startsWith("image") && (image.getSize() / Math.pow(2, 20)) < mbSize);
 	}
-	
+
+	private static String getFileType(MultipartFile file) {
+		Tika tika = new Tika();
+		System.out.println(file.getSize() / Math.pow(2, 20));
+		try {
+			return tika.detect(file.getBytes());
+		} catch (IOException e) {
+			return "";
+		}
+	}
+
 	public static boolean validateUserDescription(String description) {
 		return description == null || description.length() <= 100;
 	}
@@ -67,15 +73,6 @@ public class CustomValidationUtils {
 	
 	public static boolean isEmptyOrWhitespace(String attr) {
 		return attr == null || attr.trim().length() == 0;
-	}
-
-	private static double getImageSize(String image) {
-		if (isEmptyOrWhitespace(image)) {
-			return 0;
-		}
-		image.replaceAll(IMAGE_BASE64_TRAIL_PATTERN, "");
-		image.replaceAll(IMAGE_BASE64_HEADER_PATTERN, "");
-		return Math.ceil(image.length() * 3 / 4);
 	}
 
 	public static boolean validateExpenseTitle(String title) {

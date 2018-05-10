@@ -1,5 +1,6 @@
 package com.boot.cut_costs.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -12,11 +13,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.boot.cut_costs.model.CustomUserDetails;
 import com.boot.cut_costs.model.User;
 import com.boot.cut_costs.repository.UserRepository;
 import com.boot.cut_costs.utils.CommonUtils;
+import com.boot.cut_costs.utils.AWS.FILE_TYPE;
+import com.boot.cut_costs.utils.AWS.S3Services;
 
 @Service
 @Transactional
@@ -27,7 +31,10 @@ public class UserService {
 	
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
-	
+
+	@Autowired
+	private S3Services s3Services;
+
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
 	public User loadById(long id) {
@@ -38,11 +45,17 @@ public class UserService {
 		return user;
 	}
 
-	public User update(String name, String description, String image, String username) throws IOException {
+	public User update(String name, String description, MultipartFile image, String username) throws IOException {
 		User user = customUserDetailsService.loadUserByUsername(username).getUser();
 		user.setName(name);
 		user.setDescription(description);
-		user.setImageId(CommonUtils.decodeBase64AndSaveImage(image));
+		
+		File convFile = CommonUtils.convertToFile(FILE_TYPE.USER_PHOTO, image);
+		String imageId = s3Services.uploadFile(FILE_TYPE.USER_PHOTO, convFile);
+		if (imageId != null) {
+			s3Services.deleteFile(FILE_TYPE.USER_PHOTO, user.getImageId());
+			user.setImageId(imageId);
+		}
 		userRepository.save(user);
 		logger.debug("User updated id: " + user.getId());
 		return user;
@@ -52,7 +65,7 @@ public class UserService {
 		CustomUserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
 		return userDetails.getUser();
 	}
-	
+
 	public void save(User user) {
 		userRepository.save(user);
 	}
