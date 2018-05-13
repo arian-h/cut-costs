@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-      <Provider store={store}>
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';

@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../platform/modal/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
-import { Grid, Segment, Button } from 'semantic-ui-react'
+import { Grid, Button, Icon } from 'semantic-ui-react'
 
 class GroupList extends Component {
 
@@ -47,60 +47,48 @@ class GroupList extends Component {
       {
         name: 'name',
         label: 'Group',
-        type: TEXT_CELL,
         href: group => '/group/' + group.id
       },
       {
         name: 'description',
-        label: 'Description',
-        type: TEXT_CELL
+        label: 'Description'
       },
       {
         name: 'numberOfExpenses',
-        label: 'Expenses',
-        type: TEXT_CELL
+        label: 'Expenses'
       },
       {
         name: 'numberOfMembers',
-        label: 'Members',
-        type: TEXT_CELL
+        label: 'Members'
       }
     ];
     let actions = [{
       isEnabled: this._deleteActionEnabled,
       action: this._onDelete,
-      label: 'Delete'
+      label: 'Delete',
+      icon: 'delete'
     }];
 
     const { groups } = props;
 
     return (
       <div>
-        {
-          props.modal ?
-            <Modal content={props.modal.content} className={props.modal.className} {...props}/>
-            : <noscript/>
-        }
+        {props.modal ?
+          <Modal content={props.modal.content} className={props.modal.className} {...props}/>
+          : <noscript/>}
         <Grid>
           <Grid.Row>
-            <Segment floated='right'>
-              <Button primary as={Link} to="/group/new">
-                {/* <Link className="btn btn-primary" to="/group/new"> */}
-                  New Group
-                {/* </Link> */}
+            <Grid.Column>
+              <Button icon primary labelPosition='left' size='small' as={Link} to="/group/new">
+                  <Icon name='group'></Icon>New Group
               </Button>
-            </Segment>
+            </Grid.Column>
           </Grid.Row>
-            <Segment>
-              <Grid.Row>
-                {
-                  _.isEmpty(groups) ? <div>No group listed !</div>
-                  : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>
-                }
-              </Grid.Row>
-            </Segment>
+          <Grid.Row>
+            {_.isEmpty(groups) ? <div>No group listed !</div>
+              : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>}
+          </Grid.Row>
         </Grid>
-
       </div>
     );
   }

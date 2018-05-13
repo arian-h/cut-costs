@@ -1,37 +1,44 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
-
-import { TEXT_CELL, IMAGE_CELL } from './index';
+import { Table, Dropdown } from 'semantic-ui-react'
 
 class TableRow extends Component {
   render() {
     const { data, actions, id } = this.props;
+    let actionMenu;
+    if (actions && actions.length) {
+      let actionItems = [];
+      for (var i = 0; i < actions.length; i++) {
+        actionItems.push(<Dropdown.Item icon={ actions[i].icon } text={ actions[i].label } />);
+      }
+      actionMenu =
+          <Dropdown icon='chevron down'>
+            <Dropdown.Menu>
+              { actionItems }
+            </Dropdown.Menu>
+          </Dropdown>;
+    }
     return (
-      <tr>
-        {
-          _.map(data, cellData => {
+      <Table.Row>
+        {_.map(data, cellData => {
             let element;
-            if (cellData.type === TEXT_CELL) {
-              element = <span>{cellData.value}</span>;
-            } else if (cellData.type === IMAGE_CELL) {
-              element = <img src={cellData.value} />;
+            if (cellData.image) {
+              element =
+                <Table.Cell>
+                    <Image src={ cellData.image } rounded size='mini' />
+                    { cellData.value }
+                </Table.Cell>;
+            } else {
+              element = <Table.Cell>{ cellData.value }</Table.Cell>;
             }
             if (cellData.href) {
-              element = <Link to={cellData.href}>{element}</Link>;
+              element = <Table.Cell><Link to={ cellData.href }>{ cellData.value }</Link></Table.Cell>;
             }
-            return <td>{element}</td>;
-          })
-        }
-        {
-          actions && actions.length &&
-            _.map(actions, action => {
-                if (action.isEnabled && action.isEnabled(id)) {
-                  return <td><button onClick={() => action.action(id)}>{action.label}</button></td>;
-                } //TODO, make it a dropdown action menu
-            })
-        }
-      </tr>
+            return element;
+        })}
+        <Table.Cell>{ actionMenu }</Table.Cell>
+      </Table.Row>
     );
   }
 }

@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
+import { Table } from 'semantic-ui-react'
 
 class TableHeader extends Component {
   render() {
     const { data, actions } = this.props;
     return (
-      <thead>
-        <tr>
-          {_.map(data, cellData => <td>{cellData.label}</td>)}
-          { actions && actions.length && <td></td> }
-        </tr>
-      </thead>
+      <Table.Header>
+        <Table.Row>
+          {_.map(data, cellData => <Table.HeaderCell>{ cellData.label }</Table.HeaderCell>)}
+          { actions && actions.length && <Table.HeaderCell></Table.HeaderCell> }
+        </Table.Row>
+      </Table.Header>
     );
   }
 }

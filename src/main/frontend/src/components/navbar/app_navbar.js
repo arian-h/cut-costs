@@ -13,8 +13,7 @@ class AppNavBar extends Component {
   render() {
     return (
       <Menu.Item name='logout' onClick={ this.handleLogout.bind(this) }>
-        <Icon name='sign out' />
-        Log out
+        <Icon name='sign out'/>Log out
       </Menu.Item>
     );
   }
