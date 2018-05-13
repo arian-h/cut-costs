@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { getUserId } from '../../helpers/user_utils';
 import { fetchExpenses, deleteExpense } from '../../actions';
-import Modal from '../platform/modal';
+import Modal from '../platform/modal/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 
 class ExpenseList extends Component {

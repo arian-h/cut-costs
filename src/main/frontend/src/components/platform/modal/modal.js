@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { store } from '../../index';
+import { store } from '../../../index';
 import { Provider } from 'react-redux';
 
 class Modal extends Component {

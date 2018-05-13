@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
-import Modal from '../platform/modal';
+import Modal from '../platform/modal/modal';
 import { fetchExpense, updateExpense, removeSharer } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
 import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';

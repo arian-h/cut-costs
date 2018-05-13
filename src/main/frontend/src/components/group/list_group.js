@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { fetchGroups, deleteGroup } from '../../actions';
-import Modal from '../platform/modal';
+import Modal from '../platform/modal/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
 import { Grid, Segment, Button } from 'semantic-ui-react'
 
