@@ -17,8 +17,8 @@ npm-debug.log
 **/node_modules/
 .DS_Store
 /*.env
-/.idea
 
 /.apt_generated/
 /.gradle/
 /build/
+src/main/resources/application.properties

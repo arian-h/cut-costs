@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { fetchGroups, deleteGroup } from '../../actions';
 import Modal from '../platform/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
+import { Grid, Segment, Button } from 'semantic-ui-react'
 
 class GroupList extends Component {
 
@@ -80,15 +81,26 @@ class GroupList extends Component {
             <Modal content={props.modal.content} className={props.modal.className} {...props}/>
             : <noscript/>
         }
-        <div className="text-xs-right">
-          <Link className="btn btn-primary" to="/group/new">
-            New Group
-          </Link>
-        </div>
-        {
-          _.isEmpty(groups) ? <div>No group listed !</div>
-          : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>
-        }
+        <Grid>
+          <Grid.Row>
+            <Segment floated='right'>
+              <Button primary as={Link} to="/group/new">
+                {/* <Link className="btn btn-primary" to="/group/new"> */}
+                  New Group
+                {/* </Link> */}
+              </Button>
+            </Segment>
+          </Grid.Row>
+            <Segment>
+              <Grid.Row>
+                {
+                  _.isEmpty(groups) ? <div>No group listed !</div>
+                  : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>
+                }
+              </Grid.Row>
+            </Segment>
+        </Grid>
+
       </div>
     );
   }
