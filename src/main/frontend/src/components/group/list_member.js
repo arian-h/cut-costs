@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import DataTable, { TEXT_CELL } from '../platform/data_table';
+import DataTable from '../platform/data_table';
 import { fetchMembers, removeMember } from '../../actions';
 import { getUserId } from '../../helpers/user_utils';
+import { Modal } from 'semantic-ui-react';
 
 class MemberList extends Component {
 
@@ -52,8 +53,7 @@ class MemberList extends Component {
     let configs = [
       {
         name: 'name',
-        label: 'Name',
-        type: TEXT_CELL
+        label: 'Name'
       }
     ];
     let actions = [{
@@ -63,22 +63,20 @@ class MemberList extends Component {
     }];
 
     let members = props.members[props.groupId];
-
-    return (
-      <div>
-        {
-          _.isEmpty(members) ? <div>No member listed !</div>
-          :
-          <div>
-              <DataTable className="member-table" data={_.values(members)} configs={configs} actions={actions}/>
-              {
-                state.removeError ? <span>{state.removeError}</span>:<noscript/>
-              }
-              <button onClick={props.onClose}>Close</button>
-          </div>
-        }
-      </div>
-    );
+    return ([
+        <Modal.Header>
+          Members list
+        </Modal.Header>,
+        <Modal.Content>
+          {
+            _.isEmpty(members) ? <div>No member listed !</div> :
+              <div>
+                  <DataTable className="member-table" data={ _.values(members) } configs={ configs } actions={ actions }/>
+                  { state.removeError ? <span>{state.removeError}</span>:<noscript/> }
+              </div>
+          }
+        </Modal.Content>
+    ]);
   }
 
 }

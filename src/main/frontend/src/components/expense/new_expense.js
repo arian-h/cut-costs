@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { createExpense } from '../../actions';
 import { validateName, validateDescription, validateAmount, validateImage } from '../../helpers/expense_utils';
 import { renderInputField, renderTextAreaField, renderDropzoneField } from '../../helpers/form_utils';
+import { Modal, Button, Form } from 'semantic-ui-react';
 
 class NewExpense extends Component {
 
@@ -43,19 +44,23 @@ class NewExpense extends Component {
   render() {
     const { handleSubmit } = this.props;
     const { imagePreviewUrl } = this.state;
-    return (
-      <div>
-        <form onSubmit={ handleSubmit(this._onSubmit.bind(this)) }>
-          <Field name="title" validate={ validateName } label="Name" type="text" component={ renderInputField }/>
-          <Field name="description" validate={ validateDescription } label="Description" type="text" component={ renderTextAreaField }/>
-          <Field name="amount" validate={ validateAmount } label="Amount" type="text" component={ renderInputField }/>
-          <Field name="image" validate={validateImage} label="Image" onChange={this._onImagePreviewChange.bind(this)} previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
-          <button type="submit" className="btn btn-primary">Create</button>
-          <button type="button" className="btn btn-primary" onClick={this.props.onClose}>Cancel</button>
-        </form>
-        { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
-      </div>
-    );
+    return ([
+      <Modal.Header>
+        Expenses list
+      </Modal.Header>,
+        <Modal.Content scrolling>
+          <Form onSubmit={ handleSubmit(this._onSubmit.bind(this)) } error id="new-expense-form">
+            <Field name="title" validate={ validateName } label="Name" type="text" component={ renderInputField }/>
+            <Field name="description" validate={ validateDescription } label="Description" type="text" component={ renderTextAreaField }/>
+            <Field name="amount" validate={ validateAmount } label="Amount" type="text" component={ renderInputField }/>
+            <Field name="image" validate={validateImage} label="Image" onChange={this._onImagePreviewChange.bind(this)} previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
+            { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
+          </Form>
+        </Modal.Content>,
+        <Modal.Actions>
+          <Button type="submit" form="new-expense-form" content="Create"/>
+        </Modal.Actions>
+    ]);
   }
 }
 

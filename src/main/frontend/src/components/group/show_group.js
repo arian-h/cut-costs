@@ -50,7 +50,7 @@ class ShowGroup extends Component {
     this.setState({showMemberListModal: true});
   }
 
-  _closeMemberListModal = () => { //add th
+  _closeMemberListModal = () => {
     this.setState({showMemberListModal: false});
   }
 
@@ -114,43 +114,15 @@ class ShowGroup extends Component {
 
     return (
       <div className="show-group">
-        {/* {
-          state.showMemberListModal ?
-            <Modal
-              content={MemberList}
-              className="member-list-modal"
-              onClose={this._closeMemberListModal}
-              groupId={this.groupId}
-              isAdmin={group.isAdmin}
-            />
-            : <noscript/>
-        } */}
-        <Modal open={ state.showMemberListModal } onClose={ this._closeMemberListModal }>
-          <Modal.Header>
-            Expense list
-          </Modal.Header>
-          <Modal.Content>
-            <p>Are you sure you want to delete your account</p>
-          </Modal.Content>
-          <Modal.Actions>
-          <Button negative>
-            No
-          </Button>
-          <Button positive icon='checkmark' labelPosition='right' content='Yes' />
-        </Modal.Actions>
-      </Modal>
-        {/* </Modal>
-        {
-          state.showNewExpenseModal ?
-            <Modal
-              content={NewExpense}
-              className="new-expense-modal"
-              onClose={this._closeExpenseListModal}
-              isAdmin={group.isAdmin}
-              groupId={this.groupId}
-            />
-            : <noscript/>
-        }
+        <Modal open={ state.showMemberListModal } onClose={ this._closeMemberListModal } closeIcon>
+          <MemberList groupId={ this.groupId } isAdmin={ group.isAdmin } />
+        </Modal>
+        <Modal open={ state.showNewExpenseModal } onClose={ this._closeExpenseListModal } closeIcon>
+          {/* <Modal.Content> */}
+            <NewExpense groupId={this.groupId} isAdmin={group.isAdmin} />
+          {/* </Modal.Content> */}
+        </Modal>
+        {/*
         {
           state.showNewInvitationModal ?
             <Modal

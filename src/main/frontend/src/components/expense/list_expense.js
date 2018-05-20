@@ -5,7 +5,6 @@ import _ from 'lodash';
 
 import { getUserId } from '../../helpers/user_utils';
 import { fetchExpenses, deleteExpense } from '../../actions';
-import Modal from '../platform/modal/modal';
 import DataTable from '../platform/data_table';
 
 class ExpenseList extends Component {
@@ -56,19 +55,16 @@ class ExpenseList extends Component {
       },
       {
         name: 'ownerName',
-        label: 'Posted By',
-        type: TEXT_CELL //TODO: add href later
+        label: 'Posted By'
       },
       {
         name: 'groupName',
         label: 'Group',
-        type: TEXT_CELL,
         href: expense => '/group/' + expense.groupId
       },
       {
         name: 'amount',
-        label: 'Amount',
-        type: TEXT_CELL
+        label: 'Amount'
       }
     ];
     let actions = [{
