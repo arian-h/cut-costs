@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { getUserId } from '../../helpers/user_utils';
 import { fetchExpenses, deleteExpense } from '../../actions';
 import Modal from '../platform/modal/modal';
-import DataTable, { TEXT_CELL } from '../platform/data_table';
+import DataTable from '../platform/data_table';
 
 class ExpenseList extends Component {
 
@@ -52,7 +52,6 @@ class ExpenseList extends Component {
       {
         name: 'title',
         label: 'Title',
-        type: TEXT_CELL,
         href: expense => '/expense/' + expense.id
       },
       {

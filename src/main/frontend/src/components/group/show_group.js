@@ -2,25 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
-import DataTable, { TEXT_CELL } from '../platform/data_table';
-import Modal from '../platform/modal/modal';
+import DataTable from '../platform/data_table';
+// import Modal from '../platform/modal/modal';
 import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
-import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
+import { renderInputField, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
-
-const validators = [{
-    field: 'name',
-    validator: validateName
-  },
-  {
-    field: 'description',
-    validator: validateDescription
-  }
-];
+import { Form, Button, Icon, Modal } from 'semantic-ui-react'
 
 class ShowGroup extends Component {
   constructor(props) {
@@ -72,6 +63,7 @@ class ShowGroup extends Component {
   }
 
   _onExpenseDelete = expenseId => {
+    debugger;
     this.props.deleteExpense(expenseId, this._deleteExpenseErrorCallback);
   }
 
@@ -107,24 +99,22 @@ class ShowGroup extends Component {
     let expenseConfigs = [
       {
         name: 'title',
-        label: 'Title',
-        type: TEXT_CELL
+        label: 'Title'
       },
       {
         name: 'amount',
-        label: 'Amount',
-        type: TEXT_CELL
+        label: 'Amount'
       }
     ];
     let expenseActions = [{
       isEnabled: this._expenseDeleteActionEnabled.bind(this),
-      action: this._onExpenseDelete.bind(this),
+      action: this._onExpenseDelete,
       label: 'Delete'
     }];
 
     return (
       <div className="show-group">
-        {
+        {/* {
           state.showMemberListModal ?
             <Modal
               content={MemberList}
@@ -134,7 +124,22 @@ class ShowGroup extends Component {
               isAdmin={group.isAdmin}
             />
             : <noscript/>
-        }
+        } */}
+        <Modal open={ state.showMemberListModal } onClose={ this._closeMemberListModal }>
+          <Modal.Header>
+            Expense list
+          </Modal.Header>
+          <Modal.Content>
+            <p>Are you sure you want to delete your account</p>
+          </Modal.Content>
+          <Modal.Actions>
+          <Button negative>
+            No
+          </Button>
+          <Button positive icon='checkmark' labelPosition='right' content='Yes' />
+        </Modal.Actions>
+      </Modal>
+        {/* </Modal>
         {
           state.showNewExpenseModal ?
             <Modal
@@ -155,32 +160,36 @@ class ShowGroup extends Component {
               groupId={this.groupId}
             />
             : <noscript/>
-        }
-        <form>
+        } */}
+        <Form error>
           <Field
             name="name"
             type="text"
+            size="massive"
+            transparent= { true }
             component={renderInputField}
-            label="Name"
+            validate={ validateName }
             onBlur={this._updateGroup}
           />
           <Field
             name="description"
             component={renderTextAreaField}
-            label="Name"
-            rows="2"
+            transparent={ true }
+            rows='1'
+            validate={ validateDescription }
             onBlur={this._updateGroup}
           />
-        </form>
+        </Form>
         <p>Group Admin: {group.admin.name}</p>
+        {/*TODO use label with admin's profile instead of a <p> */}
+        <Button icon='users' content='Members' labelPosition='right' floated='right' onClick={this._showMembers}/>
+        <Button icon='money' content='Add Expense' labelPosition='right' floated='right' onClick={this._addExpense}/>
+        <Button icon='add user' content='Invite User' labelPosition='right' floated='right' onClick={this._inviteUser}/>
         {
           expenses.length > 0 ?
           <DataTable className="member-table" data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>
           : <noscript/>
         }
-        <button onClick={this._showMembers}>Show Members</button>
-        <button onClick={this._addExpense}>Add Expense</button>
-        <button onClick={this._inviteUser}>Invite User</button>
       </div>
     );
   }
@@ -210,7 +219,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  validate,
   enableReinitialize: true,
   //a unique id for this form
   form:'ShowGroup'

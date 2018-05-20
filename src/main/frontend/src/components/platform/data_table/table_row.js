@@ -10,7 +10,9 @@ class TableRow extends Component {
     if (actions && actions.length) {
       let actionItems = [];
       for (var i = 0; i < actions.length; i++) {
-        actionItems.push(<Dropdown.Item icon={ actions[i].icon } text={ actions[i].label } />);
+        if (actions[i].isEnabled(id)) {
+          actionItems.push(<Dropdown.Item icon={ actions[i].icon } text={ actions[i].label } onClick={ actions[i].action.bind(this, id) }/>);
+        }
       }
       actionMenu =
           <Dropdown icon='chevron down'>

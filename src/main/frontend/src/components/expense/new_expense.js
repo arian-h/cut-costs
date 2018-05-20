@@ -18,12 +18,6 @@ class NewExpense extends Component {
   }
 
   _onSubmit = values => {
-    // let reader = new FileReader();
-    // reader.onloadend = e => {
-    //   var imageValue = reader.result;
-    //   this.props.createExpense(values, imageValue, this.props.groupId, () => this.props.onClose(), error => this.setState({error: error}));
-    // };
-    // reader.readAsDataURL(values.image[0]);
     let formData = new FormData();
     formData.append('title', values.title);
     formData.append('description', values.description);
