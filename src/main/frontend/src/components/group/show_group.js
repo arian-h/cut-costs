@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
+
 import DataTable from '../platform/data_table';
-// import Modal from '../platform/modal/modal';
 import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderInputField, renderTextAreaField } from '../../helpers/form_utils';
@@ -12,6 +12,7 @@ import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
 import { Form, Button, Icon, Modal } from 'semantic-ui-react'
+import Spinner from '../platform/spinner';
 
 class ShowGroup extends Component {
   constructor(props) {
@@ -63,7 +64,6 @@ class ShowGroup extends Component {
   }
 
   _onExpenseDelete = expenseId => {
-    debugger;
     this.props.deleteExpense(expenseId, this._deleteExpenseErrorCallback);
   }
 
@@ -87,7 +87,7 @@ class ShowGroup extends Component {
     let {props, state} = this;
 
     if (state.loading) {
-      return <div>Loading group ....</div>;
+      return <Spinner text="Loading group" />;
     }
     if (state.error) {
       return <div>{state.error}</div>;
@@ -118,21 +118,11 @@ class ShowGroup extends Component {
           <MemberList groupId={ this.groupId } isAdmin={ group.isAdmin } />
         </Modal>
         <Modal open={ state.showNewExpenseModal } onClose={ this._closeExpenseListModal } closeIcon>
-          {/* <Modal.Content> */}
-            <NewExpense groupId={this.groupId} isAdmin={group.isAdmin} />
-          {/* </Modal.Content> */}
+            <NewExpense groupId={this.groupId} isAdmin={group.isAdmin} onClose={ this._closeExpenseListModal } />
         </Modal>
-        {/*
-        {
-          state.showNewInvitationModal ?
-            <Modal
-              content={NewInvitation}
-              className="new-invitation-modal"
-              onClose={this._closeNewInvitationModal}
-              groupId={this.groupId}
-            />
-            : <noscript/>
-        } */}
+        <Modal open={ state.showNewInvitationModal } onClose={this._closeNewInvitationModal} closeIcon>
+          <NewInvitation groupId={ this.groupId } />
+        </Modal>
         <Form error>
           <Field
             name="name"
@@ -157,11 +147,9 @@ class ShowGroup extends Component {
         <Button icon='users' content='Members' labelPosition='right' floated='right' onClick={this._showMembers}/>
         <Button icon='money' content='Add Expense' labelPosition='right' floated='right' onClick={this._addExpense}/>
         <Button icon='add user' content='Invite User' labelPosition='right' floated='right' onClick={this._inviteUser}/>
-        {
-          expenses.length > 0 ?
-          <DataTable className="member-table" data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>
-          : <noscript/>
-        }
+        {expenses.length > 0 ?
+          <DataTable data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>
+          : <noscript/>}
       </div>
     );
   }

@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { Field, reduxForm, getFormSyncErrors } from 'redux-form';
 
 import { inviteUser } from '../../actions';
 import { getUserId } from '../../helpers/user_utils';
+import { Form, Button, Modal } from 'semantic-ui-react'
+import { renderInputField } from '../../helpers/form_utils';
 
 class NewInvitation extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      error: null,
-      inputValue: ''
-    }
+    this.state = {};
   }
 
   _onInviteUser() {
     this.props.inviteUser(this.state.inputValue, () => this.props.onClose(), error => this.setState({error: error}));
   }
 
-  _updateInputValue(evt) {
-    this.setState({inputValue: evt.target.value});
-  }
-
   render() {
-    return (
-      <div>
-          <input type="text" value={this.state.userId} onChange={evt => this._updateInputValue(evt)} />
-          <button type="submit" className="btn btn-primary" onClick={() => this._onInviteUser()}>Create</button>
-          <button type="button" className="btn btn-primary" onClick={() => this.props.onClose()}>Cancel</button>
-        { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
-      </div>
-    );
+    const { handleSubmit } = this.props;
+
+    return ([
+      <Modal.Content>
+        <Form onSubmit={ handleSubmit(this._onInviteUser.bind(this)) }>
+          <Field name="userId" label="Invitee Id" type="text" component={ renderInputField }/>
+          { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
+        </Form>
+      </Modal.Content>,
+      <Modal.Actions>
+        <Button type="submit" content="Invite" form="invitation-form"/>
+      </Modal.Actions>
+    ]);
   }
 }
 
@@ -41,4 +41,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(NewInvitation);
+export default connect(state => ({
+  inputErrors: getFormSyncErrors('NewExpense')(state)
+}), { inviteUser }, mapDispatchToProps)(reduxForm({
+  form:'NewInvitation'
+})(NewInvitation));

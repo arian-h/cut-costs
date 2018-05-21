@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
+import Spinner from '../platform/spinner';
 import { fetchExpenses } from '../../actions';
-import DataTable, { TEXT_CELL } from '../platform/data_table';
+import DataTable from '../platform/data_table';
 import { fetchInvitations, rejectInvitation, acceptInvitation } from '../../actions';
+
 
 class InvitationList extends Component {
 
@@ -43,58 +45,51 @@ class InvitationList extends Component {
   }
 
   render() {
-    const { props, state } = this;
+      const { props, state } = this;
 
-    if (state.loading) {
-      return <div>Loading invitations...</div>;
-    }
-    if (state.error) {
-      return <div>{this.props.error}</div>;
-    }
-    const { invitations } = props;
-    var invitationsListData = _.map(invitations, function(invitation){
-      return {
-        id: invitation.id,
-        inviterId: invitation.inviter.id,
-        inviter: invitation.inviter.name,
-        groupId: invitation.group.id,
-        group: invitation.group.name
-      };
-    });
-    let configs = [
+      if (state.loading) {
+        return <Spinner text="Loading invitations" />;
+      }
+      if (state.error) {
+        return <div>{ this.props.error }</div>;
+      }
+      const { invitations } = props;
+      var invitationsListData = _.map(invitations, function(invitation){
+        return {
+          id: invitation.id,
+          inviterId: invitation.inviter.id,
+          inviter: invitation.inviter.name,
+          groupId: invitation.group.id,
+          group: invitation.group.name
+        };
+      });
+      let configs = [
+        {
+          name: 'inviter',
+          label: 'Inviter',
+          href: invitation => '/user/' + invitation.inviterId
+        },
+        {
+          name: 'group',
+          label: 'Group',
+          href: invitation => '/group/' + invitation.groupId
+        }
+      ];
+      let actions = [{
+        isEnabled: () => true,
+        action: this._onReject,
+        label: 'Reject'
+      }
+      ,
       {
-        name: 'inviter',
-        label: 'Inviter',
-        type: TEXT_CELL,
-        href: invitation => '/user/' + invitation.inviterId
-      },
-      {
-        name: 'group',
-        label: 'Group',
-        type: TEXT_CELL,
-        href: invitation => '/group/' + invitation.groupId
+        isEnabled: () => true,
+        action: this._onAccept,
+        label: 'Accept'
       }
     ];
-    let actions = [{
-      isEnabled: () => true,
-      action: this._onReject,
-      label: 'Reject'
-    }
-    ,
-    {
-      isEnabled: () => true,
-      action: this._onAccept,
-      label: 'Accept'
-    }
-  ];
 
-    return (
-      <div>
-        {
-          _.isEmpty(invitations) ? <div>Not invited to any group yet!</div>
-          : <DataTable className="invitation-table" data={_.values(invitationsListData)} configs={configs} actions={actions}/>
-        }
-      </div>
+    return ( _.isEmpty(invitations) ? <div>Not invited to any group yet!</div>
+      : <DataTable className="invitation-table" data={_.values(invitationsListData)} configs={configs} actions={actions}/>
     );
   }
 }

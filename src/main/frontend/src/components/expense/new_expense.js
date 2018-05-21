@@ -12,10 +12,7 @@ class NewExpense extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      error: undefined,
-      imagePreviewUrl: undefined
-    };
+    this.state = {};
   }
 
   _onSubmit = values => {
@@ -23,7 +20,9 @@ class NewExpense extends Component {
     formData.append('title', values.title);
     formData.append('description', values.description);
     formData.append('amount', values.amount);
-    formData.append('image', values.image[0], values.image[0].name);
+    if (values.image && values.image.length > 0) {
+      formData.append('image', values.image[0], values.image[0].name);
+    }
     this.props.createExpense(formData, this.props.groupId, () => this.props.onClose(), error => this.setState({error: error}));
   }
 
@@ -46,14 +45,14 @@ class NewExpense extends Component {
     const { imagePreviewUrl } = this.state;
     return ([
       <Modal.Header>
-        Expenses list
+        Add Expense
       </Modal.Header>,
         <Modal.Content scrolling>
           <Form onSubmit={ handleSubmit(this._onSubmit.bind(this)) } error id="new-expense-form">
             <Field name="title" validate={ validateName } label="Name" type="text" component={ renderInputField }/>
             <Field name="description" validate={ validateDescription } label="Description" type="text" component={ renderTextAreaField }/>
             <Field name="amount" validate={ validateAmount } label="Amount" type="text" component={ renderInputField }/>
-            <Field name="image" validate={validateImage} label="Image" onChange={this._onImagePreviewChange.bind(this)} previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
+            <Field name="image" validate={validateImage} label="Item photo" onChange={this._onImagePreviewChange.bind(this)} previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
             { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
           </Form>
         </Modal.Content>,

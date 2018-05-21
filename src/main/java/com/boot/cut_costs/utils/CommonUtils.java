@@ -39,7 +39,8 @@ public class CommonUtils {
 		try {
 			convFile = File.createTempFile(fileType.getFilePrefix(), IMAGE_FILE_EXTENSION);
 			multipart.transferTo(convFile);
-		} catch (IOException e) {
+		} catch (Exception e) {
+			convFile = null;
 			e.printStackTrace();
 		}
 		return convFile;

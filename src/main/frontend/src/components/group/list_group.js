@@ -4,9 +4,10 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { fetchGroups, deleteGroup } from '../../actions';
-import Modal from '../platform/modal/modal';
 import DataTable, { TEXT_CELL } from '../platform/data_table';
-import { Grid, Button, Icon } from 'semantic-ui-react'
+import { Grid, Button, Icon, Modal } from 'semantic-ui-react'
+import NewGroup from './new_group';
+import Spinner from '../platform/spinner';
 
 class GroupList extends Component {
 
@@ -31,13 +32,21 @@ class GroupList extends Component {
 
   _onDelete = groupId => {
     this.props.deleteGroup(groupId);
+  };
+
+  _closeNewGroupModal = () => {
+    this.setState({ showNewGroupModal: false });
+  };
+
+  _openNewGroupModal = () => {
+    this.setState({ showNewGroupModal: true });
   }
 
   render() {
     const { props, state } = this;
 
     if (state.loading) {
-      return <div>Loading groups...</div>;
+      return <Spinner text="Loading groups" />;
     }
     if (state.error) {
       return <div>{this.props.error}</div>;
@@ -73,13 +82,13 @@ class GroupList extends Component {
 
     return (
       <div>
-        {props.modal ?
-          <Modal content={props.modal.content} className={props.modal.className} {...props}/>
-          : <noscript/>}
+        <Modal open={ state.showNewGroupModal } onClose={ this._closeNewGroupModal } closeIcon>
+          <NewGroup onClose={ this._closeNewGroupModal }/>
+        </Modal>
         <Grid>
           <Grid.Row>
             <Grid.Column>
-              <Button icon primary labelPosition='left' size='small' as={Link} to="/group/new">
+              <Button icon primary labelPosition='left' size='small' onClick={ this._openNewGroupModal }>
                   <Icon name='group'></Icon>New Group
               </Button>
             </Grid.Column>
@@ -100,7 +109,7 @@ function mapStateToProps(state) {
   return { groups: state.groups };
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return {
         fetchGroups: (successCallback, errorCallback) => dispatch(fetchGroups(successCallback, errorCallback)),
         deleteGroup: id => dispatch(deleteGroup(id))

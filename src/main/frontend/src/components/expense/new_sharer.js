@@ -4,34 +4,39 @@ import { Field, reduxForm } from 'redux-form';
 
 import { addSharer } from '../../actions';
 import { getUserId } from '../../helpers/user_utils';
+import { Modal, Button, Form } from 'semantic-ui-react';
+import { renderInputField } from '../../helpers/form_utils';
 
 class NewSharer extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      error: null,
-      inputValue: ''
+      error: null
     }
   }
 
-  _onAddSharer() {
-    this.props.addSharer(this.state.inputValue, () => this.props.onClose(), error => this.setState({error: error}));
-  }
-
-  _updateInputValue(evt) {
-    this.setState({inputValue: evt.target.value});
+  _onSubmit(values) {
+    this.props.addSharer(values.sharerId, () => this.props.onClose(), error => this.setState({ error: error }));
   }
 
   render() {
-    return (
-      <div>
-          <input type="text" value={this.state.userId} onChange={evt => this._updateInputValue(evt)} />
-          <button type="submit" className="btn btn-primary" onClick={() => this._onAddSharer()}>Add Sharer</button>
-          <button type="button" className="btn btn-primary" onClick={() => this.props.onClose()}>Cancel</button>
-          { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
-      </div>
-    );
+    const { handleSubmit } = this.props;
+
+    return ([
+      <Modal.Header>
+        Add Sharer
+      </Modal.Header>,
+      <Modal.Content>
+        <Form onSubmit={ handleSubmit(this._onSubmit.bind(this)) } id="add-sharer-form" closeIcon>
+          <Field name="sharerId" label="Sharer id" type="text" component={ renderInputField }/>
+          { this.state.error ? <span>{ this.state.error }</span> : <noscript/> }
+        </Form>
+      </Modal.Content>,
+      <Modal.Actions>
+        <Button type="submit" form="add-sharer-form" content="Add Sharer" />
+      </Modal.Actions>
+    ]);
   }
 }
 
@@ -41,4 +46,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(NewSharer);
+export default connect(null, mapDispatchToProps)(reduxForm({
+  //a unique id for this form
+  form: 'NewSharer'
+})(NewSharer));

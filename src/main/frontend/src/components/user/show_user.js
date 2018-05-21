@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
+import { Form } from 'semantic-ui-react';
+
 import { updateUser, fetchUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils'; //TODO fix this
 import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
+import Spinner from '../platform/spinner';
+
 
 const validators = [{
     field: 'name',
@@ -47,35 +51,35 @@ class ShowUser extends Component {
   }
 
   render() {
-    let {props, state} = this;
+    let { props, state } = this;
 
     if (state.loading) {
-      return <div>Loading user ....</div>;
+      return <Spinner text="Loading user info" />;
     }
     if (state.error) {
-      return <div>{state.error}</div>;
+      return <div>{ state.error }</div>;
     }
 
     let user = props.user;
 
     return (
       <div className="show-user-info">
-        <form>
+        <Form>
           <Field
             name="name"
             type="text"
-            component={renderInputField}
+            component={ renderInputField }
             label="Name"
-            onBlur={this._updateUser}
+            onBlur={ this._updateUser }
           />
           <Field
             name="description"
-            component={renderTextAreaField}
+            component={ renderTextAreaField }
             label="Description"
-            rows="2"
-            onBlur={this._updateUser}
+            rows="1"
+            onBlur={ this._updateUser }
           />
-        </form>
+        </Form>
       </div>
     );
   }

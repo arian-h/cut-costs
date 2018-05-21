@@ -15,7 +15,6 @@ import ExpenseList from './components/expense/list_expense';
 import Home from './components/home';
 import RegisterForm from './components/auth/form_register';
 import LoginForm from './components/auth/form_login';
-import NewGroup from './components/group/new_group';
 import ShowGroup from './components/group/show_group';
 import ShowExpense from './components/expense/show_expense';
 import InvitationList from './components/invitation/list_invitation';
@@ -38,12 +37,6 @@ ReactDOM.render(
                 <RegisterForm {...props}/>
             } />
             <PrivateRoute exact path="/group" component={GroupList}/>
-            <PrivateRoute exact path="/group/new" component={GroupList} componentProps={{
-              modal:{
-                'content': NewGroup,
-                'className': 'new-group-modal'
-              }}}
-            />
             <PrivateRoute exact path="/group/:id" component={ShowGroup} />
             <PrivateRoute exact path="/expense" component={ExpenseList}/>
             <PrivateRoute exact path="/expense/:id" component={ShowExpense}/>

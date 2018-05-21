@@ -7,6 +7,7 @@ import DataTable from '../platform/data_table';
 import { fetchMembers, removeMember } from '../../actions';
 import { getUserId } from '../../helpers/user_utils';
 import { Modal } from 'semantic-ui-react';
+import Spinner from '../platform/spinner';
 
 class MemberList extends Component {
 
@@ -43,7 +44,7 @@ class MemberList extends Component {
     const { props, state } = this;
 
     if (state.loading) {
-      return <div>Loading members...</div>;
+      return <Spinner text="Loading members" />;
     }
 
     if (state.error) {

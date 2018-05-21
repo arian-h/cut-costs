@@ -2,27 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
-import DataTable, { TEXT_CELL } from '../platform/data_table';
-import Modal from '../platform/modal/modal';
+import DataTable from '../platform/data_table';
+import { Modal, Form, Button } from 'semantic-ui-react';
 import { fetchExpense, updateExpense, removeSharer } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
 import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
 import NewSharer from '../expense/new_sharer';
-
-const validators = [{
-    field: 'title',
-    validator: validateName
-  },
-  {
-    field: 'description',
-    validator: validateDescription
-  },
-  {
-    field: 'amount',
-    validator: validateAmount
-  }
-];
+import Spinner from '../platform/spinner';
 
 class ShowExpense extends Component {
   constructor(props) {
@@ -40,7 +27,7 @@ class ShowExpense extends Component {
       () => {
         this.setState({ loading: false });
       },
-      error => this.setState({loading:false, error: error})
+      error => this.setState({ loading:false, error: error })
     );
   }
 
@@ -81,7 +68,7 @@ class ShowExpense extends Component {
     let {props, state} = this;
 
     if (state.loading) {
-      return <div>Loading expense ....</div>;
+      return <Spinner text="Loading expense details"/>;
     }
     if (state.error) {
       return <div>{state.error}</div>;
@@ -92,8 +79,7 @@ class ShowExpense extends Component {
     let sharersTableConfig = [
       {
         name: 'name',
-        label: 'Name',
-        type: TEXT_CELL
+        label: 'Name'
       }
     ];
     let sharersTableAction = [{
@@ -101,44 +87,41 @@ class ShowExpense extends Component {
       action: this._onRemoveSharer.bind(this),
       label: 'Remove'
     }];
+
     return (
       <div className="show-expense">
-        {
-          state.showNewSharerModal ?
-            <Modal
-              content={NewSharer}
-              className="new-sharer-modal"
-              onClose={this._closeNewSharerModal}
-              expenseId={this.expenseId}
-            />
-            : <noscript/>
-        }
-        <form>
+        <Modal open={ state.showNewSharerModal } onClose={ this._closeNewSharerModal } closeIcon>
+          <NewSharer expenseId={ this.expenseId } onClose={ this._addSharer } />
+        </Modal>
+        <Form>
           <Field
             name="title"
+            validate={ validateName }
             type="text"
-            component={renderInputField}
+            component={ renderInputField }
             label="Title"
-            onBlur={this._updateExpense}
+            onBlur={ this._updateExpense }
           />
           <Field
             name="description"
-            component={renderTextAreaField}
+            validate={ validateDescription }
+            component={ renderTextAreaField }
             label="Description"
             rows="2"
-            onBlur={this._updateExpense}
+            onBlur={ this._updateExpense }
           />
           <Field
             name="amount"
+            validate={ validateAmount }
             type="text"
-            component={renderInputField}
+            component={ renderInputField }
             label="Amount"
-            onBlur={this._updateExpense}
+            onBlur={ this._updateExpense }
           />
-        </form>
-        <p>Owner Name: {expense.owner.name}</p>
-        <DataTable className="sharer-table" data={_.values(sharers)} configs={sharersTableConfig} actions={sharersTableAction}/>
-        <button onClick={this._addSharer}>Add Sharer</button>
+        </Form>
+        <p>Owner name: { expense.owner.name }</p>
+        <DataTable className="sharer-table" data={ _.values(sharers) } configs={ sharersTableConfig } actions={ sharersTableAction }/>
+        <Button onClick={ this._addSharer } content="Add Sharer" />
       </div>
     );
   }
@@ -170,8 +153,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(reduxForm({
-  validate,
-  validators,
   enableReinitialize: true,
   form:'ShowExpense'
 })(ShowExpense));

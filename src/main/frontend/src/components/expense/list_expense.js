@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { getUserId } from '../../helpers/user_utils';
 import { fetchExpenses, deleteExpense } from '../../actions';
 import DataTable from '../platform/data_table';
+import Spinner from '../platform/spinner';
 
 class ExpenseList extends Component {
 
@@ -41,7 +42,7 @@ class ExpenseList extends Component {
     const { props, state } = this;
 
     if (state.loading) {
-      return <div>Loading expenses...</div>;
+      return <Spinner text="Loading expenses" />;
     }
     if (state.error) {
       return <div>{this.props.error}</div>;
@@ -75,18 +76,8 @@ class ExpenseList extends Component {
 
     const { expenses } = props;
 
-    return (
-      <div>
-        {
-          props.modal ?
-            <Modal content={props.modal.content} className={props.modal.className} {...props}/>
-            : <noscript/>
-        }
-        {
-          _.isEmpty(expenses) ? <div>No expense posted yet !</div>
-          : <DataTable className="expense-table" data={_.values(expenses)} configs={configs} actions={actions}/>
-        }
-      </div>
+    return ( _.isEmpty(expenses) ? <div>No expense posted yet !</div> :
+      <DataTable className="expense-table" data={ _.values(expenses) } configs={ configs } actions={ actions }/>
     );
   }
 }
