@@ -3,25 +3,11 @@ import { reduxForm, Field } from 'redux-form';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Form, Button } from 'semantic-ui-react';
 
 import { registerUser } from '../../actions';
 import { validatePassword, validateEmail, validateName } from '../../helpers/auth_utils';
-import { renderInputField, validate } from '../../helpers/form_utils';
-
-const validators = [
-  {
-    field: 'password',
-    validator: validatePassword
-  },
-  {
-    field: 'username',
-    validator: validateEmail
-  },
-  {
-    field: 'name',
-    validator: validateName
-  }
-];
+import { renderInputField } from '../../helpers/form_utils';
 
 class RegisterForm extends Component {
 
@@ -38,22 +24,18 @@ class RegisterForm extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <div className="auth-form-container">
-        <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          <Field name="name" placeholder="Name" type="text" component={renderInputField}/>
-          <Field name="username" placeholder="Email" type="text" component={renderInputField}/>
-          <Field name="password" placeholder="Password" type="password" component={renderInputField}/>
-          <button type="submit" className="btn btn-primary">Sign up</button>
-          <Link className="auth-switch-link" to='/login'>Already Registered</Link>
-        </form>
-      </div>
+      <Form onSubmit={ handleSubmit(this.onSubmit.bind(this)) } error>
+        <Field name="name" validate={ validateName } placeholder="Name" type="text" component={renderInputField}/>
+        <Field name="username" validate={ validateEmail } placeholder="Email" type="text" component={renderInputField}/>
+        <Field name="password" placeholder="Password" validate={ validatePassword } type="password" component={renderInputField}/>
+        <Button type="submit" content="Sign up"/>
+        <Button as={ Link } to='/login' content="Already signed up"/>
+      </Form>
     );
   }
 }
 
 export default reduxForm({
-  validate,
-  validators,
   //a unique id for this form
   form:'RegisterForm'
 })(

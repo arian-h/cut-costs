@@ -54,12 +54,3 @@ const renderField = function(input, id, label, touched, error) {
     </div>
   );
 }
-
-export const validate = (values, props) => {
-  const { validators } = props;
-  let errors = {};
-  _.each(validators, ({ validator, field }) => {
-    errors[field] = validator(values[field]);
-  });
-  return errors;
-}

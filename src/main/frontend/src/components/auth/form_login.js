@@ -3,24 +3,11 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Form, Button } from 'semantic-ui-react';
 
 import { loginUser } from '../../actions';
 import { validatePassword, validateEmail } from '../../helpers/auth_utils';
 import { renderInputField, validate } from '../../helpers/form_utils';
-
-//TODO: fix the signup page
-
-
-const validators = [
-  {
-    field: 'password',
-    validator: validatePassword
-  },
-  {
-    field: 'username',
-    validator: validateEmail
-  }
-];
 
 class LoginForm extends Component {
 
@@ -37,21 +24,17 @@ class LoginForm extends Component {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <div className="auth-form-container">
-        <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-          <Field name="username" placeholder="Email" type="text" component={renderInputField}/>
-          <Field name="password" placeholder="Password" type="password" component={renderInputField}/>
-          <button type="submit" className="btn btn-primary">Login</button>
-          <Link className="auth-switch-link" to='/register'>Sign up</Link>
-        </form>
-      </div>
+      <Form onSubmit={ handleSubmit(this.onSubmit.bind(this)) } error>
+        <Field name="username" validate={ validateEmail } placeholder="Email" type="text" component={ renderInputField }/>
+        <Field name="password" validate={ validatePassword } placeholder="Password" type="password" component={ renderInputField }/>
+        <Button type="submit" content="Login" />
+        <Button as={ Link } to="/register" content="Sign up" />
+      </Form>
     );
   }
 }
 
 export default reduxForm({
-  validate,
-  validators,
   //a unique id for this form
   form:'LoginForm'
 })(

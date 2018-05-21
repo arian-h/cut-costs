@@ -52,7 +52,7 @@ class NewExpense extends Component {
             <Field name="title" validate={ validateName } label="Name" type="text" component={ renderInputField }/>
             <Field name="description" validate={ validateDescription } label="Description" type="text" component={ renderTextAreaField }/>
             <Field name="amount" validate={ validateAmount } label="Amount" type="text" component={ renderInputField }/>
-            <Field name="image" validate={validateImage} label="Item photo" onChange={this._onImagePreviewChange.bind(this)} previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
+            <Field name="image" validate={ validateImage } label="Photo" onChange={ this._onImagePreviewChange.bind(this) } previewUrl={ imagePreviewUrl } component={ renderDropzoneField } />
             { this.state.error ? <span>{this.state.error}</span> : <noscript/> }
           </Form>
         </Modal.Content>,
