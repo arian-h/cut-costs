@@ -1,10 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import Dropzone from 'react-dropzone';
-import { Form, Message, Input, TextArea } from 'semantic-ui-react'
+import { Form, Message, Input, TextArea, Image } from 'semantic-ui-react'
 
 export const renderInputField = function({ input, transparent, size, id, placeholder, label, type, meta: { touched, error } }) {
-    return renderField(<Input size={ size } transparent={transparent} { ...input } id={ id } type={ type } placeholder={ placeholder } />, id, label, touched, error);
+    return renderField(<Input size={ size } transparent={ transparent } { ...input } id={ id } type={ type } placeholder={ placeholder } />, id, label, touched, error);
 }
 
 export const renderTextAreaField = function({ input, rows, transparent, id, placeholder, label, meta: { touched, error } }) {
@@ -15,16 +15,14 @@ export const renderDropzoneField = function ({ input, previewUrl, name, label, i
   return (
     <div>
       <Dropzone
-        name={name}
-        onDrop={filesToUpload => input.onChange(filesToUpload)}
+        name={ name }
+        onDrop={ filesToUpload => input.onChange(filesToUpload) }
         accepts="image/*"
-        maxSize={1048576}
+        maxSize={ 1048576 }
       >
-        { previewUrl ? <img src={ previewUrl } className="image-preview"/> : <span>{ label }</span> }
+        { previewUrl ? <Image src={ previewUrl } className="image-preview" size="medium" rounded/> : <span>{ label }</span> }
       </Dropzone>
-      {dirty &&
-        (error && <span>{error}</span>)
-      }
+      { dirty && error && <span>{ error }</span> }
     </div>
   );
 }

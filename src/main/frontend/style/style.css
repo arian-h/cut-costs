@@ -5,59 +5,8 @@
   margin-top: 5%;
 }
 
-.auth-switch-link {
-  margin-left: 20px;
-}
-
-.modal-container {
-  position: fixed;
-  top: 25%;
-  left: 35%;
-  right: 40px;
-  bottom: 40px;
-  border: 1px solid #ccc;
-  background: #fff;
-  overflow: auto;
-  border-radius: 4px;
-  outline: none;
-  padding: 20px;
-  display: block;
-}
-
-.new-group-modal {
-	width: 30%;
-	height: 30%;
-}
-/*
-.group-table thead {
-	background-color: grey;
-}
-
-.group-table thead td {
-	padding-right: 100px;
-}*/
-
-.show-group .name-field {
-	border: none;
-	display: inline;
-	font-family: inherit;
-	font-size: inherit;
-	padding: none;
-	width: auto;
-}
-
-.show-group .desc-field {
-	border: none;
-	display: inline;
-	font-family: inherit;
-	font-size: inherit;
-	padding: none;
-	width: 40%;
-}
-
 .image-preview {
-	height: 200px;
-	width: 200px;
+	object-fit: fill;
 }
 
 .transparent-textarea {

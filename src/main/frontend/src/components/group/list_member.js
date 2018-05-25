@@ -53,7 +53,7 @@ class MemberList extends Component {
 
     let configs = [
       {
-        name: 'name',
+        value: member => member.name,
         label: 'Name'
       }
     ];

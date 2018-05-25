@@ -54,23 +54,23 @@ class InvitationList extends Component {
         return <div>{ this.props.error }</div>;
       }
       const { invitations } = props;
-      var invitationsListData = _.map(invitations, function(invitation){
-        return {
+      var invitationsListData = _.map(invitations, invitation =>
+        ({
           id: invitation.id,
           inviterId: invitation.inviter.id,
           inviter: invitation.inviter.name,
           groupId: invitation.group.id,
           group: invitation.group.name
-        };
-      });
+        })
+      );
       let configs = [
         {
-          name: 'inviter',
+          value: invitation => invitation.name,
           label: 'Inviter',
           href: invitation => '/user/' + invitation.inviterId
         },
         {
-          name: 'group',
+          value: invitation => invitation.group,
           label: 'Group',
           href: invitation => '/group/' + invitation.groupId
         }

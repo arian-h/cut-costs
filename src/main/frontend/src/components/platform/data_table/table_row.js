@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
-import { Table, Dropdown } from 'semantic-ui-react'
+import { Table, Dropdown, Image } from 'semantic-ui-react'
 
 class TableRow extends Component {
   render() {
@@ -23,22 +23,23 @@ class TableRow extends Component {
     }
     return (
       <Table.Row>
-        {_.map(data, cellData => {
-            let element;
-            if (cellData.image) {
-              element =
-                <Table.Cell>
-                    <Image src={ cellData.image } rounded size='mini' />
-                    { cellData.value }
-                </Table.Cell>;
-            } else {
-              element = <Table.Cell>{ cellData.value }</Table.Cell>;
-            }
-            if (cellData.href) {
-              element = <Table.Cell><Link to={ cellData.href }>{ cellData.value }</Link></Table.Cell>;
-            }
-            return element;
-        })}
+          {_.map(data, cellData => {
+              let element;
+              if (cellData.avatar) {
+                element =
+                  <Table.Cell>
+                      <Image src={ cellData.avatar } avatar />
+                      { cellData.value }
+                  </Table.Cell>;
+              } else {
+                element = <Table.Cell>{ cellData.value }</Table.Cell>;
+              }
+              if (cellData.href) {
+                element = <Table.Cell><Link to={ cellData.href }>{ cellData.value }</Link></Table.Cell>;
+              }
+              return element;
+          })
+        }
         <Table.Cell>{ actionMenu }</Table.Cell>
       </Table.Row>
     );

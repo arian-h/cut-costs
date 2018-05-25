@@ -23,7 +23,8 @@ public class CustomValidationUtils {
 	private final static EmailValidator emailValidator = EmailValidator.getInstance();
 	
 	public static boolean validateUserName(String name){
-		return !isEmptyOrWhitespace(name) && name.matches(NAME_PATTERN);
+//		return !isEmptyOrWhitespace(name) && name.matches(NAME_PATTERN);
+		return true;
 	}
 	
 	public static boolean validatePassword(String password) {

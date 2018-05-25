@@ -9,17 +9,14 @@ class ComponentsNavBar extends Component {
   render() {
     const { activeItem } = this.props;
     return (
-      <div>
-        {_.map(ComponentsList, navItem =>
-            <Menu.Item as={ Link } to={ navItem.path } active={ activeItem === navItem.name } name={ navItem.name }>
-              <Icon name={navItem.icon} />
-              { navItem.title }
-            </Menu.Item>
-        )}
-      </div>
+      _.map(ComponentsList, navItem =>
+          <Menu.Item as={ Link } to={ navItem.path } active={ activeItem === navItem.name } name={ navItem.name }>
+            <Icon name={ navItem.icon } />
+            { navItem.title }
+          </Menu.Item>
+        )
     );
   }
-
 }
 
 export default ComponentsNavBar;

@@ -18,10 +18,10 @@ import LoginForm from './components/auth/form_login';
 import ShowGroup from './components/group/show_group';
 import ShowExpense from './components/expense/show_expense';
 import InvitationList from './components/invitation/list_invitation';
-import ShowUser from './components/user/show_user';
+import Profile from './components/user/profile';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-export const store = createStoreWithMiddleware(rootReducer); // TODO do we need to export ?
+const store = createStoreWithMiddleware(rootReducer);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -41,7 +41,7 @@ ReactDOM.render(
             <PrivateRoute exact path="/expense" component={ExpenseList}/>
             <PrivateRoute exact path="/expense/:id" component={ShowExpense}/>
             <PrivateRoute exact path="/invitation" component={InvitationList}/>
-            <PrivateRoute exact path="/user/:id?" component={ShowUser}/>
+            <PrivateRoute exact path="/profile" component={Profile}/>
             <PrivateRoute component={Home}/>
           </Switch>
         </div>

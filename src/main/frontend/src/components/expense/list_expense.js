@@ -50,21 +50,22 @@ class ExpenseList extends Component {
 
     let configs = [
       {
-        name: 'title',
+        value: expense => expense.title,
         label: 'Title',
         href: expense => '/expense/' + expense.id
       },
       {
-        name: 'ownerName',
-        label: 'Posted By'
+        value: expense => expense.ownerName,
+        label: 'Posted By',
+        avatar: expense => 'http://react.semantic-ui.com/assets/images/avatar/small/stevie.jpg'
       },
       {
-        name: 'groupName',
+        value: expense => expense.groupName,
         label: 'Group',
         href: expense => '/group/' + expense.groupId
       },
       {
-        name: 'amount',
+        value: expense => expense.amount,
         label: 'Amount'
       }
     ];

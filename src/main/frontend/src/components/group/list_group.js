@@ -54,20 +54,20 @@ class GroupList extends Component {
 
     let configs = [
       {
-        name: 'name',
+        value: group => group.name,
         label: 'Group',
         href: group => '/group/' + group.id
       },
       {
-        name: 'description',
+        value: group => group.description,
         label: 'Description'
       },
       {
-        name: 'numberOfExpenses',
+        value: group => group.numberOfExpenses,
         label: 'Expenses'
       },
       {
-        name: 'numberOfMembers',
+        value: group => group.numberOfMembers,
         label: 'Members'
       }
     ];
