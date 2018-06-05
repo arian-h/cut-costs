@@ -5,21 +5,12 @@ import { Table } from 'semantic-ui-react'
 
 class DataTable extends Component {
   render() {
-    const { className, configs, data: entities, actions } = this.props;
+    const { data: entities, columns, rowConfig } = this.props;
     return (
-      <Table celled compact padded>
-        <TableHeader data={ configs } actions={ actions }/>
+      <Table compact padded singleLine>
+        <TableHeader data={ entities } columns={ columns }/>
         <Table.Body>
-          {_.map(entities, entity =>
-             <TableRow id={ entity.id } actions={ actions }
-               data={_.map(configs, config => ({
-                   value: config.value && config.value(entity),
-                   href: config.href && config.href(entity),
-                   avatar: config.avatar && config.avatar(entity)
-                 })
-               )}
-             />
-         )}
+          { _.map(entities, entity => <TableRow data={ entity } rowConfig={ rowConfig }/>) }
         </Table.Body>
       </Table>
     );

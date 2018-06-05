@@ -76,17 +76,17 @@ class ShowExpense extends Component {
     let expense = props.expense;
     let sharers = expense.sharers;
 
-    let sharersTableConfig = [
-      {
-        name: 'name',
-        label: 'Name'
+    let columns = [
+      () => <span>Contributor</span>,
+      () => {}
+    ];
+    let rowConfig = [
+      contributor => {
+        if (this._sharerRemoveActionEnabled(contributor.id)) {
+          return this._onRemoveSharer(contributor.id);
+        }
       }
     ];
-    let sharersTableAction = [{
-      isEnabled: this._sharerRemoveActionEnabled.bind(this),
-      action: this._onRemoveSharer.bind(this),
-      label: 'Remove'
-    }];
 
     return (
       <div className="show-expense">
@@ -120,7 +120,7 @@ class ShowExpense extends Component {
           />
         </Form>
         <p>Owner name: { expense.owner.name }</p>
-        <DataTable className="sharer-table" data={ _.values(sharers) } configs={ sharersTableConfig } actions={ sharersTableAction }/>
+        <DataTable data={ _.values(sharers) } rowConfig={ rowConfig } columns={ columns }/>
         <Button onClick={ this._addSharer } content="Add Sharer" />
       </div>
     );

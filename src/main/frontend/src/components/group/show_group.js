@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import DataTable from '../platform/data_table';
@@ -96,21 +97,20 @@ class ShowGroup extends Component {
     let group = props.group;
     let expenses = group.expenses;
 
-    let expenseConfigs = [
-      {
-        name: 'title',
-        label: 'Title'
-      },
-      {
-        name: 'amount',
-        label: 'Amount'
+    let columns = [
+      () => <span>Expense</span>,
+      () => <span>Amount</span>,
+      () => {}
+    ];
+    let rowConfig = [
+      expense => <Link to={ '/expense/' + expense.id }>{ expense.title } </Link>,
+      expense => <span>{ expense.amount }</span>,
+      expense => {
+        if (this._expenseDeleteActionEnabled(expense.id)) {
+          return <Button onClick={this._onExpenseDelete.bind(this, expense.id)}>Delete</Button>;
+        }
       }
     ];
-    let expenseActions = [{
-      isEnabled: this._expenseDeleteActionEnabled.bind(this),
-      action: this._onExpenseDelete,
-      label: 'Delete'
-    }];
 
     return (
       <div className="show-group">
@@ -148,7 +148,7 @@ class ShowGroup extends Component {
         <Button icon='money' content='Add Expense' labelPosition='right' floated='right' onClick={this._addExpense}/>
         <Button icon='add user' content='Invite User' labelPosition='right' floated='right' onClick={this._inviteUser}/>
         {expenses.length > 0 ?
-          <DataTable data={_.values(expenses)} configs={expenseConfigs} actions={expenseActions}/>
+          <DataTable data={_.values(expenses)} columns={ columns } rowConfig={ rowConfig }/>
           : <noscript/>}
       </div>
     );

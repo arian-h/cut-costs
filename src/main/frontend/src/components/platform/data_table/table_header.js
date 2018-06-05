@@ -4,12 +4,15 @@ import { Table } from 'semantic-ui-react'
 
 class TableHeader extends Component {
   render() {
-    const { data, actions } = this.props;
+    const { data, columns } = this.props;
     return (
       <Table.Header>
         <Table.Row>
-          {_.map(data, cellData => <Table.HeaderCell>{ cellData.label }</Table.HeaderCell>)}
-          { actions && actions.length && <Table.HeaderCell></Table.HeaderCell> }
+          {
+            _.map(columns, column => {
+              return <Table.HeaderCell>{ column(data) }</Table.HeaderCell>;
+            })
+          }
         </Table.Row>
       </Table.Header>
     );

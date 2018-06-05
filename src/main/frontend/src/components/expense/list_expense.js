@@ -48,37 +48,30 @@ class ExpenseList extends Component {
       return <div>{this.props.error}</div>;
     }
 
-    let configs = [
-      {
-        value: expense => expense.title,
-        label: 'Title',
-        href: expense => '/expense/' + expense.id
-      },
-      {
-        value: expense => expense.ownerName,
-        label: 'Posted By',
-        avatar: expense => 'http://react.semantic-ui.com/assets/images/avatar/small/stevie.jpg'
-      },
-      {
-        value: expense => expense.groupName,
-        label: 'Group',
-        href: expense => '/group/' + expense.groupId
-      },
-      {
-        value: expense => expense.amount,
-        label: 'Amount'
+    let columns = [
+        () => <span>Expense</span>,
+        () => <span>Posted by</span>,
+        () => <span>Group</span>,
+        () => <span>Amount</span>,
+        () => {}
+    ];
+
+    let rowConfig = [
+      expense => <Link to={ '/expense/' + expense.id }>{ expense.title }</Link>,
+      expense => <Link to='http://react.semantic-ui.com/assets/images/avatar/small/stevie.jpg'>{ expense.ownerName }</Link>,
+      expense => <Link to={'/group/' + expense.groupId}>{ expense.groupName }</Link>,
+      expense => <span>{ expense.amount }</span>,
+      expense => {
+          if (this._deleteActionEnabled(expense.id)) {
+            return <Button onClick={this._onDelete.bind(this, expense.id)}>Delete</Button>;
+          }
       }
     ];
-    let actions = [{
-      isEnabled: this._deleteActionEnabled,
-      action: this._onDelete,
-      label: 'Delete'
-    }];
 
     const { expenses } = props;
 
     return ( _.isEmpty(expenses) ? <div>No expense posted yet !</div> :
-      <DataTable className="expense-table" data={ _.values(expenses) } configs={ configs } actions={ actions }/>
+      <DataTable data={ _.values(expenses) } columns={ columns } rowConfig={ rowConfig }/>
     );
   }
 }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Button } from 'semantic-ui-react';
 
 import DataTable from '../platform/data_table';
 import { fetchMembers, removeMember } from '../../actions';
@@ -50,18 +51,18 @@ class MemberList extends Component {
     if (state.error) {
       return <div>{props.error}</div>;
     }
-
-    let configs = [
-      {
-        value: member => member.name,
-        label: 'Name'
+    let columns = [
+      () => <span>Member</span>,
+      () => {}
+    ];
+    let rowConfig = [
+      member => <span>{ member.name }</span>,
+      member => {
+        if (this._removeActionEnabled(member.id)) {
+          return <Button onClick={this._onRemove.bind(this, member.id)}>Delete</Button>;
+        }
       }
     ];
-    let actions = [{
-      isEnabled: this._removeActionEnabled.bind(this),
-      action: this._onRemove.bind(this),
-      label: 'Remove'
-    }];
 
     let members = props.members[props.groupId];
     return ([
@@ -72,7 +73,7 @@ class MemberList extends Component {
           {
             _.isEmpty(members) ? <div>No member listed !</div> :
               <div>
-                  <DataTable className="member-table" data={ _.values(members) } configs={ configs } actions={ actions }/>
+                  <DataTable className="member-table" data={ _.values(members) } columns={ columns } rowConfig={ rowConfig }/>
                   { state.removeError ? <span>{state.removeError}</span>:<noscript/> }
               </div>
           }

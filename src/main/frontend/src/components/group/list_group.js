@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Grid, Button, Icon, Modal } from 'semantic-ui-react'
 
 import { fetchGroups, deleteGroup } from '../../actions';
-import DataTable, { TEXT_CELL } from '../platform/data_table';
-import { Grid, Button, Icon, Modal } from 'semantic-ui-react'
+import DataTable from '../platform/data_table';
 import NewGroup from './new_group';
 import Spinner from '../platform/spinner';
 
@@ -42,6 +42,14 @@ class GroupList extends Component {
     this.setState({ showNewGroupModal: true });
   }
 
+  _onSubscribe = () => {
+
+  }
+
+  _subscribed = () => {
+    return true;
+  }
+
   render() {
     const { props, state } = this;
 
@@ -51,32 +59,36 @@ class GroupList extends Component {
     if (state.error) {
       return <div>{this.props.error}</div>;
     }
-
-    let configs = [
-      {
-        value: group => group.name,
-        label: 'Group',
-        href: group => '/group/' + group.id
+    let columns = [
+        () => <span>Group</span>,
+        () => <span>Number of expenses</span>,
+        () => <span>Number of members</span>,
+        () => {},
+        () => {}
+    ];
+    let rowConfig = [
+      group => {
+        return <Link to={ '/group/' + group.id }>{ group.name }</Link>
       },
-      {
-        value: group => group.description,
-        label: 'Description'
+      group => {
+        return group.numberOfExpenses
       },
-      {
-        value: group => group.numberOfExpenses,
-        label: 'Expenses'
+      group => {
+        return group.numberOfMembers
       },
-      {
-        value: group => group.numberOfMembers,
-        label: 'Members'
+      group => {
+        if (this._deleteActionEnabled(group.id)) {
+          return <Button onClick={this._onDelete.bind(this, group.id)}>Delete</Button>;
+        }
+      },
+      group => {
+        if (this._subscribed(group.id)) {
+          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon><Icon name='star' color='yellow'/></Button>;
+        } else {
+          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon><Icon name='star outline' color='yellow'/></Button>;
+        }
       }
     ];
-    let actions = [{
-      isEnabled: this._deleteActionEnabled,
-      action: this._onDelete,
-      label: 'Delete',
-      icon: 'delete'
-    }];
 
     const { groups } = props;
 
@@ -95,7 +107,7 @@ class GroupList extends Component {
           </Grid.Row>
           <Grid.Row>
             {_.isEmpty(groups) ? <div>No group listed !</div>
-              : <DataTable className="group-table" data={_.values(groups)} configs={configs} actions={actions}/>}
+              : <DataTable data={ _.values(groups) } rowConfig={ rowConfig } columns={ columns }/>}
           </Grid.Row>
         </Grid>
       </div>

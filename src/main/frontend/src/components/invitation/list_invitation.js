@@ -63,33 +63,23 @@ class InvitationList extends Component {
           group: invitation.group.name
         })
       );
-      let configs = [
-        {
-          value: invitation => invitation.name,
-          label: 'Inviter',
-          href: invitation => '/user/' + invitation.inviterId
+      let columns = [
+        () => <span>Inviter</span>,
+        () => <span>Group</span>
+      ];
+      let rowConfig = [
+        invitation => <Link to={ '/user/' + invitation.inviterId }>{ invitation.name }</Link>,
+        invitation => <Link to={ '/group/' + invitation.groupId }>{ invitation.group }</Link>,
+        invitation => {
+          return <Button onClick={this._onAccept.bind(this, invitation.id)}>Accept</Button>;
         },
-        {
-          value: invitation => invitation.group,
-          label: 'Group',
-          href: invitation => '/group/' + invitation.groupId
+        invitation => {
+          return <Button onClick={this._onReject.bind(this, invitation.id)}>Reject</Button>;
         }
       ];
-      let actions = [{
-        isEnabled: () => true,
-        action: this._onReject,
-        label: 'Reject'
-      }
-      ,
-      {
-        isEnabled: () => true,
-        action: this._onAccept,
-        label: 'Accept'
-      }
-    ];
 
     return ( _.isEmpty(invitations) ? <div>Not invited to any group yet!</div>
-      : <DataTable className="invitation-table" data={_.values(invitationsListData)} configs={configs} actions={actions}/>
+      : <DataTable data={_.values(invitationsListData)} columns={ columns } rowConfig={ rowConfig }/>
     );
   }
 }
