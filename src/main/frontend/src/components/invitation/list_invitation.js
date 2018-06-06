@@ -28,12 +28,10 @@ class InvitationList extends Component {
 
   _rejectInvitationErrorCallback = () => {
     //TODO: fix this
-    debugger;
   }
 
   _acceptInvitationErrorCallback = () => {
     //TODO: fix this
-    debugger;
   }
 
   _onReject = invitationId => {

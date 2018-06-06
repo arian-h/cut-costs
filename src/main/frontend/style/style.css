@@ -12,3 +12,7 @@
 .transparent-textarea {
 	border: none !important;
 }
+
+.subscribe-button {
+	box-shadow: 0 0 0 0 !important;
+}

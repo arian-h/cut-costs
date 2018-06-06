@@ -56,10 +56,14 @@ public class Group implements Serializable {
 	@Column(name="name")
 	private String name;
 
+	@Column(name="subscribed")
+	private Boolean subscribed;
+
 	public Group() {
 		this.expenses = new ArrayList<Expense>();
 		this.members = new ArrayList<User>();
 		this.invitations = new ArrayList<Invitation>();
+		this.subscribed = false;
 	}
 
 	public long getId() {
@@ -136,6 +140,14 @@ public class Group implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isSubscribed() {
+		return subscribed;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
 	}
 
 	@Override

@@ -35,7 +35,6 @@ class ExpenseList extends Component {
 
   _deleteExpenseErrorCallback = id => {
     // TODO: complete this part
-    debugger;
   }
 
   render() {

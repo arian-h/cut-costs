@@ -165,4 +165,15 @@ public class GroupService {
 	public boolean isMemberOrAdmin(Group group, User user) {
 		return group.isMember(user) || group.isAdmin(user);
 	}
+
+	public void alterSubscription(long groupId, boolean subscribe, String username) {
+		Group group = this.loadById(groupId);
+		User user = userService.loadByUsername(username);
+		validateMemberAccessToGroup(group, user);
+		group.setSubscribed(subscribe);
+		groupRepository.save(group);
+		logger.debug("User with id " + user.getId()
+				+ (subscribe ? " subscribed to " : " unsubscribed from ")
+				+ "group with id " + groupId);
+	}
 }

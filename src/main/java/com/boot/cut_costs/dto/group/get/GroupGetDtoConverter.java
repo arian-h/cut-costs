@@ -35,12 +35,13 @@ public class GroupGetDtoConverter {
 				GroupSnippetGetDto target = new GroupSnippetGetDto();
 				target.setId(source.getId());
 				target.setName(source.getName());
-				target.setNumberOfMembers(source.getMembers().size() + 1); //including the admin
+				target.setNumberOfMembers(source.getMembers().size() + 1); // +1 for admin
 				target.setNumberOfExpenses(source.getExpenses().size());
 				target.setIsAdmin(source.isAdmin(loggedInUser));
+				target.setTotalAmount(source.getExpenses().stream().map(expense -> expense.getAmount()).mapToLong(amount -> amount).sum());
 				return target;
 			};
-			modelMapper.createTypeMap(Group.class, GroupSnippetGetDto.class).setConverter(converter);			
+			modelMapper.createTypeMap(Group.class, GroupSnippetGetDto.class).setConverter(converter);
 		}
 		return modelMapper.map(group, GroupSnippetGetDto.class);
     }
@@ -55,6 +56,7 @@ public class GroupGetDtoConverter {
     			target.setDescription(source.getDescription());
     			target.setAdmin(userDtoConverter.convertToDto(source.getAdmin()));
     			target.setIsAdmin(source.isAdmin(loggedInUser));
+				target.setTotalAmount(source.getExpenses().stream().map(expense -> expense.getAmount()).mapToLong(amount -> amount).sum());
     			target.setExpenses(source.getExpenses().stream()
     					.map(expense -> expenseDtoConverter.convertToDto(expense, loggedInUser))
     					.collect(Collectors.toList()));
@@ -63,6 +65,6 @@ public class GroupGetDtoConverter {
     		modelMapper.createTypeMap(Group.class, GroupExtendedGetDto.class).setConverter(converter);    		
     	}
 		return modelMapper.map(group, GroupExtendedGetDto.class);
-    }
+	}
 
 }

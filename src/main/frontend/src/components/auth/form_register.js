@@ -12,7 +12,6 @@ import { renderInputField } from '../../helpers/form_utils';
 class RegisterForm extends Component {
 
   _failedSignupCallback() {
-    debugger;
     //show up the message
   }
 

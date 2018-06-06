@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.cut_costs.dto.group.get.GroupExtendedGetDto;
@@ -132,6 +133,19 @@ public class GroupController {
 	@RequestMapping(path = "/{groupId}/user/{userId}", method = RequestMethod.DELETE)
 	public long removeMember(@PathVariable long groupId, @PathVariable long userId, Principal principal) {
 		return groupService.removeMember(groupId, userId, principal.getName());
+	}
+
+	/**
+	 * Subscribe to a group
+	 * Subscriber should be a group member
+	 * @param groupId
+	 * @param subscribe whether to subscribe (true) to a group 
+	 * or unsubscribe (false) from a group
+	 * @param principal
+	 */
+	@RequestMapping(path = "/{groupId}/subscribe", method = RequestMethod.POST)
+	public void subscribe(@PathVariable long groupId, @RequestParam(required=true, value="value") boolean subscribe, Principal principal) {
+		groupService.alterSubscription(groupId, subscribe, principal.getName());
 	}
 
 }

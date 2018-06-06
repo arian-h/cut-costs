@@ -12,7 +12,6 @@ import { renderInputField, validate } from '../../helpers/form_utils';
 class LoginForm extends Component {
 
   _unauthorizedLoginCallback() {
-    debugger;
     //TODO: set the state to show an error
   }
 

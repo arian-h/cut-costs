@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { Grid, Button, Icon, Modal } from 'semantic-ui-react'
 
-import { fetchGroups, deleteGroup } from '../../actions';
+import { fetchGroups, deleteGroup, subscribeToGroup } from '../../actions';
 import DataTable from '../platform/data_table';
 import NewGroup from './new_group';
 import Spinner from '../platform/spinner';
@@ -42,12 +42,12 @@ class GroupList extends Component {
     this.setState({ showNewGroupModal: true });
   }
 
-  _onSubscribe = () => {
-
+  _onSubscribe = groupId => {
+    this.props.subscribeToGroup(groupId, !this._subscribed(groupId));
   }
 
-  _subscribed = () => {
-    return true;
+  _subscribed = groupId => {
+    return this.props.groups[groupId].subscribed;
   }
 
   render() {
@@ -63,19 +63,15 @@ class GroupList extends Component {
         () => <span>Group</span>,
         () => <span>Number of expenses</span>,
         () => <span>Number of members</span>,
+        () => <span>Total expenses</span>,
         () => {},
         () => {}
     ];
     let rowConfig = [
-      group => {
-        return <Link to={ '/group/' + group.id }>{ group.name }</Link>
-      },
-      group => {
-        return group.numberOfExpenses
-      },
-      group => {
-        return group.numberOfMembers
-      },
+      group => <Link to={ '/group/' + group.id }>{ group.name }</Link>,
+      group => group.numberOfExpenses,
+      group => group.numberOfMembers,
+      group => group.totalAmount,
       group => {
         if (this._deleteActionEnabled(group.id)) {
           return <Button onClick={this._onDelete.bind(this, group.id)}>Delete</Button>;
@@ -83,15 +79,15 @@ class GroupList extends Component {
       },
       group => {
         if (this._subscribed(group.id)) {
-          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon><Icon name='star' color='yellow'/></Button>;
+          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon basic className='subscribe-button'><Icon name='star' color='yellow'/></Button>;
         } else {
-          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon><Icon name='star outline' color='yellow'/></Button>;
+          return <Button onClick={this._onSubscribe.bind(this, group.id)} icon basic className='subscribe-button'><Icon name='star' color='grey'/></Button>;
         }
       }
     ];
 
     const { groups } = props;
-
+    console.log(groups);
     return (
       <div>
         <Modal open={ state.showNewGroupModal } onClose={ this._closeNewGroupModal } closeIcon>
@@ -124,7 +120,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => {
     return {
         fetchGroups: (successCallback, errorCallback) => dispatch(fetchGroups(successCallback, errorCallback)),
-        deleteGroup: id => dispatch(deleteGroup(id))
+        deleteGroup: id => dispatch(deleteGroup(id)),
+        subscribeToGroup: (groupId, subscribe) => dispatch(subscribeToGroup(groupId, subscribe))
     };
 };
 /* This is where action creator is connected to the component and

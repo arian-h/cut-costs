@@ -1,22 +1,54 @@
 import _ from 'lodash';
-import { FETCH_GROUPS, CREATE_GROUP, DELETE_GROUP, FETCH_GROUP, CREATE_EXPENSE, DELETE_EXPENSE_FROM_GROUP, UPDATE_GROUP } from '../actions/creators';
+import {
+  FETCH_GROUPS,
+  CREATE_GROUP,
+  DELETE_GROUP,
+  FETCH_GROUP,
+  CREATE_EXPENSE,
+  DELETE_EXPENSE_FROM_GROUP,
+  UPDATE_GROUP,
+  SUBSCRIBE_GROUP,
+  UNSUBSCRIBE_GROUP
+} from '../actions/creators';
 
-export default function(state={}, action) {
-  switch(action.type) {
+export default function(state = {}, action) {
+  switch (action.type) {
     case FETCH_GROUPS:
-      return _.mapKeys(action.payload, 'id');
+      return _.mapKeys(action.groups, 'id');
     case FETCH_GROUP:
-      return {...state, [action.payload.id]: action.payload};
+      return { ...state,
+        [action.group.id]: action.group
+      };
     case CREATE_GROUP:
-      return { ...state, [action.payload.id]: action.payload};
+      return { ...state,
+        [action.group.id]: action.group
+      };
     case DELETE_GROUP:
-      return _.omit(state, action.payload.data);
+      return _.omit(state, action.group);
     case UPDATE_GROUP:
-      return {...state, [action.group.id]: action.group};
+      return { ...state,
+        [action.group.id]: action.group
+      };
     case CREATE_EXPENSE:
-      return { ...state, [action.groupId]: { ...state[action.groupId], expenses: [...state[action.groupId].expenses.slice(0), action.payload]}};
+      return { ...state,
+        [action.groupId]: { ...state[action.groupId],
+          expenses: [...state[action.groupId].expenses.slice(0), action.expense]
+        }
+      };
     case DELETE_EXPENSE_FROM_GROUP:
-      return { ...state, [action.groupId]: { ...state[action.groupId], expenses: _.filter(state[action.groupId].expenses, expense =>  expense.id !== action.expenseId)}};
+      return { ...state,
+        [action.groupId]: { ...state[action.groupId],
+          expenses: _.filter(state[action.groupId].expenses, expense => expense.id !== action.expenseId)
+        }
+      };
+    case SUBSCRIBE_GROUP:
+      return { ...state,
+        [action.groupId]: {...state[action.groupId], subscribed: true}
+      };
+    case UNSUBSCRIBE_GROUP:
+      return { ...state,
+        [action.groupId]: {...state[action.groupId], subscribed: false}
+      };
     default:
       return state;
   }

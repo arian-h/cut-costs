@@ -1,16 +1,39 @@
 import axios from 'axios';
 import history from '../history';
-import { userFetched, invitationAccepted, invitationRejected, userUpdated, groupDeleted, groupsFetched, groupCreated, groupFetched, groupUpdated, membersFetched, memberRemoved, expenseUpdated, expenseCreated, expenseDeletedFromGroup, expensesFetched, expenseDeleted, expenseFetched, sharerAdded, sharerRemoved, invitationsFetched } from './creators';
+import {
+  userFetched,
+  invitationAccepted,
+  invitationRejected,
+  userUpdated,
+  groupDeleted,
+  groupsFetched,
+  groupCreated,
+  groupFetched,
+  groupUpdated,
+  membersFetched,
+  memberRemoved,
+  expenseUpdated,
+  expenseCreated,
+  expenseDeletedFromGroup,
+  expensesFetched,
+  expenseDeleted,
+  expenseFetched,
+  sharerAdded,
+  sharerRemoved,
+  invitationsFetched,
+  groupSubscribed,
+  groupUnsubscribed
+} from './creators';
 import { logout } from '../helpers/auth_utils'
 
 const ROOT_URL = "http://localhost:8443/api";
 const AUTH_ENDPOINT_URL = `${ROOT_URL}/auth`;
 const LOGIN_ENDPOINT = `${AUTH_ENDPOINT_URL}/login`;
 const REGISTER_ENDPOINT = `${AUTH_ENDPOINT_URL}/signup`;
-const GROUP_ENDPOINT = `${ROOT_URL}/group/`;
-const EXPENSE_ENDPOINT = `${ROOT_URL}/expense/`;
-const INVITATION_ENDPOINT = `${ROOT_URL}/invitation/`;
-const USER_ENDPOINT = `${ROOT_URL}/user/`;
+const GROUP_ENDPOINT = `${ROOT_URL}/group`;
+const EXPENSE_ENDPOINT = `${ROOT_URL}/expense`;
+const INVITATION_ENDPOINT = `${ROOT_URL}/invitation`;
+const USER_ENDPOINT = `${ROOT_URL}/user`;
 
 function getAuthorizationHeader() {
   return {
@@ -95,7 +118,7 @@ export function updateUser(values, errorCallback) {
 
 export function fetchUser(userId, successCallback, errorCallback) {
   return dispatch => {
-    axios.get(`${USER_ENDPOINT}${userId}`, getAuthorizationHeader())
+    axios.get(`${USER_ENDPOINT}/${userId}`, getAuthorizationHeader())
       .then(response => {
         dispatch(userFetched(response.data));
       })
@@ -140,7 +163,7 @@ export function inviteUser(inviterId, inviteeId, groupId, successCallback, error
 
 export function rejectInvitation(invitationId, errorCallback) {
   return dispatch => {
-    axios.post(`${INVITATION_ENDPOINT}${invitationId}/reject`, {}, getAuthorizationHeader())
+    axios.post(`${INVITATION_ENDPOINT}/${invitationId}/reject`, {}, getAuthorizationHeader())
       .then(response => {
         dispatch(invitationRejected(invitationId));
       })
@@ -161,7 +184,7 @@ export function rejectInvitation(invitationId, errorCallback) {
 
 export function acceptInvitation(invitationId, errorCallback) {
   return dispatch => {
-    axios.post(`${INVITATION_ENDPOINT}${invitationId}/accept`, {}, getAuthorizationHeader())
+    axios.post(`${INVITATION_ENDPOINT}/${invitationId}/accept`, {}, getAuthorizationHeader())
       .then(({data: group}) => {
         dispatch(groupCreated(group))
       })
@@ -207,7 +230,7 @@ export function fetchInvitations(successCallback, errorCallback) {
 
 export function fetchMembers(groupId, successCallback, errorCallback) {
   return dispatch => {
-    axios.get(`${GROUP_ENDPOINT}${groupId}/user`, getAuthorizationHeader())
+    axios.get(`${GROUP_ENDPOINT}/${groupId}/user`, getAuthorizationHeader())
       .then(response => {
           dispatch(membersFetched(response.data, groupId));
       })
@@ -229,7 +252,7 @@ export function fetchMembers(groupId, successCallback, errorCallback) {
 
 export function removeMember(groupId, memberId, errorCallback) {
   return dispatch => {
-    axios.delete(`${GROUP_ENDPOINT}${groupId}/user/${memberId}`, getAuthorizationHeader())
+    axios.delete(`${GROUP_ENDPOINT}/${groupId}/user/${memberId}`, getAuthorizationHeader())
       .then(response => {
           dispatch(memberRemoved(response.data, groupId));
       })
@@ -250,7 +273,7 @@ export function removeMember(groupId, memberId, errorCallback) {
 
 export function createExpense(formData, groupId, successCallback, errorCallback) {
   return dispatch => {
-    axios.post(`${EXPENSE_ENDPOINT}${groupId}`,
+    axios.post(`${EXPENSE_ENDPOINT}/${groupId}`,
       formData
     , getAuthorizationHeader())
       .then(({data}) => {
@@ -274,7 +297,7 @@ export function createExpense(formData, groupId, successCallback, errorCallback)
 
 export function removeSharer(sharerId, expenseId, errorCallback) {
   return dispatch => {
-    axios.delete(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, getAuthorizationHeader())
+    axios.delete(`${EXPENSE_ENDPOINT}/${expenseId}/sharer/${sharerId}`, getAuthorizationHeader())
       .then(() => {
         dispatch(sharerRemoved(sharerId, expenseId));
       })
@@ -295,7 +318,7 @@ export function removeSharer(sharerId, expenseId, errorCallback) {
 
 export function updateExpense(values, expenseId, errorCallback) {
   return dispatch => {
-    axios.put(`${EXPENSE_ENDPOINT}${expenseId}`,
+    axios.put(`${EXPENSE_ENDPOINT}/${expenseId}`,
       {
         ...values
       }, getAuthorizationHeader())
@@ -319,7 +342,7 @@ export function updateExpense(values, expenseId, errorCallback) {
 
 export function fetchExpense(expenseId, successCallback, errorCallback) {
   return dispatch => {
-    axios.get(`${EXPENSE_ENDPOINT}${expenseId}`, getAuthorizationHeader())
+    axios.get(`${EXPENSE_ENDPOINT}/${expenseId}`, getAuthorizationHeader())
       .then(({data}) => {
         dispatch(expenseFetched(data))
       })
@@ -361,7 +384,7 @@ export function fetchExpenses(successCallback, errorCallback) {
 
 export function deleteExpense(expenseId, groupId, errorCallback) {
   return dispatch => {
-    axios.delete(`${EXPENSE_ENDPOINT}${expenseId}`, getAuthorizationHeader())
+    axios.delete(`${EXPENSE_ENDPOINT}/${expenseId}`, getAuthorizationHeader())
       .then(() => {
         if (groupId) {
           dispatch(expenseDeletedFromGroup(expenseId, groupId)); // in case expense is being deleted from a group
@@ -384,9 +407,31 @@ export function deleteExpense(expenseId, groupId, errorCallback) {
     };
 }
 
+export function subscribeToGroup(groupId, subscribe) {
+  return dispatch => {
+    axios.post(`${GROUP_ENDPOINT}/${groupId}/subscribe?value=${subscribe}`, {}, getAuthorizationHeader())
+      .then(() => {
+        if (subscribe) {
+          dispatch(groupSubscribed(groupId));
+        } else {
+          dispatch(groupUnsubscribed(groupId));
+        }
+      }).catch(({response}) => {
+        if (!response) {
+          //Network error
+          //show a sticky message with offline message
+        } else {
+          if (response.status ===  401) { // Unauthorized
+            logout();
+          }
+        }
+      });
+    };
+}
+
 export function addSharer(sharerId, expenseId, successCallback, errorCallback) {
   return dispatch => {
-    axios.patch(`${EXPENSE_ENDPOINT}${expenseId}/sharer/${sharerId}`, {},
+    axios.patch(`${EXPENSE_ENDPOINT}/${expenseId}/sharer/${sharerId}`, {},
         getAuthorizationHeader())
       .then(({data}) => {
         dispatch(sharerAdded(expenseId, data));
@@ -429,7 +474,7 @@ export function fetchGroups(successCallback, errorCallback) {
 
 export function fetchGroup(id, successCallback, errorCallback) {
   return (dispatch) => {
-    axios.get(`${GROUP_ENDPOINT}${id}`, getAuthorizationHeader())
+    axios.get(`${GROUP_ENDPOINT}/${id}`, getAuthorizationHeader())
       .then(response => dispatch(groupFetched(response.data)))
       .then(() => successCallback())
       .catch(({response}) => {
@@ -449,7 +494,7 @@ export function fetchGroup(id, successCallback, errorCallback) {
 
 export function updateGroup(values, groupId, errorCallback) {
   return dispatch => {
-    axios.put(`${GROUP_ENDPOINT}${groupId}`,
+    axios.put(`${GROUP_ENDPOINT}/${groupId}`,
       {
         ...values
       }, getAuthorizationHeader())
@@ -497,10 +542,10 @@ export function createGroup(values, successCallback, errorCallback) {
 
 export function deleteGroup(groupID) {
   return dispatch => {
-    axios.delete(`${GROUP_ENDPOINT}${groupID}`, getAuthorizationHeader())
-      .then(response => {
-        dispatch(groupDeleted(response));
-      }).catch(response => { //TODO manually test it
+    axios.delete(`${GROUP_ENDPOINT}/${groupID}`, getAuthorizationHeader())
+      .then(({data}) => {
+        dispatch(groupDeleted(data));
+      }).catch(response => {
         if (!response) {
           //Network error
           //show a sticky message with offline message

@@ -17,78 +17,79 @@ export const FETCH_USER = 'fetch_user';
 export const UPDATE_EXPENSE = 'update_expense';
 export const UPDATE_GROUP = 'update_group';
 export const ADD_SHARER = 'add_sharer';
+export const SUBSCRIBE_GROUP = 'subscribe_group';
+export const UNSUBSCRIBE_GROUP = 'unsubscribe_group';
 
-export function groupDeleted(response) {
+export function groupDeleted(group) {
   return {
-     type: DELETE_GROUP,
-     payload: response
+    type: DELETE_GROUP,
+    group
   }
 }
 
 export function userFetched(user) {
   return {
-     type: FETCH_USER,
-     user
+    type: FETCH_USER,
+    user
   }
 }
 
 export function groupsFetched(groups) {
   return {
-     type: FETCH_GROUPS,
-     payload: groups
+    type: FETCH_GROUPS,
+    groups
   }
 }
 
 export function groupCreated(group) {
   return {
     type: CREATE_GROUP,
-    payload: group
+    group
   }
 }
 
 export function groupFetched(group) {
   return {
-     type: FETCH_GROUP,
-     payload: group
+    type: FETCH_GROUP,
+    group
   }
 }
 
 export function membersFetched(response, groupId) {
   return {
-     type: FETCH_MEMBERS,
-     payload: response,
-     groupId
+    type: FETCH_MEMBERS,
+    payload: response,
+    groupId
   }
 }
 
 export function memberRemoved(response) {
   return {
-     type: REMOVE_MEMBER,
-     payload: response
+    type: REMOVE_MEMBER,
+    payload: response
   }
 }
 
-export function expenseCreated(response, groupId) {
+export function expenseCreated(expense, groupId) {
   return {
-     type: CREATE_EXPENSE,
-     payload: response,
-     groupId
+    type: CREATE_EXPENSE,
+    expense,
+    groupId
   }
 }
 
 export function expenseDeletedFromGroup(expenseId, groupId) {
   return {
-     type: DELETE_EXPENSE_FROM_GROUP,
-     expenseId,
-     groupId
+    type: DELETE_EXPENSE_FROM_GROUP,
+    expenseId,
+    groupId
   }
 }
 
 export function expenseDeleted(expenseId) {
-  debugger;
   return {
-     type: DELETE_EXPENSE,
-     expenseId
+    type: DELETE_EXPENSE,
+    expenseId
   }
 }
 
@@ -161,5 +162,19 @@ export function sharerAdded(expenseId, sharer) {
     type: ADD_SHARER,
     sharer,
     expenseId
+  }
+}
+
+export function groupSubscribed(groupId) {
+  return {
+    type: SUBSCRIBE_GROUP,
+    groupId
+  }
+}
+
+export function groupUnsubscribed(groupId) {
+  return {
+    type: UNSUBSCRIBE_GROUP,
+    groupId
   }
 }
