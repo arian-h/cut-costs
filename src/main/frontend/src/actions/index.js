@@ -2,15 +2,13 @@ import axios from 'axios';
 import history from '../history';
 import {
   userFetched,
-  invitationAccepted,
-  invitationRejected,
+  invitationDecided,
   userUpdated,
   groupDeleted,
   groupsFetched,
   groupCreated,
   groupFetched,
   groupUpdated,
-  membersFetched,
   memberRemoved,
   expenseUpdated,
   expenseCreated,
@@ -138,13 +136,27 @@ export function fetchUser(userId, successCallback, errorCallback) {
   };
 }
 
-export function inviteUser(inviterId, inviteeId, groupId, successCallback, errorCallback) {
+export function searchUsers(searchTerm, groupId, successCallback) {
+  axios.get(`${USER_ENDPOINT}/search?term=${searchTerm}&groupId=${groupId}`,
+    getAuthorizationHeader())
+  .then(({data: users}) => {
+    successCallback(users)
+  })
+  .catch(({response}) => {
+    if (!response) {
+      //Network error
+      //show a sticky message with offline message
+    } else {
+      if (response.status ===  401) { // Unauthorized
+        logout();
+      }
+    }
+  });
+}
+
+export function inviteUser(inviteeId, groupId, successCallback, errorCallback) {
   return () => {
-    axios.post(INVITATION_ENDPOINT, {
-      inviteeId: inviteeId,
-      groupId: groupId,
-      inviterId: inviterId
-    }, getAuthorizationHeader())
+    axios.post(INVITATION_ENDPOINT, { inviteeId, groupId }, getAuthorizationHeader())
       .then(() => successCallback())
       .catch(({response}) => {
         if (!response) {
@@ -164,8 +176,8 @@ export function inviteUser(inviterId, inviteeId, groupId, successCallback, error
 export function rejectInvitation(invitationId, errorCallback) {
   return dispatch => {
     axios.post(`${INVITATION_ENDPOINT}/${invitationId}/reject`, {}, getAuthorizationHeader())
-      .then(response => {
-        dispatch(invitationRejected(invitationId));
+      .then(() => {
+        dispatch(invitationDecided(invitationId));
       })
       .catch(({response}) => {
         if (!response) {
@@ -185,11 +197,8 @@ export function rejectInvitation(invitationId, errorCallback) {
 export function acceptInvitation(invitationId, errorCallback) {
   return dispatch => {
     axios.post(`${INVITATION_ENDPOINT}/${invitationId}/accept`, {}, getAuthorizationHeader())
-      .then(({data: group}) => {
-        dispatch(groupCreated(group))
-      })
       .then(() => {
-        dispatch(invitationAccepted(invitationId)); // TODO change it remove invitation both for accept and reject
+        dispatch(invitationDecided(invitationId)); // TODO change it remove invitation both for accept and reject
       })
       .catch(({response}) => {
         if (!response) {
@@ -209,30 +218,8 @@ export function acceptInvitation(invitationId, errorCallback) {
 export function fetchInvitations(successCallback, errorCallback) {
   return dispatch => {
     axios.get(`${INVITATION_ENDPOINT}`, getAuthorizationHeader())
-      .then(response => {
-        dispatch(invitationsFetched(response.data));
-      })
-      .then(() => successCallback())
-      .catch(({response}) => {
-        if (!response) {
-          //Network error
-          //show a sticky message with offline message
-        } else {
-          if (response.status ===  401) { // Unauthorized
-            logout();
-          } else {
-            errorCallback(response.data.message);
-          }
-        }
-      })
-  };
-}
-
-export function fetchMembers(groupId, successCallback, errorCallback) {
-  return dispatch => {
-    axios.get(`${GROUP_ENDPOINT}/${groupId}/user`, getAuthorizationHeader())
-      .then(response => {
-          dispatch(membersFetched(response.data, groupId));
+      .then(({data}) => {
+        dispatch(invitationsFetched(data));
       })
       .then(() => successCallback())
       .catch(({response}) => {
@@ -253,8 +240,8 @@ export function fetchMembers(groupId, successCallback, errorCallback) {
 export function removeMember(groupId, memberId, errorCallback) {
   return dispatch => {
     axios.delete(`${GROUP_ENDPOINT}/${groupId}/user/${memberId}`, getAuthorizationHeader())
-      .then(response => {
-          dispatch(memberRemoved(response.data, groupId));
+      .then(({ data }) => {
+          dispatch(memberRemoved(data, groupId));
       })
       .catch(({response}) => {
         if (!response) {

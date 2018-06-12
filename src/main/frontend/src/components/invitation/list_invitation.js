@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Button } from 'semantic-ui-react';
 
 import Spinner from '../platform/spinner';
 import { fetchExpenses } from '../../actions';
@@ -66,7 +67,7 @@ class InvitationList extends Component {
         () => <span>Group</span>
       ];
       let rowConfig = [
-        invitation => <Link to={ '/user/' + invitation.inviterId }>{ invitation.name }</Link>,
+        invitation => <Link to={ '/user/' + invitation.inviterId }>{ invitation.inviter }</Link>,
         invitation => <Link to={ '/group/' + invitation.groupId }>{ invitation.group }</Link>,
         invitation => {
           return <Button onClick={this._onAccept.bind(this, invitation.id)}>Accept</Button>;

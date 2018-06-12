@@ -15,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.cut_costs.dto.group.get.GroupExtendedGetDto;
-import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
 import com.boot.cut_costs.dto.group.get.GroupGetDtoConverter;
+import com.boot.cut_costs.dto.group.get.GroupSnippetGetDto;
 import com.boot.cut_costs.dto.group.post.GroupPostDto;
 import com.boot.cut_costs.dto.user.get.UserGetDtoConverter;
-import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 import com.boot.cut_costs.exception.DuplicateGroupNameException;
 import com.boot.cut_costs.exception.InputValidationException;
 import com.boot.cut_costs.model.Group;
@@ -34,16 +33,12 @@ public class GroupController {
 
 	@Autowired
 	private GroupService groupService;
-	
 	@Autowired
 	private UserService userService;
-
 	@Autowired
 	private GroupDtoValidator groupDtoValidator;
-	
 	@Autowired
 	private GroupGetDtoConverter groupDtoConverter;
-	
 	@Autowired
 	private UserGetDtoConverter userDtoConverter;
 
@@ -108,20 +103,6 @@ public class GroupController {
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		for (Group group: groups) {
 			result.add(groupDtoConverter.convertToDto(group, loggedInUser));
-		}
-		return result;
-	}
-
-	/*
-	 * Get all members of a group
-	 * If user is a group member
-	 */
-	@RequestMapping(path = "/{groupId}/user", method = RequestMethod.GET)
-	public List<UserSnippetGetDto> listMembers(@PathVariable long groupId, Principal principal) {
-		List<User> members = groupService.listMembers(groupId, principal.getName());
-		List<UserSnippetGetDto> result = new ArrayList<UserSnippetGetDto>();
-		for (User member: members) {
-			result.add(userDtoConverter.convertToDto(member));
 		}
 		return result;
 	}

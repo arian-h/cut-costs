@@ -3,17 +3,17 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+import { Form, Button, Icon, Modal } from 'semantic-ui-react'
 
 import DataTable from '../platform/data_table';
 import { updateGroup, fetchGroup, deleteExpense, inviteUser } from '../../actions';
 import { validateName, validateDescription } from '../../helpers/group_utils';
 import { renderInputField, renderTextAreaField } from '../../helpers/form_utils';
 import { getUserId } from '../../helpers/user_utils';
-import MemberList from './list_member';
 import NewExpense from '../expense/new_expense';
 import NewInvitation from '../invitation/new_invitation';
-import { Form, Button, Icon, Modal } from 'semantic-ui-react'
 import Spinner from '../platform/spinner';
+import MemberList from './list_member';
 
 class ShowGroup extends Component {
   constructor(props) {
@@ -22,9 +22,7 @@ class ShowGroup extends Component {
     this.state = {
       loading: true,
       error: null,
-      showMemberListModal: false,
-      showNewExpenseModal: false,
-      showNewInvitationModal: false
+      showNewExpenseModal: false
     };
   }
 
@@ -48,14 +46,6 @@ class ShowGroup extends Component {
     }
   }
 
-  _showMembers = () => {
-    this.setState({showMemberListModal: true});
-  }
-
-  _closeMemberListModal = () => {
-    this.setState({showMemberListModal: false});
-  }
-
   _addExpense = () => {
     this.setState({showNewExpenseModal: true});
   }
@@ -74,14 +64,6 @@ class ShowGroup extends Component {
 
   _deleteExpenseErrorCallback = () => {
     //TODO to be complete
-  }
-
-  _inviteUser = () => {
-      this.setState({showNewInvitationModal: true})
-  }
-
-  _closeNewInvitationModal = () => {
-    this.setState({showNewInvitationModal: false})
   }
 
   render() {
@@ -113,15 +95,9 @@ class ShowGroup extends Component {
     ];
 
     return (
-      <div className="show-group">
-        <Modal open={ state.showMemberListModal } onClose={ this._closeMemberListModal } closeIcon>
-          <MemberList groupId={ this.groupId } isAdmin={ group.isAdmin } />
-        </Modal>
+      <div>
         <Modal open={ state.showNewExpenseModal } onClose={ this._closeExpenseListModal } closeIcon>
             <NewExpense groupId={this.groupId} isAdmin={group.isAdmin} onClose={ this._closeExpenseListModal } />
-        </Modal>
-        <Modal open={ state.showNewInvitationModal } onClose={this._closeNewInvitationModal} closeIcon>
-          <NewInvitation groupId={ this.groupId } />
         </Modal>
         <Form error>
           <Field
@@ -143,13 +119,14 @@ class ShowGroup extends Component {
           />
         </Form>
         <p>Group Admin: {group.admin.name}</p>
-        {/*TODO use label with admin's profile instead of a <p> */}
-        <Button icon='users' content='Members' labelPosition='right' floated='right' onClick={this._showMembers}/>
-        <Button icon='money' content='Add Expense' labelPosition='right' floated='right' onClick={this._addExpense}/>
-        <Button icon='add user' content='Invite User' labelPosition='right' floated='right' onClick={this._inviteUser}/>
-        {expenses.length > 0 ?
-          <DataTable data={_.values(expenses)} columns={ columns } rowConfig={ rowConfig }/>
-          : <noscript/>}
+        {/*TODO use label with admin's profile pic instead of a <p> */}
+        <Button icon='money' content='Add Expense' labelPosition='right' floated='right' onClick={this._addExpense} />
+        <MemberList groupId={ this.groupId } isAdmin={ group.isAdmin } />
+        {
+          expenses.length > 0 ?
+            <DataTable data={_.values(expenses)} columns={ columns } rowConfig={ rowConfig }/>
+            : <noscript/>
+        }
       </div>
     );
   }

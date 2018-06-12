@@ -9,20 +9,10 @@ public abstract class GroupBaseGetDto extends GroupBaseDto {
 	private String name;
 	private boolean isAdmin;
 	private boolean isSubscribed;
-	private long totalAmount;
 
 	public GroupBaseGetDto() {
 		this.isSubscribed = false;
 		this.isAdmin = false;
-		this.totalAmount = 0;
-	}
-
-	public long getTotalAmount() {
-		return totalAmount;
-	}
-
-	public void setTotalAmount(long totalAmount) {
-		this.totalAmount = totalAmount;
 	}
 
 	public boolean getIsAdmin() {

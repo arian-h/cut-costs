@@ -8,16 +8,21 @@ import com.boot.cut_costs.dto.user.get.UserSnippetGetDto;
 public class GroupExtendedGetDto extends GroupBaseGetDto {
 
 	private static final long serialVersionUID = 4462927336501279501L;
-
 	private List<ExpenseSnippetGetDto> expenses;
-
 	private String imageId = null;
-
 	private String description;
-
 	private UserSnippetGetDto admin;
+	private List<UserSnippetGetDto> members;
 
 	public GroupExtendedGetDto() {}
+
+	public List<UserSnippetGetDto> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<UserSnippetGetDto> members) {
+		this.members = members;
+	}
 
 	public UserSnippetGetDto getAdmin() {
 		return admin;

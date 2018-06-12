@@ -56,10 +56,12 @@ public class GroupGetDtoConverter {
     			target.setDescription(source.getDescription());
     			target.setAdmin(userDtoConverter.convertToDto(source.getAdmin()));
     			target.setIsAdmin(source.isAdmin(loggedInUser));
-				target.setTotalAmount(source.getExpenses().stream().map(expense -> expense.getAmount()).mapToLong(amount -> amount).sum());
     			target.setExpenses(source.getExpenses().stream()
-    					.map(expense -> expenseDtoConverter.convertToDto(expense, loggedInUser))
-    					.collect(Collectors.toList()));
+					.map(expense -> expenseDtoConverter.convertToDto(expense, loggedInUser))
+					.collect(Collectors.toList()));
+    			target.setMembers(source.getMembers().stream()
+    				.map(member -> userDtoConverter.convertToDto(member))
+    				.collect(Collectors.toList()));
     			return target;
     		};
     		modelMapper.createTypeMap(Group.class, GroupExtendedGetDto.class).setConverter(converter);    		

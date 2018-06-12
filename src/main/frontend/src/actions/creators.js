@@ -2,7 +2,6 @@ export const FETCH_GROUPS = 'fetch_groups';
 export const DELETE_GROUP = 'delete_group';
 export const CREATE_GROUP = 'create_group';
 export const FETCH_GROUP = 'fetch_group';
-export const FETCH_MEMBERS = 'fetch_members';
 export const REMOVE_MEMBER = 'remove_member';
 export const CREATE_EXPENSE = 'create_expense';
 export const DELETE_EXPENSE_FROM_GROUP = 'delete_expense_from_group';
@@ -10,9 +9,8 @@ export const FETCH_EXPENSES = 'fetch_expenses';
 export const DELETE_EXPENSE = 'delete_expense';
 export const FETCH_EXPENSE = 'fetch_expense';
 export const REMOVE_SHARER = 'remove_sharer';
-export const REJECT_INVITATION = 'reject_invitation';
+export const DELETE_INVITATION = 'delete_invitation';
 export const FETCH_INVITATIONS = 'fetch_invitations';
-export const ACCEPT_INVITATION = 'accept_invitation';
 export const FETCH_USER = 'fetch_user';
 export const UPDATE_EXPENSE = 'update_expense';
 export const UPDATE_GROUP = 'update_group';
@@ -55,18 +53,10 @@ export function groupFetched(group) {
   }
 }
 
-export function membersFetched(response, groupId) {
-  return {
-    type: FETCH_MEMBERS,
-    payload: response,
-    groupId
-  }
-}
-
-export function memberRemoved(response) {
+export function memberRemoved(data) {
   return {
     type: REMOVE_MEMBER,
-    payload: response
+    data
   }
 }
 
@@ -115,16 +105,9 @@ export function sharerRemoved(sharerId, expenseId) {
   }
 }
 
-export function invitationRejected(invitationId) {
+export function invitationDecided(invitationId) {
   return {
-    type: REJECT_INVITATION,
-    invitationId
-  }
-}
-
-export function invitationAccepted(invitationId) {
-  return {
-    type: ACCEPT_INVITATION,
+    type: DELETE_INVITATION,
     invitationId
   }
 }

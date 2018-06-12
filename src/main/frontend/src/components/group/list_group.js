@@ -87,7 +87,7 @@ class GroupList extends Component {
     ];
 
     const { groups } = props;
-    console.log(groups);
+
     return (
       <div>
         <Modal open={ state.showNewGroupModal } onClose={ this._closeNewGroupModal } closeIcon>
@@ -103,7 +103,7 @@ class GroupList extends Component {
           </Grid.Row>
           <Grid.Row>
             {_.isEmpty(groups) ? <div>No group listed !</div>
-              : <DataTable data={ _.values(groups) } rowConfig={ rowConfig } columns={ columns }/>}
+              : <DataTable paginated pageSize={ 4 } data={ _.values(groups) } rowConfig={ rowConfig } columns={ columns }/>}
           </Grid.Row>
         </Grid>
       </div>

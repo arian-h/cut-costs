@@ -8,7 +8,8 @@ import {
   DELETE_EXPENSE_FROM_GROUP,
   UPDATE_GROUP,
   SUBSCRIBE_GROUP,
-  UNSUBSCRIBE_GROUP
+  UNSUBSCRIBE_GROUP,
+  REMOVE_MEMBER
 } from '../actions/creators';
 
 export default function(state = {}, action) {
@@ -49,6 +50,8 @@ export default function(state = {}, action) {
       return { ...state,
         [action.groupId]: {...state[action.groupId], subscribed: false}
       };
+    case REMOVE_MEMBER:
+      debugger;
     default:
       return state;
   }

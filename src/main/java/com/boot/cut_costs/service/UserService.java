@@ -3,10 +3,9 @@ package com.boot.cut_costs.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
-
-import jersey.repackaged.com.google.common.collect.Lists;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +27,10 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
+	@Autowired
+	private GroupService groupService;
+	@Autowired
+	private UserService userService;
 	@Autowired
 	private CustomUserDetailsService customUserDetailsService;
 
@@ -69,8 +71,15 @@ public class UserService {
 	public void save(User user) {
 		userRepository.save(user);
 	}
-	
-	public List<User> findAll() {
-		return Lists.newArrayList(userRepository.findAll());
+
+	public List<User> searchUser(String searchTerm, long groupId, String username) {
+		groupService.validateMemberAccessToGroup(
+				groupService.loadById(groupId),
+				userService.loadByUsername(username));
+		//TODO exclude users that are already invited
+		return userRepository.findByNameStartingWithAndIdNotIn(
+				searchTerm,
+				groupService.listMembers(groupId, username).stream()
+						.map(u -> u.getId()).collect(Collectors.toList()));
 	}
 }
