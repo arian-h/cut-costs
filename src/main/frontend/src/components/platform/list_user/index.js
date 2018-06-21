@@ -9,15 +9,11 @@ class UserList extends Component {
     super(props);
   }
 
-  _resultRenderer = user => {
-    //TODO use user.photoUrl for the avatar
-    return <Label as='a' float='left'>
-        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png' />
-        { user.name }
-        <Button icon onClick={ ()=> this.props.action(user._id) }>
-          <Icon name='plus square outline' />
-        </Button>
-    </Label>;
+  _userSearchResultFormatter(users) {
+    return users.map(user => ({
+      title: user.name,
+      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/220px-User_icon_2.svg.png'
+    }));
   }
 
   render() {
@@ -37,7 +33,7 @@ class UserList extends Component {
         <Modal.Content>
           <SearchBar
             searchHandler={ searchUsers }
-            resultRenderer={ this._resultRenderer }
+            resultFormatter={ this._userSearchResultFormatter }
           />
           <ItemList
             itemRenderer={ itemRenderer }

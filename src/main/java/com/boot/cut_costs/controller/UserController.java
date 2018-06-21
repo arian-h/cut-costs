@@ -52,6 +52,14 @@ public class UserController {
 		return userDtoConverter.convertToExtendedDto(user);
 	}
 
+	/**
+	 * 
+	 * @param groupId group which user should not be a member of
+	 * @param searchTerm user search term
+	 * @param principal
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(path = "/search", method = RequestMethod.GET)
 	public List<UserSnippetGetDto> searchUsers(@RequestParam(required = true, name = "groupId") long groupId,
 			@RequestParam(required = true, name = "term") String searchTerm, Principal principal) throws IOException {
@@ -61,6 +69,5 @@ public class UserController {
 			result.add(userDtoConverter.convertToDto(user));
 		}
 		return result;
-
 	}
 }

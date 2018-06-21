@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import _ from 'lodash';
-import DataTable from '../platform/data_table';
 import { Modal, Form, Button } from 'semantic-ui-react';
+
+import DataTable from '../platform/data_table';
 import { fetchExpense, updateExpense, removeSharer } from '../../actions';
 import { validateName, validateDescription, validateAmount } from '../../helpers/expense_utils';
-import { renderInputField, validate, renderTextAreaField } from '../../helpers/form_utils';
-import { getUserId } from '../../helpers/user_utils';
+import { renderInputField, renderTextAreaField } from '../../helpers/form_utils';
 import NewSharer from '../expense/new_sharer';
 import Spinner from '../platform/spinner';
 
@@ -44,7 +44,7 @@ class ShowExpense extends Component {
     }
   }
 
-  _addSharer = () => {
+  _showContributorModal = () => {
     this.setState({ showNewSharerModal: true });
   }
 
@@ -78,20 +78,21 @@ class ShowExpense extends Component {
 
     let columns = [
       () => <span>Contributor</span>,
-      () => {}
+      () => <Button floated='right' onClick={ this._showContributorModal.bind(this) } content="Add contributor" />
     ];
     let rowConfig = [
+      contributor => contributor.name,
       contributor => {
         if (this._sharerRemoveActionEnabled(contributor.id)) {
-          return this._onRemoveSharer(contributor.id);
+          return <Button floated='right' onClick={ this._onRemoveSharer.bind(this, contributor.id) } content="Delete" />;
         }
       }
     ];
 
     return (
-      <div className="show-expense">
+      <div>
         <Modal open={ state.showNewSharerModal } onClose={ this._closeNewSharerModal } closeIcon>
-          <NewSharer expenseId={ this.expenseId } onClose={ this._addSharer } />
+          <NewSharer expenseId={ this.expenseId } onClose={ this._showContributorModal } />
         </Modal>
         <Form>
           <Field
@@ -121,7 +122,6 @@ class ShowExpense extends Component {
         </Form>
         <p>Owner name: { expense.owner.name }</p>
         <DataTable data={ _.values(sharers) } rowConfig={ rowConfig } columns={ columns }/>
-        <Button onClick={ this._addSharer } content="Add Sharer" />
       </div>
     );
   }

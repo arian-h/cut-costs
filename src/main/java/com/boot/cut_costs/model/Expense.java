@@ -53,7 +53,7 @@ public class Expense implements Serializable {
 	private Group group;
 
 	@ManyToMany
-	@JoinTable(name = "expense_sharer", joinColumns = @JoinColumn(referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(referencedColumnName = "id"))
+	@JoinTable(name = "expense_sharer", joinColumns = @JoinColumn(name = "expense_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "sharer_id", referencedColumnName = "id"))
 	private List<User> sharers;
 
 	public Expense() {

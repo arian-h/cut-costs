@@ -14,7 +14,7 @@ export default function(state={}, action) {
     case UPDATE_EXPENSE:
       return {...state, [action.expense.id]: action.expense};
     case ADD_SHARER:
-      return  {...state, [action.expenseId]: {...state[action.expenseId], sharers: [...state[action.expenseId].sharers.slice(0), action.sharer]}};
+      return {...state, [action.expenseId]: {...state[action.expenseId], sharers: [...state[action.expenseId].sharers.slice(0), action.sharer]}};
     default:
       return state;
   }

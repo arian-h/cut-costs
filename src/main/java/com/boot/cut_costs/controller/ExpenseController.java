@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.cut_costs.dto.expense.get.ExpenseExtendedGetDto;
@@ -115,8 +116,8 @@ public class ExpenseController {
 	 * Remove a sharer from an expense
 	 */
 	@RequestMapping(path = "/{expenseId}/sharer/{sharerId}", method = RequestMethod.DELETE)
-	public long removeSharer(@PathVariable long expenseId, @PathVariable long sharerId, Principal principal) throws IOException {
-		return expenseService.removeSharer(expenseId, sharerId, principal.getName());
+	public void removeSharer(@PathVariable long expenseId, @PathVariable long sharerId, Principal principal) throws IOException {
+		expenseService.removeSharer(expenseId, sharerId, principal.getName());
 	}
 
 	/**
@@ -127,4 +128,22 @@ public class ExpenseController {
 		return userDtoConverter.convertToDto(expenseService.addSharer(expenseId, newSharerId, principal.getName()));
 	}
 
+	/**
+	 * 
+	 * @param expenseId the expense to add the contributor to
+	 * @param searchTerm user search term
+	 * @param principal
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(path = "/search", method = RequestMethod.GET)
+	public List<UserSnippetGetDto> searchNewContributor(@RequestParam(required = true, name = "expenseId") long expenseId,
+			@RequestParam(required = true, name = "term") String searchTerm, Principal principal) throws IOException {
+		List<User> users = expenseService.searchContributor(searchTerm, expenseId, principal.getName());
+		List<UserSnippetGetDto> result = new ArrayList<UserSnippetGetDto>();
+		for (User user: users) {
+			result.add(userDtoConverter.convertToDto(user));
+		}
+		return result;
+	}
 }

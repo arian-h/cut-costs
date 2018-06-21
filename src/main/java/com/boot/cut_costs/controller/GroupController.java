@@ -64,14 +64,14 @@ public class GroupController {
 	 * If user is the group admin
 	 */
 	@RequestMapping(path = "/{groupId}", method = RequestMethod.PUT)
-	public GroupSnippetGetDto update(@RequestBody GroupPostDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
+	public GroupExtendedGetDto update(@RequestBody GroupPostDto groupDto, @PathVariable long groupId, Principal principal, BindingResult result) throws IOException {
 		groupDtoValidator.validate(groupDto, result);
 		User loggedInUser = userService.loadByUsername(principal.getName());
 		if (result.hasErrors()) {
 			throw new InputValidationException(result.getFieldError().getField());
 		}
 		Group group = groupService.update(groupId, groupDto.getName(), groupDto.getDescription(), principal.getName());
-		return groupDtoConverter.convertToDto(group, loggedInUser);
+		return groupDtoConverter.convertToExtendedDto(group, loggedInUser);
 	}
 
 	/*

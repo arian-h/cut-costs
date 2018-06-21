@@ -135,6 +135,7 @@ public class GroupService {
 			throw new BadRequestException("User with id " + userId + " is already a member of group with id " + groupId);
 		}
 		group.addMember(user);
+		user.addMemberGroup(group);
 		groupRepository.save(group);
 	}
 	

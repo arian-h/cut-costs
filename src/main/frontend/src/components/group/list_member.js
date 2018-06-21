@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { Button, Label, Icon } from 'semantic-ui-react';
 
-import { searchUsers, removeMember, inviteUser } from '../../actions';
+import { searchGroupMember, removeMember, inviteUser } from '../../actions';
 import { getUserId } from '../../helpers/user_utils';
 import { Modal } from 'semantic-ui-react';
 import UserList from '../platform/list_user';
@@ -21,8 +21,8 @@ class MemberList extends Component {
     };
   }
 
-  _searchUsers = (searchTerm, searchCallback) => {
-    this.props.searchUsers(searchTerm, results => searchCallback(results));
+  _searchGroupMember = (searchTerm, searchCallback) => {
+    this.props.searchGroupMember(searchTerm, results => searchCallback(results));
   }
 
   _removeEnabled = memberId => {
@@ -87,7 +87,7 @@ class MemberList extends Component {
           <UserList
               users={ members }
               header='Group list'
-              searchUsers={ this._searchUsers }
+              searchUsers={ this._searchGroupMember }
               removeEnabled={ this._removeEnabled }
               onRemove={ this._onRemove }
               action={ this._onInvite }
@@ -118,7 +118,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   let { groupId } = ownProps;
   return {
     inviteUser: (inviteeId, successCallback, errorCallback) => dispatch(inviteUser(inviteeId, groupId, successCallback, errorCallback)),
-    searchUsers: (searchTerm, successCallback) => searchUsers(searchTerm, groupId, successCallback),
+    searchGroupMember: (searchTerm, successCallback) => searchGroupMember(searchTerm, groupId, successCallback),
     removeMember: (memberId, successCallback, errorCallback) => dispatch(removeMember(groupId, memberId, successCallback, errorCallback))
   }
 }

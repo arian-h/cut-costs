@@ -136,11 +136,29 @@ export function fetchUser(userId, successCallback, errorCallback) {
   };
 }
 
-export function searchUsers(searchTerm, groupId, successCallback) {
+export function searchGroupMember(searchTerm, groupId, successCallback) {
   axios.get(`${USER_ENDPOINT}/search?term=${searchTerm}&groupId=${groupId}`,
     getAuthorizationHeader())
   .then(({data: users}) => {
-    successCallback(users)
+    successCallback(users);
+  })
+  .catch(({response}) => {
+    if (!response) {
+      //Network error
+      //show a sticky message with offline message
+    } else {
+      if (response.status ===  401) { // Unauthorized
+        logout();
+      }
+    }
+  });
+}
+
+export function searchNewContributor(searchTerm, expenseId, successCallback) {
+  axios.get(`${EXPENSE_ENDPOINT}/search?term=${searchTerm}&expenseId=${expenseId}`,
+    getAuthorizationHeader())
+  .then(({data: users}) => {
+    successCallback(users);
   })
   .catch(({response}) => {
     if (!response) {

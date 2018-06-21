@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -61,8 +62,7 @@ public class ExpenseService {
 	 * Return all expenses for a user
 	 */
 	public List<Expense> list(String username) {
-		User user = userService.loadByUsername(username);
-		return user.getAllExpenses();
+		return userService.loadByUsername(username).getAllExpenses();
 	}
 
 	/*
@@ -174,7 +174,7 @@ public class ExpenseService {
 		return expense;
 	}
 
-	public long removeSharer(long expenseId, long sharerId, String username) {
+	public void removeSharer(long expenseId, long sharerId, String username) {
 		Expense expense = this.loadById(expenseId);
 		User user = userService.loadByUsername(username);
 		validateOwnerAccessToExpense(expense, user);
@@ -185,7 +185,6 @@ public class ExpenseService {
 		expense.removeSharer(sharer);
 		expenseRepository.save(expense);
 		logger.debug("User with id " + sharerId + " was deleted from expense with id" + expenseId);
-		return sharerId;
 	}
 
 	public User addSharer(long expenseId, long sharerId, String username) {
@@ -209,4 +208,21 @@ public class ExpenseService {
 			throw new AccessDeniedException("User with id " + user.getId() + " is not owner of the expense with id " + expense.getId()); 
 		}
 	}
+
+	public List<User> searchContributor(String searchTerm, long expenseId, String username) {
+		Expense expense = this.loadById(expenseId);
+		User user = userService.loadByUsername(username);
+		this.validateOwnerAccessToExpense(expense, user);
+		long groupId = expense.getGroup().getId();
+		long ownerId = expense.getOwner().getId();
+		List<Long> allSharers = expense.getSharers().stream().map(u -> u.getId()).collect(Collectors.toList());
+		//allSharers: it includes the owner
+		allSharers.add(ownerId);
+		return userRepository.findByNameStartingWithAndIdInAndIdNotIn(
+				searchTerm,
+				groupService.listMembers(groupId, username).stream()
+						.map(u -> u.getId()).collect(Collectors.toList()),
+						allSharers);
+	}
+
 }

@@ -9,7 +9,7 @@ class SearchBar extends Component {
     this.state = {
       loading: false,
       results: [],
-      term: ''
+      value: ''
     };
   }
 
@@ -17,14 +17,17 @@ class SearchBar extends Component {
     this._resetComponent()
   }
 
-  _resetComponent = () => this.setState({ loading: false, results: [], term: '' })
+  _resetComponent = () => this.setState({ loading: false, results: [], value: '' })
 
-  _handleResultSelect = (e, { result }) => console.log(result)
+  _handleResultSelect = (e, { result }) => {
+    this.setState({ value: result.title });
+    this.props.selectItemHandler(result);
+  }
 
-  _handleSearchChange = (e, { value: term }) => {
-    if (term.length < 1) return this._resetComponent();
-    this.props.searchHandler(term, results => this.setState({ results, loading: false}));
-    this.setState({ loading: true, term });
+  _handleSearchChange = (e, { value }) => {
+    if (value.length < 1) return this._resetComponent();
+    this.props.searchHandler(value, results => this.setState({ results: this.props.resultFormatter(results), loading: false}));
+    this.setState({ loading: true, value });
   }
 
   _searchCallback = results => {
@@ -32,7 +35,8 @@ class SearchBar extends Component {
   }
 
   render() {
-    const { loading, results, term } = this.state;
+    const { loading, results, value } = this.state;
+    const { resultFormatter, searchHandler, selectItemHandler, ...rest } = this.props;
     if (results.length > 0) {
       results.forEach(result => {
         result._id = result.id; // id is overriden by the Search component
@@ -40,11 +44,11 @@ class SearchBar extends Component {
     }
     return (<Search
       loading={ loading }
-      onResultSelect={ this.handleResultSelect }
+      onResultSelect={ this._handleResultSelect }
       onSearchChange={ _.debounce(this._handleSearchChange, 500, { leading: true }) }
       results={ results }
-      value={ term }
-      {...this.props}
+      value={ value }
+      {...rest}
     />);
   }
 }
