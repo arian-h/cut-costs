@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Container, Grid, Menu } from 'semantic-ui-react'
+import { Container, Grid, Menu } from 'semantic-ui-react'
 
 import AppNavBar from '../components/navbar/app_navbar';
 import ComponentsNavBar from '../components/navbar/components_navbar';
@@ -14,19 +14,23 @@ class ViewContainer extends Component {
     let { component: Component, ...componentProps } = this.props;;
 
     return (
-      <Container fluid={ true }>
-        <Grid>
-          <Grid.Column stretched width={ 2 }>
+      <Grid>
+        <Grid.Row>
+          <Grid.Column floated='right' width={5}>
+            <AppNavBar />
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column width={3}>
             <Menu inverted pointing vertical>
               <ComponentsNavBar />
-              <AppNavBar />
             </Menu>
           </Grid.Column>
-          <Grid.Column stretched width={ 14 }>
+          <Grid.Column width={13}>
             <Component {...componentProps}/>
           </Grid.Column>
-        </Grid>
-      </Container>
+        </Grid.Row>
+      </Grid>
     );
   }
 }

@@ -16,18 +16,6 @@ const ComponentsList = [
     'title': 'Expenses',
     'icon': 'money',
     'name': 'expenses'
-  },
-  {
-    'path': '/invitation',
-    'title': 'Invitation',
-    'icon': 'envelope',
-    'name': 'invitations'
-  },
-  {
-    'path': '/profile',
-    'title': 'Profile',
-    'icon': 'id card',
-    'name': 'profile'
   }
 ];
 

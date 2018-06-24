@@ -5,6 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import thunk from 'redux-thunk';
 import rootReducer from './reducers';
+import Container from 'semantic-ui-react';
 
 import history from './history';
 import PrivateRoute from './routing/private_route';
@@ -26,7 +27,6 @@ const store = createStoreWithMiddleware(rootReducer);
 ReactDOM.render(
   <Provider store={store}>
       <Router history={history}>
-        <div>
           <Switch>
             <Route exact path="/login" render={props =>
                 isAuthenticated() ? <Redirect to='/' /> :
@@ -44,7 +44,6 @@ ReactDOM.render(
             <PrivateRoute exact path="/profile" component={Profile}/>
             <PrivateRoute component={Home}/>
           </Switch>
-        </div>
       </Router>
   </Provider>
   , document.querySelector('.container'));

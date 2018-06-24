@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Button, Icon, Menu } from 'semantic-ui-react'
+
 import { logoutUser } from '../../actions';
-import { Menu, Icon } from 'semantic-ui-react'
 
 class AppNavBar extends Component {
 
@@ -11,11 +12,23 @@ class AppNavBar extends Component {
 
   render() {
     return (
-      <Menu.Item name='logout' onClick={ this.handleLogout.bind(this) }>
-        <Icon name='sign out'/>Log out
-      </Menu.Item>
+      <Menu borderless>
+        <Menu.Item as={ Link } to='/profile' name='profile'>
+          <Icon name='id card' />
+          Profile
+        </Menu.Item>
+        <Menu.Item as={ Link } to='/invitation' name='invitation'>
+          <Icon name='envelope' />
+          Invitation
+        </Menu.Item>
+        <Menu.Item>
+          <Button onClick={ this.handleLogout.bind(this) }>
+            <Icon name='sign out'/>Log out
+          </Button>
+        </Menu.Item>
+      </Menu>
     );
   }
 }
 
-export default connect(null, { logoutUser })(AppNavBar);
+export default AppNavBar;

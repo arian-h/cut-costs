@@ -88,26 +88,24 @@ class GroupList extends Component {
 
     const { groups } = props;
 
-    return (
+    return ([
+      <Modal open={ state.showNewGroupModal } onClose={ this._closeNewGroupModal } closeIcon>
+        <NewGroup onClose={ this._closeNewGroupModal }/>
+      </Modal>,
       <div>
-        <Modal open={ state.showNewGroupModal } onClose={ this._closeNewGroupModal } closeIcon>
-          <NewGroup onClose={ this._closeNewGroupModal }/>
-        </Modal>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column>
-              <Button icon primary labelPosition='left' size='small' onClick={ this._openNewGroupModal }>
-                  <Icon name='group'></Icon>New Group
-              </Button>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            {_.isEmpty(groups) ? <div>No group listed !</div>
-              : <DataTable paginated pageSize={ 4 } data={ _.values(groups) } rowConfig={ rowConfig } columns={ columns }/>}
-          </Grid.Row>
-        </Grid>
+        <Grid.Row>
+          <Grid.Column>
+            <Button icon primary labelPosition='left' size='small' onClick={ this._openNewGroupModal }>
+                <Icon name='group'></Icon>New Group
+            </Button>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          {_.isEmpty(groups) ? <div>No group listed !</div>
+            : <DataTable paginated pageSize={ 4 } data={ _.values(groups) } rowConfig={ rowConfig } columns={ columns }/>}
+        </Grid.Row>
       </div>
-    );
+    ]);
   }
 }
 /*this function works directly with the <Provider> placed inside
